@@ -1,6 +1,6 @@
 package org.example;
 
-import GUI.VentanaPrincipal;
+import view.MainView;
 import javafx.application.Application;
 import javafx.stage.Stage;
 
@@ -8,7 +8,7 @@ public class Main extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-        new VentanaPrincipal(stage);
+        new MainView(stage);
     }
 
     public static void main(String[] args) {

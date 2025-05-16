@@ -1,4 +1,4 @@
-package GUI;
+package view;
 
 import domain.Hotel;
 import javafx.geometry.Pos;
@@ -9,15 +9,14 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
-import domain.Huesped;
-import domain.Client;
+import sockets.Client;
 
-public class VentanaRegistrarHotel extends BorderPane implements Runnable{
+public class RegisterHotelView extends BorderPane implements Runnable{
 
     private Client client;
     private Pane contentPane;
 
-    public VentanaRegistrarHotel(Client client, Pane contentPane) {
+    public RegisterHotelView(Client client, Pane contentPane) {
         this.setStyle("-fx-border-color: black; -fx-background-color: white;");
         this.setPrefSize(300, 200);
         this.setLayoutX(100);

@@ -1,4 +1,4 @@
-package GUI;
+package view;
 
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -8,15 +8,14 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
-import domain.Huesped;
-import domain.Client;
+import sockets.Client;
 
-public class VentanaRegistrarHuesped extends BorderPane implements Runnable{
+public class DeleteHotelView extends BorderPane implements Runnable{
 
     private Client client;
     private Pane contentPane;
 
-    public VentanaRegistrarHuesped(Client client, Pane contentPane) {
+    public DeleteHotelView(Client client, Pane contentPane) {
         this.setStyle("-fx-border-color: black; -fx-background-color: white;");
         this.setPrefSize(300, 200);
         this.setLayoutX(100);
@@ -34,7 +33,7 @@ public class VentanaRegistrarHuesped extends BorderPane implements Runnable{
     private void initComponents() {
         // Título con botón cerrar
         HBox titleBar = new HBox();
-        Label title = new Label("Registrar Huésped");
+        Label title = new Label("Eliminar Hotel");
         Button closeBtn = new Button("X");
 
         titleBar.setAlignment(Pos.CENTER_RIGHT);
@@ -64,23 +63,19 @@ public class VentanaRegistrarHuesped extends BorderPane implements Runnable{
         });
 
         // Recuperar datos
-        TextField tNombre = new TextField();
-        TextField tApellido = new TextField();
-        Button btnRegistrar = new Button("Registrar");
+        TextField tNumero = new TextField();
+        Button btnEliminar = new Button("Eliminar");
 
-        // Contenido del formulario (simulado)
+        // Contenido del formulario
         VBox contenido = new VBox(10);
         contenido.setStyle("-fx-padding: 10;");
         contenido.getChildren().addAll(
-                new Label("Nombre:"),
-                tNombre,
-                new Label("Apellido:"),
-                tApellido,
-                btnRegistrar
+                new Label("Numero de telefono del hotel que desee eliminar:"),
+                tNumero,
+                btnEliminar
         );
 
-        btnRegistrar.setOnAction(e -> this.registrarHuesped(new Huesped(tNombre.getText(),
-                tApellido.getText())));
+        btnEliminar.setOnAction(e -> this.eliminarHotel(tNumero.getText()));
 
         this.setTop(titleBar);
         this.setCenter(contenido);
@@ -88,8 +83,8 @@ public class VentanaRegistrarHuesped extends BorderPane implements Runnable{
         contentPane.getChildren().add(this);
     }
 
-    private void registrarHuesped(Huesped huesped) {
-        this.client.getSend().println("registrarHuesped"+huesped.toString());
+    private void eliminarHotel(String numero) {
+        this.client.getSend().println("eliminarHotel-"+numero);
     }
 
     @Override

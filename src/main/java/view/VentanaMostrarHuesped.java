@@ -1,4 +1,4 @@
-package GUI;
+package view;
 
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -8,7 +8,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
-import domain.Client;
+import sockets.Client;
 
 public class VentanaMostrarHuesped extends BorderPane implements Runnable {
 

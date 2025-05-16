@@ -1,33 +1,33 @@
-package GUI;
+package view;
 
+import domain.Hotel;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
-import domain.Client;
+import sockets.Client;
 
-public class VentanaMostrarHotel extends BorderPane implements Runnable {
+public class UpdateHotelView extends BorderPane implements Runnable{
 
     private Client client;
     private Pane contentPane;
 
-    private TextArea taMostar;
+    private TextField tNumero, tNombre, tDireccion, tNumeroSolicitar;
 
-    public VentanaMostrarHotel(Client client, Pane contentPane) {
+    public UpdateHotelView(Client client, Pane contentPane) {
         this.setStyle("-fx-border-color: black; -fx-background-color: white;");
-        this.setPrefSize(400, 300);
+        this.setPrefSize(300, 200);
         this.setLayoutX(100);
         this.setLayoutY(100);
+
         this.contentPane = contentPane;
 
         this.initComponents();
         this.client = client;
-
-        this.mostrarHuesped("mostrarHoteles");
 
         Thread thread = new Thread(this);
         thread.start();
@@ -36,7 +36,7 @@ public class VentanaMostrarHotel extends BorderPane implements Runnable {
     private void initComponents() {
         // Título con botón cerrar
         HBox titleBar = new HBox();
-        Label title = new Label("Mostrar Hoteles");
+        Label title = new Label("Modificar Hotel");
         Button closeBtn = new Button("X");
 
         titleBar.setAlignment(Pos.CENTER_RIGHT);
@@ -66,15 +66,33 @@ public class VentanaMostrarHotel extends BorderPane implements Runnable {
         });
 
         // Recuperar datos
-        this.taMostar = new TextArea();
-        this.taMostar.setEditable(false);
+        this.tNumeroSolicitar = new TextField();
+        Button btnConsultar = new Button("Consultar");
 
-        // Contenido del formulario (simulado)
+        this.tNumero = new TextField();
+        this.tNombre = new TextField();
+        this.tDireccion = new TextField();
+        Button btnModificar = new Button("Modificar");
+
+        // Contenido del formulario
         VBox contenido = new VBox(10);
         contenido.setStyle("-fx-padding: 10;");
         contenido.getChildren().addAll(
-                this.taMostar
+                new Label("Ingrese el numero de telefono del hotel que desee editar:"),
+                tNumeroSolicitar,
+                btnConsultar,
+                new Label("Numero de telefono:"),
+                tNumero,
+                new Label("Nombre:"),
+                tNombre,
+                new Label("Direccion:"),
+                tDireccion,
+                btnModificar
         );
+
+        btnConsultar.setOnAction(e -> this.solicitarHotel(this.tNumeroSolicitar.getText()));
+        btnModificar.setOnAction(e -> this.modificarHotel(new Hotel(tNumero.getText(), tNombre.getText(),
+                tDireccion.getText())));
 
         this.setTop(titleBar);
         this.setCenter(contenido);
@@ -82,18 +100,25 @@ public class VentanaMostrarHotel extends BorderPane implements Runnable {
         contentPane.getChildren().add(this);
     }
 
-    private void mostrarHuesped(String accion) {
-        this.client.getSend().println(accion+"-");
+    private void solicitarHotel(String numeroSolicitado) {
+        this.client.getSend().println("solicitarHotel-"+numeroSolicitado);
+    }
+
+    private void modificarHotel(Hotel hotel) {
+        this.client.getSend().println("modificarHotel"+hotel.toString());
     }
 
     @Override
     public void run() {
         while (true) {
             try {
-                if (this.client.isHotelesMostrado()) {
-                    this.taMostar.setText(this.client.getMostrarHoteles());
-                    this.client.setMostrarHoteles("");
-                    this.client.setHotelesMostrado(false);
+                if (this.client.isMostrarHotelSolicitado()) {
+                    this.tNumero.setText(this.client.getHotelSolicitado().getNumber());
+                    this.tNombre.setText(this.client.getHotelSolicitado().getName());
+                    this.tDireccion.setText(this.client.getHotelSolicitado().getAddress());
+                    this.tNumeroSolicitar.setText("");
+                    this.client.setHotelSolicitado(null);
+                    this.client.setMostrarHotelSolicitado(false);
                 }
                 Thread.sleep(100);
             } catch (InterruptedException e) {
