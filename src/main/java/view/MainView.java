@@ -1,4 +1,4 @@
-package GUI;
+package view;
 
 import javafx.scene.Node;
 import javafx.scene.Scene;
@@ -6,19 +6,19 @@ import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import javafx.geometry.Pos;
-import domain.Client;
+import sockets.Client;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 
-public class VentanaPrincipal extends VBox {
+public class MainView extends VBox {
 
     private Pane contentPane;
 
     private Client client;
 
-    public VentanaPrincipal(Stage stage) {
+    public MainView(Stage stage) {
         this.setPrefSize(600, 600);
 
         try {
@@ -51,16 +51,16 @@ public class VentanaPrincipal extends VBox {
         mostrarHuespedes.setOnAction(e -> new VentanaMostrarHuesped(this.client, this.contentPane));
 
         MenuItem registrarHotel = new MenuItem("Registrar");
-        registrarHotel.setOnAction(e -> new VentanaRegistrarHotel(this.client, this.contentPane));
+        registrarHotel.setOnAction(e -> new RegisterHotelView(this.client, this.contentPane));
 
         MenuItem mostrarHotel = new MenuItem("Mostrar");
-        mostrarHotel.setOnAction(e -> new VentanaMostrarHotel(this.client, this.contentPane));
+        mostrarHotel.setOnAction(e -> new ShowHotelView(this.client, this.contentPane));
 
         MenuItem modificarHotel = new MenuItem("Modificar");
-        modificarHotel.setOnAction(e -> new VentanaModificarHotel(this.client, this.contentPane));
+        modificarHotel.setOnAction(e -> new UpdateHotelView(this.client, this.contentPane));
 
         MenuItem eliminarHotel = new MenuItem("Eliminar");
-        eliminarHotel.setOnAction(e -> new VentanaEliminarHotel(this.client, this.contentPane));
+        eliminarHotel.setOnAction(e -> new DeleteHotelView(this.client, this.contentPane));
 
         menuHuesped.getItems().addAll(registrarHuesped, mostrarHuespedes);
         menuHotel.getItems().addAll(registrarHotel, mostrarHotel, modificarHotel, eliminarHotel);

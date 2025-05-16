@@ -1,4 +1,6 @@
-package domain;
+package sockets;
+
+import domain.Hotel;
 
 import java.io.BufferedReader;
 import java.io.IOException;
