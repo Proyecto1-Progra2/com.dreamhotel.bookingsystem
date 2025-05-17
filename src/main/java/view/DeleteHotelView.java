@@ -9,6 +9,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import sockets.Client;
+import utils.Action;
 
 public class DeleteHotelView extends BorderPane implements Runnable{
 
@@ -33,7 +34,7 @@ public class DeleteHotelView extends BorderPane implements Runnable{
     private void initComponents() {
         // Título con botón cerrar
         HBox titleBar = new HBox();
-        Label title = new Label("Eliminar Hotel");
+        Label title = new Label("Delete Hotel");
         Button closeBtn = new Button("X");
 
         titleBar.setAlignment(Pos.CENTER_RIGHT);
@@ -63,19 +64,19 @@ public class DeleteHotelView extends BorderPane implements Runnable{
         });
 
         // Recuperar datos
-        TextField tNumero = new TextField();
-        Button btnEliminar = new Button("Eliminar");
+        TextField tNumber = new TextField();
+        Button btnDelete = new Button("Delete");
 
         // Contenido del formulario
         VBox contenido = new VBox(10);
         contenido.setStyle("-fx-padding: 10;");
         contenido.getChildren().addAll(
-                new Label("Numero de telefono del hotel que desee eliminar:"),
-                tNumero,
-                btnEliminar
+                new Label("Phone Number of hotel you want to delete:"),
+                tNumber,
+                btnDelete
         );
 
-        btnEliminar.setOnAction(e -> this.eliminarHotel(tNumero.getText()));
+        btnDelete.setOnAction(e -> this.deleteNumber(tNumber.getText()));
 
         this.setTop(titleBar);
         this.setCenter(contenido);
@@ -83,8 +84,8 @@ public class DeleteHotelView extends BorderPane implements Runnable{
         contentPane.getChildren().add(this);
     }
 
-    private void eliminarHotel(String numero) {
-        this.client.getSend().println("eliminarHotel-"+numero);
+    private void deleteNumber(String number) {
+        this.client.getSend().println(Action.HOTEL_DELETE+"-"+number);
     }
 
     @Override

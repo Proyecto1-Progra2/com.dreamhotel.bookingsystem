@@ -29,7 +29,7 @@ public class MainView extends VBox {
         }
 
         Scene scene = new Scene(this);
-        stage.setTitle("Ventana Principal");
+        stage.setTitle("Principal Window");
         stage.setScene(scene);
         stage.centerOnScreen();
         stage.show();
@@ -41,23 +41,40 @@ public class MainView extends VBox {
         Collection<Node> nodes = new ArrayList<>();
 
         MenuBar menuBar = new MenuBar();
-        Menu menuHotel = new Menu("Hoteles");
+        Menu menuHotel = new Menu("Hotels");
+        Menu menuRoom = new Menu("Rooms");
 
-        MenuItem registrarHotel = new MenuItem("Registrar");
-        registrarHotel.setOnAction(e -> new RegisterHotelView(this.client, this.contentPane));
+        // -> Hotels Menu
+        MenuItem hotelRegister = new MenuItem("Register");
+        hotelRegister.setOnAction(e -> new RegisterHotelView(this.client, this.contentPane));
 
-        MenuItem mostrarHotel = new MenuItem("Mostrar");
-        mostrarHotel.setOnAction(e -> new ShowHotelView(this.client, this.contentPane));
+        MenuItem hotelView = new MenuItem("View all");
+        hotelView.setOnAction(e -> new ShowHotelView(this.client, this.contentPane));
 
-        MenuItem modificarHotel = new MenuItem("Modificar");
-        modificarHotel.setOnAction(e -> new UpdateHotelView(this.client, this.contentPane));
+        MenuItem hotelUpdate = new MenuItem("Update");
+        hotelUpdate.setOnAction(e -> new UpdateHotelView(this.client, this.contentPane));
 
-        MenuItem eliminarHotel = new MenuItem("Eliminar");
-        eliminarHotel.setOnAction(e -> new DeleteHotelView(this.client, this.contentPane));
+        MenuItem hotelDelete = new MenuItem("Delete");
+        hotelDelete.setOnAction(e -> new DeleteHotelView(this.client, this.contentPane));
 
-        menuHotel.getItems().addAll(registrarHotel, mostrarHotel, modificarHotel, eliminarHotel);
+        menuHotel.getItems().addAll(hotelRegister, hotelView, hotelUpdate, hotelDelete);
 
-        menuBar.getMenus().addAll(menuHotel);
+        // -> Rooms Menus
+        MenuItem roomRegister = new MenuItem("Register");
+        roomRegister.setOnAction(e -> new RegisterHotelView(this.client, this.contentPane));
+
+        MenuItem roomView = new MenuItem("View all");
+        roomView.setOnAction(e -> new ShowHotelView(this.client, this.contentPane));
+
+        MenuItem roomUpdate = new MenuItem("Update");
+        roomUpdate.setOnAction(e -> new UpdateHotelView(this.client, this.contentPane));
+
+        MenuItem roomDelete = new MenuItem("Delete");
+        roomDelete.setOnAction(e -> new DeleteHotelView(this.client, this.contentPane));
+
+        menuRoom.getItems().addAll(roomRegister, roomView, roomUpdate, roomDelete);
+
+        menuBar.getMenus().addAll(menuHotel, menuRoom);
         nodes.add(menuBar);
 
         // Panel de contenido donde estarán las ventanas internas
@@ -69,58 +86,4 @@ public class MainView extends VBox {
         this.getChildren().addAll(nodes);
     }
 
-    private void mostrarVentanaInterna() {
-        BorderPane internalFrame = new BorderPane();
-        internalFrame.setStyle("-fx-border-color: black; -fx-background-color: white;");
-        internalFrame.setPrefSize(300, 200);
-        internalFrame.setLayoutX(100);
-        internalFrame.setLayoutY(100);
-
-        // Título con botón cerrar
-        HBox titleBar = new HBox();
-        Label title = new Label("Registrar Huésped");
-        Button closeBtn = new Button("X");
-
-        titleBar.setAlignment(Pos.CENTER_RIGHT);
-        titleBar.setSpacing(10);
-        titleBar.setStyle("-fx-background-color: #cccccc; -fx-padding: 5;");
-        titleBar.getChildren().addAll(title, closeBtn);
-
-        closeBtn.setOnAction(e -> contentPane.getChildren().remove(internalFrame));
-
-        // Hacer movible la ventana y limitarla al contentPane
-        final double[] dragOffset = new double[2];
-        titleBar.setOnMousePressed(e -> {
-            dragOffset[0] = e.getSceneX() - internalFrame.getLayoutX();
-            dragOffset[1] = e.getSceneY() - internalFrame.getLayoutY();
-        });
-
-        titleBar.setOnMouseDragged(e -> {
-            double newX = e.getSceneX() - dragOffset[0];
-            double newY = e.getSceneY() - dragOffset[1];
-
-            // Restringir al área visible del contentPane
-            newX = Math.max(0, Math.min(newX, contentPane.getWidth() - internalFrame.getWidth()));
-            newY = Math.max(0, Math.min(newY, contentPane.getHeight() - internalFrame.getHeight()));
-
-            internalFrame.setLayoutX(newX);
-            internalFrame.setLayoutY(newY);
-        });
-
-        // Contenido del formulario (simulado)
-        VBox contenido = new VBox(10);
-        contenido.setStyle("-fx-padding: 10;");
-        contenido.getChildren().addAll(
-                new Label("Nombre:"),
-                new TextField(),
-                new Label("Cédula:"),
-                new TextField(),
-                new Button("Registrar")
-        );
-
-        internalFrame.setTop(titleBar);
-        internalFrame.setCenter(contenido);
-
-        contentPane.getChildren().add(internalFrame);
-    }
 }

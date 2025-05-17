@@ -9,13 +9,14 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import sockets.Client;
+import utils.Action;
 
 public class ShowHotelView extends BorderPane implements Runnable {
 
     private Client client;
     private Pane contentPane;
 
-    private TextArea taMostar;
+    private TextArea taView;
 
     public ShowHotelView(Client client, Pane contentPane) {
         this.setStyle("-fx-border-color: black; -fx-background-color: white;");
@@ -27,7 +28,7 @@ public class ShowHotelView extends BorderPane implements Runnable {
         this.initComponents();
         this.client = client;
 
-        this.mostrarHuesped("mostrarHoteles");
+        this.HotelList(Action.HOTEL_LIST);
 
         Thread thread = new Thread(this);
         thread.start();
@@ -36,7 +37,7 @@ public class ShowHotelView extends BorderPane implements Runnable {
     private void initComponents() {
         // Título con botón cerrar
         HBox titleBar = new HBox();
-        Label title = new Label("Mostrar Hoteles");
+        Label title = new Label("Hotel List");
         Button closeBtn = new Button("X");
 
         titleBar.setAlignment(Pos.CENTER_RIGHT);
@@ -66,14 +67,14 @@ public class ShowHotelView extends BorderPane implements Runnable {
         });
 
         // Recuperar datos
-        this.taMostar = new TextArea();
-        this.taMostar.setEditable(false);
+        this.taView = new TextArea();
+        this.taView.setEditable(false);
 
         // Contenido del formulario (simulado)
         VBox contenido = new VBox(10);
         contenido.setStyle("-fx-padding: 10;");
         contenido.getChildren().addAll(
-                this.taMostar
+                this.taView
         );
 
         this.setTop(titleBar);
@@ -82,7 +83,7 @@ public class ShowHotelView extends BorderPane implements Runnable {
         contentPane.getChildren().add(this);
     }
 
-    private void mostrarHuesped(String accion) {
+    private void HotelList(String accion) {
         this.client.getSend().println(accion+"-");
     }
 
@@ -91,7 +92,7 @@ public class ShowHotelView extends BorderPane implements Runnable {
         while (true) {
             try {
                 if (this.client.isHotelesMostrado()) {
-                    this.taMostar.setText(this.client.getMostrarHoteles());
+                    this.taView.setText(this.client.getMostrarHoteles());
                     this.client.setMostrarHoteles("");
                     this.client.setHotelesMostrado(false);
                 }
