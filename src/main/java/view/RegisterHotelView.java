@@ -10,6 +10,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import sockets.Client;
+import utils.Action;
 
 public class RegisterHotelView extends BorderPane implements Runnable{
 
@@ -34,7 +35,7 @@ public class RegisterHotelView extends BorderPane implements Runnable{
     private void initComponents() {
         // Título con botón cerrar
         HBox titleBar = new HBox();
-        Label title = new Label("Registrar Hotel");
+        Label title = new Label("Register Hotel");
         Button closeBtn = new Button("X");
 
         titleBar.setAlignment(Pos.CENTER_RIGHT);
@@ -64,26 +65,26 @@ public class RegisterHotelView extends BorderPane implements Runnable{
         });
 
         // Recuperar datos
-        TextField tNumero = new TextField();
-        TextField tNombre = new TextField();
-        TextField tDireccion = new TextField();
-        Button btnRegistrar = new Button("Registrar");
+        TextField tNumber = new TextField();
+        TextField tName = new TextField();
+        TextField tAddress = new TextField();
+        Button btnRegister = new Button("Register");
 
         // Contenido del formulario
         VBox contenido = new VBox(10);
         contenido.setStyle("-fx-padding: 10;");
         contenido.getChildren().addAll(
-                new Label("Numero de telefono:"),
-                tNumero,
-                new Label("Nombre:"),
-                tNombre,
-                new Label("Direccion:"),
-                tDireccion,
-                btnRegistrar
+                new Label("Phone Number:"),
+                tNumber,
+                new Label("Hotel Name:"),
+                tName,
+                new Label("Hotel Address:"),
+                tAddress,
+                btnRegister
         );
 
-        btnRegistrar.setOnAction(e -> this.registrarHotel(new Hotel(tNumero.getText(), tNombre.getText(),
-                tDireccion.getText())));
+        btnRegister.setOnAction(e -> this.hotelRegister(new Hotel(tNumber.getText(), tName.getText(),
+                tAddress.getText())));
 
         this.setTop(titleBar);
         this.setCenter(contenido);
@@ -91,8 +92,8 @@ public class RegisterHotelView extends BorderPane implements Runnable{
         contentPane.getChildren().add(this);
     }
 
-    private void registrarHotel(Hotel hotel) {
-        this.client.getSend().println("registrarHotel"+hotel.toString());
+    private void hotelRegister(Hotel hotel) {
+        this.client.getSend().println(Action.HOTEL_REGISTER +hotel.toString());
     }
 
     @Override

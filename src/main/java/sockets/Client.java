@@ -1,6 +1,7 @@
 package sockets;
 
 import domain.Hotel;
+import utils.Action;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -56,15 +57,7 @@ public class Client extends Thread {
                 String[] datos = this.lectura.split("-");
                 String accion = datos[0];
                 switch (accion) {
-                    case "mostrar":
-                        int numeroHuesped = 1;
-                        for (int i = 1; i < datos.length - 1; i+=2) {
-                            this.infoMostrar += numeroHuesped+". Nombre: "+datos[i] + " Apellidos: "+datos[i+1] + "\n";
-                            numeroHuesped++;
-                        }
-                        this.mostrado = true;
-                        break;
-                    case "mostrarHoteles":
+                    case Action.HOTEL_LIST:
                         int numeroHotel = 1;
                         for (int i = 1; i < datos.length - 1; i+=3) {
                             this.mostrarHoteles += numeroHotel+". Numero: "+datos[i] + " Nombre: "+datos[i+1] +
@@ -73,7 +66,7 @@ public class Client extends Thread {
                         }
                         this.hotelesMostrado = true;
                         break;
-                    case "hotelSolicitado":
+                    case Action.HOTEL_SEARCH:
                         this.hotelSolicitado = new Hotel(datos[1], datos[2], datos[3]);
                         this.mostrarHotelSolicitado = true;
                         break;

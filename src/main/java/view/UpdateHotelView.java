@@ -10,13 +10,14 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import sockets.Client;
+import utils.Action;
 
 public class UpdateHotelView extends BorderPane implements Runnable{
 
     private Client client;
     private Pane contentPane;
 
-    private TextField tNumero, tNombre, tDireccion, tNumeroSolicitar;
+    private TextField tNumber, tName, tAddress, tRequestHotel;
 
     public UpdateHotelView(Client client, Pane contentPane) {
         this.setStyle("-fx-border-color: black; -fx-background-color: white;");
@@ -36,7 +37,7 @@ public class UpdateHotelView extends BorderPane implements Runnable{
     private void initComponents() {
         // Título con botón cerrar
         HBox titleBar = new HBox();
-        Label title = new Label("Modificar Hotel");
+        Label title = new Label("Hotel Update");
         Button closeBtn = new Button("X");
 
         titleBar.setAlignment(Pos.CENTER_RIGHT);
@@ -66,33 +67,33 @@ public class UpdateHotelView extends BorderPane implements Runnable{
         });
 
         // Recuperar datos
-        this.tNumeroSolicitar = new TextField();
-        Button btnConsultar = new Button("Consultar");
+        this.tRequestHotel = new TextField();
+        Button btnRequest = new Button("Request Hotel");
 
-        this.tNumero = new TextField();
-        this.tNombre = new TextField();
-        this.tDireccion = new TextField();
-        Button btnModificar = new Button("Modificar");
+        this.tNumber = new TextField();
+        this.tName = new TextField();
+        this.tAddress = new TextField();
+        Button btnUpdate = new Button("Update Hotel");
 
         // Contenido del formulario
         VBox contenido = new VBox(10);
         contenido.setStyle("-fx-padding: 10;");
         contenido.getChildren().addAll(
-                new Label("Ingrese el numero de telefono del hotel que desee editar:"),
-                tNumeroSolicitar,
-                btnConsultar,
-                new Label("Numero de telefono:"),
-                tNumero,
-                new Label("Nombre:"),
-                tNombre,
-                new Label("Direccion:"),
-                tDireccion,
-                btnModificar
+                new Label("Phone number of hotel you want to update:"),
+                tRequestHotel,
+                btnRequest,
+                new Label("Phone Number:"),
+                tNumber,
+                new Label("Name:"),
+                tName,
+                new Label("Address:"),
+                tAddress,
+                btnUpdate
         );
 
-        btnConsultar.setOnAction(e -> this.solicitarHotel(this.tNumeroSolicitar.getText()));
-        btnModificar.setOnAction(e -> this.modificarHotel(new Hotel(tNumero.getText(), tNombre.getText(),
-                tDireccion.getText())));
+        btnRequest.setOnAction(e -> this.requestHotel(this.tRequestHotel.getText()));
+        btnUpdate.setOnAction(e -> this.updateHotel(new Hotel(tNumber.getText(), tName.getText(),
+                tAddress.getText())));
 
         this.setTop(titleBar);
         this.setCenter(contenido);
@@ -100,12 +101,12 @@ public class UpdateHotelView extends BorderPane implements Runnable{
         contentPane.getChildren().add(this);
     }
 
-    private void solicitarHotel(String numeroSolicitado) {
-        this.client.getSend().println("solicitarHotel-"+numeroSolicitado);
+    private void requestHotel(String numberRequest) {
+        this.client.getSend().println(Action.HOTEL_SEARCH+"-"+numberRequest);
     }
 
-    private void modificarHotel(Hotel hotel) {
-        this.client.getSend().println("modificarHotel"+hotel.toString());
+    private void updateHotel(Hotel hotel) {
+        this.client.getSend().println(Action.HOTEL_UPDATE+hotel.toString());
     }
 
     @Override
@@ -113,10 +114,10 @@ public class UpdateHotelView extends BorderPane implements Runnable{
         while (true) {
             try {
                 if (this.client.isMostrarHotelSolicitado()) {
-                    this.tNumero.setText(this.client.getHotelSolicitado().getNumber());
-                    this.tNombre.setText(this.client.getHotelSolicitado().getName());
-                    this.tDireccion.setText(this.client.getHotelSolicitado().getAddress());
-                    this.tNumeroSolicitar.setText("");
+                    this.tNumber.setText(this.client.getHotelSolicitado().getNumber());
+                    this.tName.setText(this.client.getHotelSolicitado().getName());
+                    this.tAddress.setText(this.client.getHotelSolicitado().getAddress());
+                    this.tRequestHotel.setText("");
                     this.client.setHotelSolicitado(null);
                     this.client.setMostrarHotelSolicitado(false);
                 }
