@@ -12,12 +12,16 @@ import javafx.scene.layout.VBox;
 import sockets.Client;
 import utils.Action;
 
+import javax.swing.*;
+
 public class UpdateHotelView extends BorderPane implements Runnable{
 
     private Client client;
     private Pane contentPane;
 
     private TextField tNumber, tName, tAddress, tRequestHotel;
+
+    private volatile boolean isRunning = true;
 
     public UpdateHotelView(Client client, Pane contentPane) {
         this.setStyle("-fx-border-color: black; -fx-background-color: white;");
@@ -45,7 +49,10 @@ public class UpdateHotelView extends BorderPane implements Runnable{
         titleBar.setStyle("-fx-background-color: #cccccc; -fx-padding: 5;");
         titleBar.getChildren().addAll(title, closeBtn);
 
-        closeBtn.setOnAction(e -> contentPane.getChildren().remove(this));
+        closeBtn.setOnAction(e -> {
+            this.isRunning = false;
+            contentPane.getChildren().remove(this);
+        });
 
         // Hacer movible la ventana y limitarla al contentPane
         final double[] dragOffset = new double[2];
@@ -111,7 +118,7 @@ public class UpdateHotelView extends BorderPane implements Runnable{
 
     @Override
     public void run() {
-        while (true) {
+        while (this.isRunning) {
             try {
                 if (this.client.isMostrarHotelSolicitado()) {
                     this.tNumber.setText(this.client.getHotelSolicitado().getNumber());
@@ -120,6 +127,12 @@ public class UpdateHotelView extends BorderPane implements Runnable{
                     this.tRequestHotel.setText("");
                     this.client.setHotelSolicitado(null);
                     this.client.setMostrarHotelSolicitado(false);
+                } else if (this.client.getUpdated() == 1) {
+                    JOptionPane.showMessageDialog(null, "Hotel updated successfully!");
+                    this.tNumber.setText("");
+                    this.tName.setText("");
+                    this.tAddress.setText("");
+                    this.client.setUpdated(0);
                 }
                 Thread.sleep(100);
             } catch (InterruptedException e) {

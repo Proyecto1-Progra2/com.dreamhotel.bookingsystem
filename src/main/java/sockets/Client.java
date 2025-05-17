@@ -30,6 +30,11 @@ public class Client extends Thread {
     private boolean mostrarHotelSolicitado;
     //
 
+    // -> Validación de acciones
+    private int registered;
+    private int updated;
+    private int deleted;
+
     public Client(String ip, int puerto) throws UnknownHostException, IOException {
         this.direccion = InetAddress.getByName(ip);
         this.socket = new Socket(this.direccion, puerto);
@@ -41,6 +46,11 @@ public class Client extends Thread {
         this.hotelesMostrado = false;
         this.mostrarHotelSolicitado = false;
         //
+
+        // -> variables de validación de acciones => 1 = accion exitosa, 2 = accion no exitosa, 0 = no se ha realizado ninguna accion
+        this.registered = 0;
+        this.updated = 0;
+        this.deleted = 0;
 
         this.infoMostrar = "";
         this.mostrarHoteles = "";
@@ -70,6 +80,15 @@ public class Client extends Thread {
                         this.hotelSolicitado = new Hotel(datos[1], datos[2], datos[3]);
                         this.mostrarHotelSolicitado = true;
                         break;
+                    case Action.HOTEL_REGISTERED:
+                        this.registered = 1;
+                        break;
+                    case Action.HOTEL_UPDATED:
+                        this.updated = 1;
+                        break;
+                    case Action.HOTEL_DELETED:
+                        this.deleted = 1;
+                        break;
                     default:
                         throw new IllegalStateException("Unexpected value: " + accion);
                 }
@@ -77,6 +96,30 @@ public class Client extends Thread {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public int getDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(int deleted) {
+        this.deleted = deleted;
+    }
+
+    public int getUpdated() {
+        return updated;
+    }
+
+    public void setUpdated(int updated) {
+        this.updated = updated;
+    }
+
+    public int getRegistered() {
+        return registered;
+    }
+
+    public void setRegistered(int registered) {
+        this.registered = registered;
     }
 
     public boolean isMostrarHotelSolicitado() {

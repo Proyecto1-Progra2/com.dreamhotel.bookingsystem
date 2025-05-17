@@ -11,10 +11,15 @@ import javafx.scene.layout.VBox;
 import sockets.Client;
 import utils.Action;
 
+import javax.swing.*;
+
 public class DeleteHotelView extends BorderPane implements Runnable{
 
     private Client client;
     private Pane contentPane;
+    private volatile boolean isRunning = true;
+
+    private TextField tNumber;
 
     public DeleteHotelView(Client client, Pane contentPane) {
         this.setStyle("-fx-border-color: black; -fx-background-color: white;");
@@ -27,8 +32,8 @@ public class DeleteHotelView extends BorderPane implements Runnable{
         this.initComponents();
         this.client = client;
 
-        //Thread thread = new Thread(this);
-        //thread.start();
+        Thread thread = new Thread(this);
+        thread.start();
     }
 
     private void initComponents() {
@@ -64,7 +69,7 @@ public class DeleteHotelView extends BorderPane implements Runnable{
         });
 
         // Recuperar datos
-        TextField tNumber = new TextField();
+        tNumber = new TextField();
         Button btnDelete = new Button("Delete");
 
         // Contenido del formulario
@@ -90,6 +95,17 @@ public class DeleteHotelView extends BorderPane implements Runnable{
 
     @Override
     public void run() {
-
+        while (this.isRunning) {
+            try {
+                if (this.client.getDeleted() == 1) {
+                    JOptionPane.showMessageDialog(null, "Hotel deleted successfully!");
+                    this.tNumber.setText("");
+                    this.client.setDeleted(0);
+                }
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
 }
