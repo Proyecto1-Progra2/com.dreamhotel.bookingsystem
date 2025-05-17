@@ -17,6 +17,7 @@ public class ShowHotelView extends BorderPane implements Runnable {
     private Pane contentPane;
 
     private TextArea taView;
+    private volatile boolean isRunning = true;
 
     public ShowHotelView(Client client, Pane contentPane) {
         this.setStyle("-fx-border-color: black; -fx-background-color: white;");
@@ -45,7 +46,10 @@ public class ShowHotelView extends BorderPane implements Runnable {
         titleBar.setStyle("-fx-background-color: #cccccc; -fx-padding: 5;");
         titleBar.getChildren().addAll(title, closeBtn);
 
-        closeBtn.setOnAction(e -> contentPane.getChildren().remove(this));
+        closeBtn.setOnAction(e -> {
+            this.isRunning = false;
+            contentPane.getChildren().remove(this);
+        });
 
         // Hacer movible la ventana y limitarla al contentPane
         final double[] dragOffset = new double[2];
@@ -89,7 +93,7 @@ public class ShowHotelView extends BorderPane implements Runnable {
 
     @Override
     public void run() {
-        while (true) {
+        while (this.isRunning) {
             try {
                 if (this.client.isHotelesMostrado()) {
                     this.taView.setText(this.client.getMostrarHoteles());
