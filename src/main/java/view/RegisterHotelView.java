@@ -12,10 +12,16 @@ import javafx.scene.layout.VBox;
 import sockets.Client;
 import utils.Action;
 
+import javax.swing.*;
+
 public class RegisterHotelView extends BorderPane implements Runnable{
 
     private Client client;
     private Pane contentPane;
+
+    private TextField tNumber, tName, tAddress;
+
+    private volatile boolean isRunning = true;
 
     public RegisterHotelView(Client client, Pane contentPane) {
         this.setStyle("-fx-border-color: black; -fx-background-color: white;");
@@ -28,8 +34,8 @@ public class RegisterHotelView extends BorderPane implements Runnable{
         this.initComponents();
         this.client = client;
 
-        //Thread thread = new Thread(this);
-        //thread.start();
+        Thread thread = new Thread(this);
+        thread.start();
     }
 
     private void initComponents() {
@@ -43,7 +49,10 @@ public class RegisterHotelView extends BorderPane implements Runnable{
         titleBar.setStyle("-fx-background-color: #cccccc; -fx-padding: 5;");
         titleBar.getChildren().addAll(title, closeBtn);
 
-        closeBtn.setOnAction(e -> contentPane.getChildren().remove(this));
+        closeBtn.setOnAction(e -> {
+            this.isRunning = false;
+            contentPane.getChildren().remove(this);
+        });
 
         // Hacer movible la ventana y limitarla al contentPane
         final double[] dragOffset = new double[2];
@@ -65,9 +74,9 @@ public class RegisterHotelView extends BorderPane implements Runnable{
         });
 
         // Recuperar datos
-        TextField tNumber = new TextField();
-        TextField tName = new TextField();
-        TextField tAddress = new TextField();
+        tNumber = new TextField();
+        tName = new TextField();
+        tAddress = new TextField();
         Button btnRegister = new Button("Register");
 
         // Contenido del formulario
@@ -98,6 +107,19 @@ public class RegisterHotelView extends BorderPane implements Runnable{
 
     @Override
     public void run() {
-
+        while (this.isRunning) {
+            try {
+                if (this.client.getRegistered() == 1) {
+                    JOptionPane.showMessageDialog(null, "Hotel registered successfully!");
+                    this.tNumber.setText("");
+                    this.tName.setText("");
+                    this.tAddress.setText("");
+                    this.client.setRegistered(0);
+                }
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
 }
