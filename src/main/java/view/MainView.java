@@ -41,14 +41,7 @@ public class MainView extends VBox {
         Collection<Node> nodes = new ArrayList<>();
 
         MenuBar menuBar = new MenuBar();
-        Menu menuHuesped = new Menu("Huéspedes");
         Menu menuHotel = new Menu("Hoteles");
-
-        MenuItem registrarHuesped = new MenuItem("Registrar");
-        registrarHuesped.setOnAction(e -> new VentanaRegistrarHuesped(this.client, this.contentPane));
-
-        MenuItem mostrarHuespedes = new MenuItem("Mostrar");
-        mostrarHuespedes.setOnAction(e -> new VentanaMostrarHuesped(this.client, this.contentPane));
 
         MenuItem registrarHotel = new MenuItem("Registrar");
         registrarHotel.setOnAction(e -> new RegisterHotelView(this.client, this.contentPane));
@@ -62,10 +55,9 @@ public class MainView extends VBox {
         MenuItem eliminarHotel = new MenuItem("Eliminar");
         eliminarHotel.setOnAction(e -> new DeleteHotelView(this.client, this.contentPane));
 
-        menuHuesped.getItems().addAll(registrarHuesped, mostrarHuespedes);
         menuHotel.getItems().addAll(registrarHotel, mostrarHotel, modificarHotel, eliminarHotel);
 
-        menuBar.getMenus().addAll(menuHuesped, menuHotel);
+        menuBar.getMenus().addAll(menuHotel);
         nodes.add(menuBar);
 
         // Panel de contenido donde estarán las ventanas internas
