@@ -80,7 +80,7 @@ public class Client extends Thread {
                         this.hotelSolicitado = new Hotel(datos[1], datos[2], datos[3]);
                         this.mostrarHotelSolicitado = true;
                         break;
-                    case Action.HOTEL_REGISTERED:
+                    case Action.HOTEL_REGISTERED, Action.ROOM_REGISTERED:
                         this.registered = 1;
                         break;
                     case Action.HOTEL_UPDATED:

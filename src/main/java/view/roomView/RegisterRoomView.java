@@ -13,6 +13,8 @@ import javafx.scene.layout.VBox;
 import sockets.Client;
 import utils.Action;
 
+import javax.swing.*;
+
 public class RegisterRoomView extends BorderPane implements Runnable {
 
     private Client client;
@@ -88,18 +90,19 @@ public class RegisterRoomView extends BorderPane implements Runnable {
         VBox contenido = new VBox(10);
         contenido.setStyle("-fx-padding: 10;");
         contenido.getChildren().addAll(
+                new Label("Room Number:"),
+                tRoomNumber,
                 new Label("Room Status:"),
                 cbStatus,
                 new Label("Room Style:"),
                 cbStyle,
-                new Label("Room Number:"),
-                tRoomNumber,
                 new Label("Room Price:"),
                 tPrice,
                 btnRegister
         );
 
-        btnRegister.setOnAction(e -> this.roomRegister(null));
+        btnRegister.setOnAction(e -> this.roomRegister(new Room(this.tRoomNumber.getText(), cbStatus.getValue(),
+                cbStyle.getValue(), Double.parseDouble(this.tPrice.getText()))));
 
         this.setTop(titleBar);
         this.setCenter(contenido);
@@ -113,7 +116,19 @@ public class RegisterRoomView extends BorderPane implements Runnable {
 
     @Override
     public void run() {
-
+        while (this.isRunning) {
+            try {
+                if (this.client.getRegistered() == 1) {
+                    JOptionPane.showMessageDialog(null, "Room registered successfully!");
+                    this.tRoomNumber.setText("");
+                    this.tPrice.setText("");
+                    this.client.setRegistered(0);
+                }
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
 
 }
