@@ -10,10 +10,13 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 import sockets.Client;
 import utils.Action;
 
 import javax.swing.*;
+import java.io.*;
 
 public class RegisterRoomView extends BorderPane implements Runnable {
 
@@ -24,6 +27,8 @@ public class RegisterRoomView extends BorderPane implements Runnable {
     private TextField tRoomNumber, tPrice;
 
     private volatile boolean isRunning = true;
+
+    private Stage primaryStage;//para que quede bien File
 
     public RegisterRoomView(Client client, Pane contentPane) {
         this.setStyle("-fx-border-color: black; -fx-background-color: white;");
@@ -85,6 +90,10 @@ public class RegisterRoomView extends BorderPane implements Runnable {
         tRoomNumber = new TextField();
         tPrice = new TextField();
         Button btnRegister = new Button("Register");
+        //cargar imagenes
+        Button btnCargar = new Button("Cargar imagen y guardar");
+
+
 
         // Contenido del formulario
         VBox contenido = new VBox(10);
@@ -98,11 +107,32 @@ public class RegisterRoomView extends BorderPane implements Runnable {
                 cbStyle,
                 new Label("Room Price:"),
                 tPrice,
+                btnCargar,
                 btnRegister
         );
 
+//        btnCargar.setOnAction(e -> {
+//            FileChooser fileChooser = new FileChooser();
+//            fileChooser.setTitle("Selecciona una imagen");
+//            fileChooser.getExtensionFilters().add(
+//                    new FileChooser.ExtensionFilter("Imágenes", "*.jpg", "*.png", "*.jpeg", "*.gif")
+//            );
+//
+//            File archivo = fileChooser.showOpenDialog(primaryStage);
+//            if (archivo != null) {
+//                try {
+//                    byte[] datos = archivoABytes(archivo);
+//                    //int pos = posicionBox.getValue();
+//                    //imagenData.guardarImagen(datos, pos);
+//                    //imageView.setImage(new javafx.scene.image.Image(archivo.toURI().toString()));
+//                } catch (Exception ex) {
+//                    ex.printStackTrace();
+//                }
+//            }
+//        });
+
         btnRegister.setOnAction(e -> this.roomRegister(new Room(this.tRoomNumber.getText(), cbStatus.getValue(),
-                cbStyle.getValue(), Double.parseDouble(this.tPrice.getText()))));
+                cbStyle.getValue(), Double.parseDouble(this.tPrice.getText())))); //debo agregar un arreglo de bytes
 
         this.setTop(titleBar);
         this.setCenter(contenido);
@@ -131,4 +161,17 @@ public class RegisterRoomView extends BorderPane implements Runnable {
         }
     }
 
+    //convierte una imagen a bytes
+    public static byte[] archivoABytes(File archivo) throws IOException {
+        try (InputStream is = new FileInputStream(archivo);
+             ByteArrayOutputStream buffer = new ByteArrayOutputStream()) {
+
+            byte[] datos = new byte[1024];
+            int n;
+            while ((n = is.read(datos)) != -1)
+                buffer.write(datos, 0, n);
+
+            return buffer.toByteArray();
+        }
+    }
 }
