@@ -98,6 +98,7 @@ public class RegisterHotelView extends BorderPane implements Runnable{
         this.setTop(titleBar);
         this.setCenter(contenido);
 
+        //Cabiossss
         contentPane.getChildren().add(this);
     }
 
