@@ -1,7 +1,9 @@
-package view;
+package view.roomView;
 
+import domain.Room;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
@@ -11,17 +13,17 @@ import javafx.scene.layout.VBox;
 import sockets.Client;
 import utils.Action;
 
-import javax.swing.*;
-
-public class DeleteHotelView extends BorderPane implements Runnable{
+public class RegisterRoomView extends BorderPane implements Runnable {
 
     private Client client;
     private Pane contentPane;
+
+    private ComboBox<String> cbStatus, cbStyle;
+    private TextField tRoomNumber, tPrice;
+
     private volatile boolean isRunning = true;
 
-    private TextField tNumber;
-
-    public DeleteHotelView(Client client, Pane contentPane) {
+    public RegisterRoomView(Client client, Pane contentPane) {
         this.setStyle("-fx-border-color: black; -fx-background-color: white;");
         this.setPrefSize(300, 200);
         this.setLayoutX(100);
@@ -39,7 +41,7 @@ public class DeleteHotelView extends BorderPane implements Runnable{
     private void initComponents() {
         // Título con botón cerrar
         HBox titleBar = new HBox();
-        Label title = new Label("Delete Hotel");
+        Label title = new Label("Register Room");
         Button closeBtn = new Button("X");
 
         titleBar.setAlignment(Pos.CENTER_RIGHT);
@@ -47,7 +49,10 @@ public class DeleteHotelView extends BorderPane implements Runnable{
         titleBar.setStyle("-fx-background-color: #cccccc; -fx-padding: 5;");
         titleBar.getChildren().addAll(title, closeBtn);
 
-        closeBtn.setOnAction(e -> contentPane.getChildren().remove(this));
+        closeBtn.setOnAction(e -> {
+            this.isRunning = false;
+            contentPane.getChildren().remove(this);
+        });
 
         // Hacer movible la ventana y limitarla al contentPane
         final double[] dragOffset = new double[2];
@@ -69,19 +74,32 @@ public class DeleteHotelView extends BorderPane implements Runnable{
         });
 
         // Recuperar datos
-        tNumber = new TextField();
-        Button btnDelete = new Button("Delete");
+        cbStatus = new ComboBox<>();
+        cbStatus.getItems().addAll("Available", "Maintenance", "Booked");
+
+        cbStyle = new ComboBox<>();
+        cbStyle.getItems().addAll("Standar", "Deluxe", "Suite", "Family");
+
+        tRoomNumber = new TextField();
+        tPrice = new TextField();
+        Button btnRegister = new Button("Register");
 
         // Contenido del formulario
         VBox contenido = new VBox(10);
         contenido.setStyle("-fx-padding: 10;");
         contenido.getChildren().addAll(
-                new Label("Phone Number of hotel you want to delete:"),
-                tNumber,
-                btnDelete
+                new Label("Room Status:"),
+                cbStatus,
+                new Label("Room Style:"),
+                cbStyle,
+                new Label("Room Number:"),
+                tRoomNumber,
+                new Label("Room Price:"),
+                tPrice,
+                btnRegister
         );
 
-        btnDelete.setOnAction(e -> this.deleteNumber(tNumber.getText()));
+        btnRegister.setOnAction(e -> this.roomRegister(null));
 
         this.setTop(titleBar);
         this.setCenter(contenido);
@@ -89,23 +107,13 @@ public class DeleteHotelView extends BorderPane implements Runnable{
         contentPane.getChildren().add(this);
     }
 
-    private void deleteNumber(String number) {
-        this.client.getSend().println(Action.HOTEL_DELETE+"-"+number);
+    private void roomRegister(Room room) {
+        this.client.getSend().println(Action.ROOM_REGISTER+room.toString());
     }
 
     @Override
     public void run() {
-        while (this.isRunning) {
-            try {
-                if (this.client.getDeleted() == 1) {
-                    JOptionPane.showMessageDialog(null, "Hotel deleted successfully!");
-                    this.tNumber.setText("");
-                    this.client.setDeleted(0);
-                }
-                Thread.sleep(100);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
-        }
+
     }
+
 }

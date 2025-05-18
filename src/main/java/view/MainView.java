@@ -5,8 +5,12 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
-import javafx.geometry.Pos;
 import sockets.Client;
+import view.hotelView.DeleteHotelView;
+import view.hotelView.RegisterHotelView;
+import view.hotelView.ShowHotelView;
+import view.hotelView.UpdateHotelView;
+import view.roomView.RegisterRoomView;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -61,7 +65,7 @@ public class MainView extends VBox {
 
         // -> Rooms Menus
         MenuItem roomRegister = new MenuItem("Register");
-        roomRegister.setOnAction(e -> new RegisterHotelView(this.client, this.contentPane));
+        roomRegister.setOnAction(e -> new RegisterRoomView(this.client, this.contentPane));
 
         MenuItem roomView = new MenuItem("View all");
         roomView.setOnAction(e -> new ShowHotelView(this.client, this.contentPane));

@@ -1,6 +1,5 @@
-package view;
+package view.hotelView;
 
-import domain.Hotel;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -14,16 +13,15 @@ import utils.Action;
 
 import javax.swing.*;
 
-public class RegisterHotelView extends BorderPane implements Runnable{
+public class DeleteHotelView extends BorderPane implements Runnable{
 
     private Client client;
     private Pane contentPane;
-
-    private TextField tNumber, tName, tAddress;
-
     private volatile boolean isRunning = true;
 
-    public RegisterHotelView(Client client, Pane contentPane) {
+    private TextField tNumber;
+
+    public DeleteHotelView(Client client, Pane contentPane) {
         this.setStyle("-fx-border-color: black; -fx-background-color: white;");
         this.setPrefSize(300, 200);
         this.setLayoutX(100);
@@ -41,7 +39,7 @@ public class RegisterHotelView extends BorderPane implements Runnable{
     private void initComponents() {
         // Título con botón cerrar
         HBox titleBar = new HBox();
-        Label title = new Label("Register Hotel");
+        Label title = new Label("Delete Hotel");
         Button closeBtn = new Button("X");
 
         titleBar.setAlignment(Pos.CENTER_RIGHT);
@@ -49,10 +47,7 @@ public class RegisterHotelView extends BorderPane implements Runnable{
         titleBar.setStyle("-fx-background-color: #cccccc; -fx-padding: 5;");
         titleBar.getChildren().addAll(title, closeBtn);
 
-        closeBtn.setOnAction(e -> {
-            this.isRunning = false;
-            contentPane.getChildren().remove(this);
-        });
+        closeBtn.setOnAction(e -> contentPane.getChildren().remove(this));
 
         // Hacer movible la ventana y limitarla al contentPane
         final double[] dragOffset = new double[2];
@@ -75,25 +70,18 @@ public class RegisterHotelView extends BorderPane implements Runnable{
 
         // Recuperar datos
         tNumber = new TextField();
-        tName = new TextField();
-        tAddress = new TextField();
-        Button btnRegister = new Button("Register");
+        Button btnDelete = new Button("Delete");
 
         // Contenido del formulario
         VBox contenido = new VBox(10);
         contenido.setStyle("-fx-padding: 10;");
         contenido.getChildren().addAll(
-                new Label("Phone Number:"),
+                new Label("Phone Number of hotel you want to delete:"),
                 tNumber,
-                new Label("Hotel Name:"),
-                tName,
-                new Label("Hotel Address:"),
-                tAddress,
-                btnRegister
+                btnDelete
         );
 
-        btnRegister.setOnAction(e -> this.hotelRegister(new Hotel(tNumber.getText(), tName.getText(),
-                tAddress.getText())));
+        btnDelete.setOnAction(e -> this.deleteNumber(tNumber.getText()));
 
         this.setTop(titleBar);
         this.setCenter(contenido);
@@ -101,20 +89,18 @@ public class RegisterHotelView extends BorderPane implements Runnable{
         contentPane.getChildren().add(this);
     }
 
-    private void hotelRegister(Hotel hotel) {
-        this.client.getSend().println(Action.HOTEL_REGISTER +hotel.toString());
+    private void deleteNumber(String number) {
+        this.client.getSend().println(Action.HOTEL_DELETE+"-"+number);
     }
 
     @Override
     public void run() {
         while (this.isRunning) {
             try {
-                if (this.client.getRegistered() == 1) {
-                    JOptionPane.showMessageDialog(null, "Hotel registered successfully!");
+                if (this.client.getDeleted() == 1) {
+                    JOptionPane.showMessageDialog(null, "Hotel deleted successfully!");
                     this.tNumber.setText("");
-                    this.tName.setText("");
-                    this.tAddress.setText("");
-                    this.client.setRegistered(0);
+                    this.client.setDeleted(0);
                 }
                 Thread.sleep(100);
             } catch (InterruptedException e) {

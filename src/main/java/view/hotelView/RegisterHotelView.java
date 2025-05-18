@@ -1,4 +1,4 @@
-package view;
+package view.hotelView;
 
 import domain.Hotel;
 import javafx.geometry.Pos;
@@ -14,16 +14,16 @@ import utils.Action;
 
 import javax.swing.*;
 
-public class UpdateHotelView extends BorderPane implements Runnable{
+public class RegisterHotelView extends BorderPane implements Runnable{
 
     private Client client;
     private Pane contentPane;
 
-    private TextField tNumber, tName, tAddress, tRequestHotel;
+    private TextField tNumber, tName, tAddress;
 
     private volatile boolean isRunning = true;
 
-    public UpdateHotelView(Client client, Pane contentPane) {
+    public RegisterHotelView(Client client, Pane contentPane) {
         this.setStyle("-fx-border-color: black; -fx-background-color: white;");
         this.setPrefSize(300, 200);
         this.setLayoutX(100);
@@ -41,7 +41,7 @@ public class UpdateHotelView extends BorderPane implements Runnable{
     private void initComponents() {
         // Título con botón cerrar
         HBox titleBar = new HBox();
-        Label title = new Label("Hotel Update");
+        Label title = new Label("Register Hotel");
         Button closeBtn = new Button("X");
 
         titleBar.setAlignment(Pos.CENTER_RIGHT);
@@ -74,32 +74,25 @@ public class UpdateHotelView extends BorderPane implements Runnable{
         });
 
         // Recuperar datos
-        this.tRequestHotel = new TextField();
-        Button btnRequest = new Button("Request Hotel");
-
-        this.tNumber = new TextField();
-        this.tName = new TextField();
-        this.tAddress = new TextField();
-        Button btnUpdate = new Button("Update Hotel");
+        tNumber = new TextField();
+        tName = new TextField();
+        tAddress = new TextField();
+        Button btnRegister = new Button("Register");
 
         // Contenido del formulario
         VBox contenido = new VBox(10);
         contenido.setStyle("-fx-padding: 10;");
         contenido.getChildren().addAll(
-                new Label("Phone number of hotel you want to update:"),
-                tRequestHotel,
-                btnRequest,
                 new Label("Phone Number:"),
                 tNumber,
-                new Label("Name:"),
+                new Label("Hotel Name:"),
                 tName,
-                new Label("Address:"),
+                new Label("Hotel Address:"),
                 tAddress,
-                btnUpdate
+                btnRegister
         );
 
-        btnRequest.setOnAction(e -> this.requestHotel(this.tRequestHotel.getText()));
-        btnUpdate.setOnAction(e -> this.updateHotel(new Hotel(tNumber.getText(), tName.getText(),
+        btnRegister.setOnAction(e -> this.hotelRegister(new Hotel(tNumber.getText(), tName.getText(),
                 tAddress.getText())));
 
         this.setTop(titleBar);
@@ -108,31 +101,20 @@ public class UpdateHotelView extends BorderPane implements Runnable{
         contentPane.getChildren().add(this);
     }
 
-    private void requestHotel(String numberRequest) {
-        this.client.getSend().println(Action.HOTEL_SEARCH+"-"+numberRequest);
-    }
-
-    private void updateHotel(Hotel hotel) {
-        this.client.getSend().println(Action.HOTEL_UPDATE+hotel.toString());
+    private void hotelRegister(Hotel hotel) {
+        this.client.getSend().println(Action.HOTEL_REGISTER +hotel.toString());
     }
 
     @Override
     public void run() {
         while (this.isRunning) {
             try {
-                if (this.client.isMostrarHotelSolicitado()) {
-                    this.tNumber.setText(this.client.getHotelSolicitado().getNumber());
-                    this.tName.setText(this.client.getHotelSolicitado().getName());
-                    this.tAddress.setText(this.client.getHotelSolicitado().getAddress());
-                    this.tRequestHotel.setText("");
-                    this.client.setHotelSolicitado(null);
-                    this.client.setMostrarHotelSolicitado(false);
-                } else if (this.client.getUpdated() == 1) {
-                    JOptionPane.showMessageDialog(null, "Hotel updated successfully!");
+                if (this.client.getRegistered() == 1) {
+                    JOptionPane.showMessageDialog(null, "Hotel registered successfully!");
                     this.tNumber.setText("");
                     this.tName.setText("");
                     this.tAddress.setText("");
-                    this.client.setUpdated(0);
+                    this.client.setRegistered(0);
                 }
                 Thread.sleep(100);
             } catch (InterruptedException e) {
