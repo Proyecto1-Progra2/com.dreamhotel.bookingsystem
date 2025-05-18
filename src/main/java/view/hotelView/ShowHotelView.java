@@ -1,4 +1,4 @@
-package view;
+package view.hotelView;
 
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
