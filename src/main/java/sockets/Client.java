@@ -26,9 +26,9 @@ public class Client extends Thread {
 
 
     // -> Observer
-    private boolean mostrado;
-    private boolean hotelesMostrado;
-    private boolean mostrarHotelSolicitado;
+    private  boolean mostrado;
+    private  boolean hotelesMostrado;
+    private  boolean mostrarHotelSolicitado;
     //
 
     // -> Validación de acciones
@@ -53,7 +53,7 @@ public class Client extends Thread {
         this.updated = 0;
         this.deleted = 0;
 
-        this.infoMostrar = "";
+       this.infoMostrar ="";
         this.mostrarHoteles = "";
 
         this.hotelSolicitado = null;

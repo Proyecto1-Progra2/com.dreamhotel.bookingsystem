@@ -25,8 +25,7 @@ public class ShowHotelView extends BorderPane implements Runnable {
     private TableView<ObservableList<String>> tableView;
     private ObservableList<ObservableList<String>> data;
 
-    private volatile boolean isRunning = true;
-
+    private volatile boolean isRunning =true;
 
     public ShowHotelView(Client client, Pane contentPane) {
         this.setStyle("-fx-border-color: black; -fx-background-color: white;");
@@ -119,6 +118,7 @@ public class ShowHotelView extends BorderPane implements Runnable {
 
         contentPane.getChildren().add(this);
     }
+
     // para encontrar la accion
     private void HotelList(String accion) {
         this.client.getSend().println(accion + "-");
@@ -128,8 +128,11 @@ public class ShowHotelView extends BorderPane implements Runnable {
     @Override
     public void run() {
         while (this.isRunning) {
+
             try {
+
                 if (this.client.isHotelesMostrado()) {
+
                     String resultHotels = this.client.getMostrarHoteles();
 
                     Platform.runLater(() -> {
@@ -157,7 +160,7 @@ public class ShowHotelView extends BorderPane implements Runnable {
                     this.client.setMostrarHoteles("");
                     this.client.setHotelesMostrado(false);
                 }
-                Thread.sleep(100);
+               Thread.sleep(0);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

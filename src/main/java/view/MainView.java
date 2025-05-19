@@ -60,7 +60,6 @@ public class MainView extends VBox {
         menuRoom.setStyle("-fx-background-color:#62c19a    ;");
 
         // aparezca un contexto de lo que vamos a hacer
-
         menuHotel.setOnShowing(e -> {
             contentPane.getChildren().clear();
             Label label = new Label("Register of hotels");
@@ -69,7 +68,6 @@ public class MainView extends VBox {
             label.setLayoutY(20);
             contentPane.getChildren().add(label);
         });
-
 
         menuRoom.setOnShowing(e->{
             contentPane.getChildren().clear();
