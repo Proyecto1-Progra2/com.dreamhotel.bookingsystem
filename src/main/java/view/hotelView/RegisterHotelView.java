@@ -111,7 +111,7 @@ public class RegisterHotelView extends BorderPane implements Runnable{
         while (this.isRunning) {
             try {
                 if (this.client.getRegistered() == 1) {
-                    JOptionPane.showMessageDialog(null, "Hotel registered successfully!");
+                    JOptionPane.showMessageDialog(null, "Hotel" + tName.getText()+ " registered successfully!");
                     this.tNumber.setText("");
                     this.tName.setText("");
                     this.tAddress.setText("");

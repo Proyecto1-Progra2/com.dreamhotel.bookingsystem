@@ -128,7 +128,7 @@ public class UpdateHotelView extends BorderPane implements Runnable{
                     this.client.setHotelSolicitado(null);
                     this.client.setMostrarHotelSolicitado(false);
                 } else if (this.client.getUpdated() == 1) {
-                    JOptionPane.showMessageDialog(null, "Hotel updated successfully!");
+                    JOptionPane.showMessageDialog(null, "Hotel " + tName.getText()+ " updated successfully!");
                     this.tNumber.setText("");
                     this.tName.setText("");
                     this.tAddress.setText("");

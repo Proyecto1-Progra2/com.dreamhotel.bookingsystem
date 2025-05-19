@@ -98,7 +98,7 @@ public class DeleteHotelView extends BorderPane implements Runnable{
         while (this.isRunning) {
             try {
                 if (this.client.getDeleted() == 1) {
-                    JOptionPane.showMessageDialog(null, "Hotel deleted successfully!");
+                    JOptionPane.showMessageDialog(null, "Phone number hotel: " + tNumber.getText()+ " deleted successfully!");
                     this.tNumber.setText("");
                     this.client.setDeleted(0);
                 }
