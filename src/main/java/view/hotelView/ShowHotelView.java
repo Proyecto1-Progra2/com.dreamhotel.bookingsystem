@@ -14,6 +14,7 @@ import javafx.scene.layout.VBox;
 import sockets.Client;
 import utils.Action;
 
+// cambios
 public class ShowHotelView extends BorderPane implements Runnable {
 
     private Client client;
