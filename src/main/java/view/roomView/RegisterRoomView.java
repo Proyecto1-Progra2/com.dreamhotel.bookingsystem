@@ -91,9 +91,7 @@ public class RegisterRoomView extends BorderPane implements Runnable {
         tPrice = new TextField();
         Button btnRegister = new Button("Register");
         //cargar imagenes
-        Button btnCargar = new Button("Cargar imagen y guardar");
-
-
+        Button btnCargar = new Button("Upload images of the rooms");//revisar si esta bien traducido
 
         // Contenido del formulario
         VBox contenido = new VBox(10);
