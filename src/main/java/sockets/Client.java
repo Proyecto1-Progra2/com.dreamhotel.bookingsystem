@@ -24,6 +24,7 @@ public class Client extends Thread {
 
     private Hotel hotelSolicitado;
 
+
     // -> Observer
     private boolean mostrado;
     private boolean hotelesMostrado;
@@ -57,6 +58,7 @@ public class Client extends Thread {
 
         this.hotelSolicitado = null;
     }
+
 
     @Override
     public void run() {

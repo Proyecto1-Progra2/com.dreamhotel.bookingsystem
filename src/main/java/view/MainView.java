@@ -22,6 +22,9 @@ public class MainView extends VBox {
 
     private Client client;
 
+    private Label title;
+
+
     public MainView(Stage stage) {
         this.setPrefSize(600, 600);
 
@@ -45,36 +48,79 @@ public class MainView extends VBox {
         Collection<Node> nodes = new ArrayList<>();
 
         MenuBar menuBar = new MenuBar();
+        menuBar.setStyle("-fx-background-color: #e4e8e5  ;");
+
         Menu menuHotel = new Menu("Hotels");
+        menuHotel.setStyle("-fx-font-size: 16px;");
+        menuHotel.setStyle("-fx-background-color: #abd8ad   ;");
+
+
         Menu menuRoom = new Menu("Rooms");
+        menuRoom.setStyle("-fx-font-size: 16px;");
+        menuRoom.setStyle("-fx-background-color:#62c19a    ;");
+
+        // aparezca un contexto de lo que vamos a hacer
+
+        menuHotel.setOnShowing(e -> {
+            contentPane.getChildren().clear();
+            Label label = new Label("Register of hotels");
+            label.setStyle("-fx-font-family: 'Elephant'; -fx-font-size: 20px; -fx-text-fill: #2a2e2c ;");
+            label.setLayoutX(20);
+            label.setLayoutY(20);
+            contentPane.getChildren().add(label);
+        });
+
+
+        menuRoom.setOnShowing(e->{
+            contentPane.getChildren().clear();
+            Label label= new Label("Register of Rooms");
+            label.setStyle("-fx-font-family: 'Elephant';-fx-font-size: 20px; -fx-text-fill: #2a2e2c ;");
+            label.setLayoutX(20);
+            label.setLayoutY(20);
+            contentPane.getChildren().add(label);
+        });
+
 
         // -> Hotels Menu
         MenuItem hotelRegister = new MenuItem("Register");
         hotelRegister.setOnAction(e -> new RegisterHotelView(this.client, this.contentPane));
+        hotelRegister.setStyle("-fx-background-color: #93c195 ");
 
         MenuItem hotelView = new MenuItem("View all");
         hotelView.setOnAction(e -> new ShowHotelView(this.client, this.contentPane));
+        hotelView.setStyle("-fx-background-color: #93c195 ");
 
         MenuItem hotelUpdate = new MenuItem("Update");
         hotelUpdate.setOnAction(e -> new UpdateHotelView(this.client, this.contentPane));
+        hotelUpdate.setStyle("-fx-background-color: #93c195 ");
+
 
         MenuItem hotelDelete = new MenuItem("Delete");
         hotelDelete.setOnAction(e -> new DeleteHotelView(this.client, this.contentPane));
+        hotelDelete.setStyle("-fx-background-color: #93c195 ");
+
+
 
         menuHotel.getItems().addAll(hotelRegister, hotelView, hotelUpdate, hotelDelete);
+
+
 
         // -> Rooms Menus
         MenuItem roomRegister = new MenuItem("Register");
         roomRegister.setOnAction(e -> new RegisterRoomView(this.client, this.contentPane));
+        roomRegister.setStyle("-fx-background-color: #8ec6af ");
 
         MenuItem roomView = new MenuItem("View all");
         roomView.setOnAction(e -> new ShowHotelView(this.client, this.contentPane));
+        roomView.setStyle("-fx-background-color: #8ec6af ");
 
         MenuItem roomUpdate = new MenuItem("Update");
         roomUpdate.setOnAction(e -> new UpdateHotelView(this.client, this.contentPane));
+        roomUpdate.setStyle("-fx-background-color: #8ec6af ");
 
         MenuItem roomDelete = new MenuItem("Delete");
         roomDelete.setOnAction(e -> new DeleteHotelView(this.client, this.contentPane));
+        roomDelete.setStyle("-fx-background-color: #8ec6af ");
 
         menuRoom.getItems().addAll(roomRegister, roomView, roomUpdate, roomDelete);
 
@@ -83,8 +129,10 @@ public class MainView extends VBox {
 
         // Panel de contenido donde estarán las ventanas internas
         contentPane = new Pane();
-        contentPane.setPrefSize(600, 550);
-        contentPane.setStyle("-fx-background-color: #f0f0f0;");
+
+        contentPane.setPrefSize(600, 600);
+
+        contentPane.setStyle("-fx-background-color:#cad1ce   ;");
         nodes.add(contentPane);
 
         this.getChildren().addAll(nodes);
