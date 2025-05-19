@@ -109,25 +109,25 @@ public class RegisterRoomView extends BorderPane implements Runnable {
                 btnRegister
         );
 
-//        btnCargar.setOnAction(e -> {
-//            FileChooser fileChooser = new FileChooser();
-//            fileChooser.setTitle("Selecciona una imagen");
-//            fileChooser.getExtensionFilters().add(
-//                    new FileChooser.ExtensionFilter("Imágenes", "*.jpg", "*.png", "*.jpeg", "*.gif")
-//            );
-//
-//            File archivo = fileChooser.showOpenDialog(primaryStage);
-//            if (archivo != null) {
-//                try {
-//                    byte[] datos = archivoABytes(archivo);
-//                    //int pos = posicionBox.getValue();
-//                    //imagenData.guardarImagen(datos, pos);
-//                    //imageView.setImage(new javafx.scene.image.Image(archivo.toURI().toString()));
-//                } catch (Exception ex) {
-//                    ex.printStackTrace();
-//                }
-//            }
-//        });
+        btnCargar.setOnAction(e -> {
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.setTitle("Select an image");
+            fileChooser.getExtensionFilters().add(
+                    new FileChooser.ExtensionFilter("Imágenes", "*.jpg", "*.png", "*.jpeg", "*.gif")
+            );
+
+            File archivo = fileChooser.showOpenDialog(primaryStage);
+            if (archivo != null) {
+                try {
+                    byte[] datos = archivoABytes(archivo);
+                    //int pos = posicionBox.getValue();
+                    //imagenData.guardarImagen(datos, pos);
+                    //imageView.setImage(new javafx.scene.image.Image(archivo.toURI().toString()));
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
+        });
 
         btnRegister.setOnAction(e -> this.roomRegister(new Room(this.tRoomNumber.getText(), cbStatus.getValue(),
                 cbStyle.getValue(), Double.parseDouble(this.tPrice.getText())))); //debo agregar un arreglo de bytes
