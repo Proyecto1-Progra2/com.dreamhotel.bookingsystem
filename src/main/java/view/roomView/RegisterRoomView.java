@@ -1,11 +1,9 @@
 package view.roomView;
 
 import domain.Room;
+import javafx.application.Platform;
 import javafx.geometry.Pos;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
@@ -14,6 +12,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import sockets.Client;
 import utils.Action;
+import utils.FXUtility;
 
 import javax.swing.*;
 import java.io.*;
@@ -28,7 +27,7 @@ public class RegisterRoomView extends BorderPane implements Runnable {
 
     private volatile boolean isRunning = true;
 
-    private Stage primaryStage;//para que quede bien File
+    private Stage primaryStage; //para que quede bien File
 
     public RegisterRoomView(Client client, Pane contentPane) {
         this.setStyle("-fx-border-color: black; -fx-background-color: white;");
@@ -108,6 +107,8 @@ public class RegisterRoomView extends BorderPane implements Runnable {
                 btnCargar,
                 btnRegister
         );
+        //int i = 1
+        //int pos = i;
 
         btnCargar.setOnAction(e -> {
             FileChooser fileChooser = new FileChooser();
@@ -115,18 +116,19 @@ public class RegisterRoomView extends BorderPane implements Runnable {
             fileChooser.getExtensionFilters().add(
                     new FileChooser.ExtensionFilter("Imágenes", "*.jpg", "*.png", "*.jpeg", "*.gif")
             );
-
-            File archivo = fileChooser.showOpenDialog(primaryStage);
+            //declarar una variable int pos = 1
+            File archivo = fileChooser.showOpenDialog(primaryStage);//probar si ese primaryStage si es la imagen
             if (archivo != null) {
                 try {
                     byte[] datos = archivoABytes(archivo);
                     //int pos = posicionBox.getValue();
-                    //imagenData.guardarImagen(datos, pos);
+                    //imagenData.guardarImagen(datos, pos); //con un pos, guardo cuantas imagenes hay en esa habitación
                     //imageView.setImage(new javafx.scene.image.Image(archivo.toURI().toString()));
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
             }
+            //pos++;
         });
 
         btnRegister.setOnAction(e -> this.roomRegister(new Room(this.tRoomNumber.getText(), cbStatus.getValue(),
@@ -147,14 +149,27 @@ public class RegisterRoomView extends BorderPane implements Runnable {
         while (this.isRunning) {
             try {
                 if (this.client.getRegistered() == 1) {
-                    JOptionPane.showMessageDialog(null, "Room registered successfully!");
-                    this.tRoomNumber.setText("");
-                    this.tPrice.setText("");
+                    // Todas las actualizaciones de UI deben ir dentro de Platform.runLater
+                    Platform.runLater(() -> { //
+                        Alert currentAlert = FXUtility.alert("Register Room", "Room"); //
+                        currentAlert.setContentText("Room registered successfully!"); //
+                        currentAlert.setAlertType(Alert.AlertType.CONFIRMATION); //
+                        currentAlert.showAndWait(); // Muestra la alerta y espera que el usuario la cierre
+
+                        // Asumiendo que tRoomNumber y tPrice son TextFields o similares
+                        // También necesitan ser actualizados en el FX Application Thread
+                        this.tRoomNumber.setText(""); //
+                        this.tPrice.setText(""); //
+                    });
                     this.client.setRegistered(0);
                 }
                 Thread.sleep(100);
             } catch (InterruptedException e) {
-                throw new RuntimeException(e);
+                // Es mejor manejar la InterruptedException de una manera que no lance RuntimeException directamente,
+                // ya que eso detendría tu hilo. Por ejemplo, restaurar el estado de interrupción del hilo
+                // y salir del bucle si el hilo fue interrumpido.
+                Thread.currentThread().interrupt(); // Restaura el estado de interrupción
+                throw new RuntimeException("Hilo interrumpido durante la espera", e);
             }
         }
     }
