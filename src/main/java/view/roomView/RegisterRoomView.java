@@ -156,8 +156,6 @@ public class RegisterRoomView extends BorderPane implements Runnable {
                         currentAlert.setAlertType(Alert.AlertType.CONFIRMATION); //
                         currentAlert.showAndWait(); // Muestra la alerta y espera que el usuario la cierre
 
-                        // Asumiendo que tRoomNumber y tPrice son TextFields o similares
-                        // También necesitan ser actualizados en el FX Application Thread
                         this.tRoomNumber.setText(""); //
                         this.tPrice.setText(""); //
                     });
