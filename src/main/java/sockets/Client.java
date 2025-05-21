@@ -121,7 +121,18 @@ public class Client extends Thread {
                     case Action.ROOM_UPDATED:
                         this.updated = 1;
                         break;
+                    case Action.ROOM_SEARCH:
+                        this.roomSolicitado = new Room(datos[1], datos[2], datos[3], Double.parseDouble(datos[4]));
+                        this.mostrarHabitacionSolicitado = true;
+                        break;
+                    case Action.ROOM_NOT_REGISTER:
+                        this.registered=2;
+                        break;
+                    ///
                     case Action.HOTEL_DELETED:
+                        this.deleted = 1;
+                        break;
+                    case Action.ROOM_DELETED:
                         this.deleted = 1;
                         break;
                     default:
