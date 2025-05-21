@@ -82,9 +82,15 @@ public class Client extends Thread {
                         this.hotelSolicitado = new Hotel(datos[1], datos[2], datos[3]);
                         this.mostrarHotelSolicitado = true;
                         break;
+
                     case Action.HOTEL_REGISTERED, Action.ROOM_REGISTERED:
                         this.registered = 1;
                         break;
+                    ///
+                    case Action.HOTEL_NOT_REGISTER:
+                        this.registered=2;
+                        break;
+                        ///
                     case Action.HOTEL_UPDATED:
                         this.updated = 1;
                         break;
@@ -95,9 +101,11 @@ public class Client extends Thread {
                         throw new IllegalStateException("Unexpected value: " + accion);
                 }
             }
+
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+
     }
 
     public int getDeleted() {

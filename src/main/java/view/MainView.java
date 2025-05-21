@@ -125,13 +125,20 @@ public class MainView extends VBox {
         menuBar.getMenus().addAll(menuHotel, menuRoom);
         nodes.add(menuBar);
 
-        // Panel de contenido donde estarán las ventanas internas
+
         contentPane = new Pane();
-
         contentPane.setPrefSize(600, 600);
+        contentPane.setStyle("-fx-background-color:#cad1ce;");
 
-        contentPane.setStyle("-fx-background-color:#cad1ce   ;");
+
+        Label bienvenida = new Label("Bienvenido al sistema de gestión de hoteles");
+        bienvenida.setStyle("-fx-font-family: 'Elephant'; -fx-font-size: 22px; -fx-text-fill: #2a2e2c;");
+        bienvenida.setLayoutX(40);
+        bienvenida.setLayoutY(40);
+        contentPane.getChildren().add(bienvenida);
+
         nodes.add(contentPane);
+
 
         this.getChildren().addAll(nodes);
     }
