@@ -28,6 +28,8 @@ public class RegisterRoomView extends BorderPane implements Runnable {
     private volatile boolean isRunning = true;
 
     private Stage primaryStage; //para que quede bien File
+    private Alert alert = FXUtility.alert("Room", "Register Room");
+
 
     public RegisterRoomView(Client client, Pane contentPane) {
         this.setStyle("-fx-border-color: black; -fx-background-color: white;");
@@ -151,13 +153,15 @@ public class RegisterRoomView extends BorderPane implements Runnable {
                 if (this.client.getRegistered() == 1) {
                     // Todas las actualizaciones de UI deben ir dentro de Platform.runLater
                     Platform.runLater(() -> { //
-                        Alert currentAlert = FXUtility.alert("Register Room", "Room"); //
-                        currentAlert.setContentText("Room registered successfully!"); //
-                        currentAlert.setAlertType(Alert.AlertType.CONFIRMATION); //
-                        currentAlert.showAndWait(); // Muestra la alerta y espera que el usuario la cierre
+//                        alert = FXUtility.alert("Room", "Register Room"); //
+                        alert.setContentText("Room registered successfully!"); //
+                        alert.setAlertType(Alert.AlertType.CONFIRMATION); //
+                        alert.showAndWait(); // Muestra la alerta y espera que el usuario la cierre
 
-                        this.tRoomNumber.setText(""); //
-                        this.tPrice.setText(""); //
+                        this.tRoomNumber.setText("");
+                        this.cbStyle.getSelectionModel().clearSelection();
+                        this.cbStatus.getSelectionModel().clearSelection();
+                        this.tPrice.setText("");
                     });
                     this.client.setRegistered(0);
                 }
