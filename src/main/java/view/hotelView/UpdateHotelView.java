@@ -3,6 +3,7 @@ package view.hotelView;
 import domain.Hotel;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
@@ -11,6 +12,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import sockets.Client;
 import utils.Action;
+import utils.FXUtility;
 
 import javax.swing.*;
 
@@ -22,6 +24,8 @@ public class UpdateHotelView extends BorderPane implements Runnable{
     private TextField tNumber, tName, tAddress, tRequestHotel;
 
     private volatile boolean isRunning = true;
+
+    private Alert alert = FXUtility.alert("Room", "Update Room");
 
     public UpdateHotelView(Client client, Pane contentPane) {
         this.setStyle("-fx-border-color: black; -fx-background-color: white;");
@@ -128,7 +132,11 @@ public class UpdateHotelView extends BorderPane implements Runnable{
                     this.client.setHotelSolicitado(null);
                     this.client.setMostrarHotelSolicitado(false);
                 } else if (this.client.getUpdated() == 1) {
-                    JOptionPane.showMessageDialog(null, "Hotel " + tName.getText()+ " updated successfully!");
+                    //JOptionPane.showMessageDialog(null, "Hotel " + tName.getText()+ " updated successfully!");
+                    //confirmar
+                    alert.setContentText("Hotel updated successfully!");
+                    alert.setAlertType(Alert.AlertType.CONFIRMATION);
+                    alert.showAndWait();
                     this.tNumber.setText("");
                     this.tName.setText("");
                     this.tAddress.setText("");

@@ -1,6 +1,7 @@
 package view.hotelView;
 
 import javafx.geometry.Pos;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -10,6 +11,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import sockets.Client;
 import utils.Action;
+import utils.FXUtility;
 
 import javax.swing.*;
 
@@ -20,6 +22,8 @@ public class DeleteHotelView extends BorderPane implements Runnable{
     private volatile boolean isRunning = true;
 
     private TextField tNumber;
+
+    private Alert alert = FXUtility.alert("Room", "Delete Room");
 
     public DeleteHotelView(Client client, Pane contentPane) {
         this.setStyle("-fx-border-color: black; -fx-background-color: white;");
@@ -98,7 +102,10 @@ public class DeleteHotelView extends BorderPane implements Runnable{
         while (this.isRunning) {
             try {
                 if (this.client.getDeleted() == 1) {
-                    JOptionPane.showMessageDialog(null, "Phone number hotel: " + tNumber.getText()+ " deleted successfully!");
+                    //JOptionPane.showMessageDialog(null, "Phone number hotel: " + tNumber.getText()+ " deleted successfully!");
+                    alert.setContentText("Hotel deleted successfully!");
+                    alert.setAlertType(Alert.AlertType.CONFIRMATION);
+                    alert.showAndWait();
                     this.tNumber.setText("");
                     this.client.setDeleted(0);
                 }

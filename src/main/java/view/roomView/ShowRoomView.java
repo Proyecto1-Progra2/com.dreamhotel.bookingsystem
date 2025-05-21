@@ -53,7 +53,7 @@ public class ShowRoomView extends BorderPane implements Runnable {
 
         TableColumn<ObservableList<String>, String> column1 = new TableColumn<>("Room Number");
         column1.setCellValueFactory(param ->
-                new javafx.beans.property.SimpleStringProperty(param.getValue().get(0)));
+                new javafx.beans.property.SimpleStringProperty(param.getValue().get(0)));//revisar porque no pasa el numero que quiero
         column1.setCellFactory(TextFieldTableCell.forTableColumn());
 
         TableColumn<ObservableList<String>, String> column2 = new TableColumn<>("Room Status");
@@ -135,6 +135,8 @@ public class ShowRoomView extends BorderPane implements Runnable {
                                 if (parts.length == 5) {
                                     ObservableList<String> rowData = FXCollections.observableArrayList(
                                             parts[0].replace(".", "").trim(), // separar lo que entra desde client linea 73
+                                            //creo que debo quitar el replace
+                                            //parts[0].trim(),
                                             parts[1].trim(),
                                             parts[2].trim(),
                                             parts[3].trim(),

@@ -134,7 +134,7 @@ public class UpdateRoomView extends BorderPane implements Runnable {
                     this.tRoomNumber.setText(this.client.getRoomSolicitado().getRoomNumber());
                     this.tRoomStatus.setText(this.client.getRoomSolicitado().getStatus());
                     this.tRoomStyle.setText(this.client.getRoomSolicitado().getStyle());
-                    this.tRoomPrice.setText(String.valueOf(this.client.getRoomSolicitado().getPrice()));
+                    this.tRoomPrice.setText(String.valueOf(this.client.getRoomSolicitado().getPrice()));//maybe es aca
 
                     this.tRequestRoom.setText("");
                     this.client.setRoomSolicitado(null);

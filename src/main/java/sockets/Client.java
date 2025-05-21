@@ -122,7 +122,7 @@ public class Client extends Thread {
                         this.updated = 1;
                         break;
                     case Action.ROOM_SEARCH:
-                        this.roomSolicitado = new Room(datos[1], datos[2], datos[3], Double.parseDouble(datos[4]));
+                        this.roomSolicitado = new Room(datos[1], datos[2], datos[3], Double.parseDouble(datos[4]), null);
                         this.mostrarHabitacionSolicitado = true;
                         break;
                     case Action.ROOM_NOT_REGISTER:

@@ -26,6 +26,9 @@ public class RegisterHotelView extends BorderPane implements Runnable {
 
     private volatile boolean isRunning = true;
 
+    private Alert alert = FXUtility.alert("Hotel", "Register Hotel");//acomodar el alert
+
+
     public RegisterHotelView(Client client, Pane contentPane) {
         this.setStyle("-fx-border-color: black; -fx-background-color: white;");
         this.setPrefSize(300, 200);
@@ -121,16 +124,16 @@ public class RegisterHotelView extends BorderPane implements Runnable {
                     this.client.setRegistered(0);
 
                     Platform.runLater(() -> {
-                        Alert currentAlert = FXUtility.alert("Register Hotel", "Hotel");
+                        //Alert currentAlert = FXUtility.alert("Register Hotel", "Hotel");
 
                         if (estado == 1) {
-                            currentAlert.setContentText("Hotel registered successfully!");
+                            alert.setContentText("Hotel registered successfully!");
                         } else if(estado==2){
-                            currentAlert.setContentText("The hotel already exists!");
+                            alert.setContentText("The hotel already exists!");
                         }
-
-                        currentAlert.setAlertType(Alert.AlertType.CONFIRMATION);
-                        currentAlert.showAndWait();
+                        //confirmar la alert
+                        alert.setAlertType(Alert.AlertType.CONFIRMATION);
+                        alert.showAndWait();
 
                         this.tNumber.setText("");
                         this.tName.setText("");
