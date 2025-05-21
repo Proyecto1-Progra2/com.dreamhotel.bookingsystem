@@ -68,7 +68,9 @@ public class Client extends Thread {
                 //System.out.println(this.lectura);
                 String[] datos = this.lectura.split("-");
                 String accion = datos[0];
+
                 switch (accion) {
+
                     case Action.HOTEL_LIST:
                         int numeroHotel = 1;
                         for (int i = 1; i < datos.length - 1; i+=3) {
@@ -78,6 +80,7 @@ public class Client extends Thread {
                         }
                         this.hotelesMostrado = true;
                         break;
+
                     case Action.HOTEL_SEARCH:
                         this.hotelSolicitado = new Hotel(datos[1], datos[2], datos[3]);
                         this.mostrarHotelSolicitado = true;
