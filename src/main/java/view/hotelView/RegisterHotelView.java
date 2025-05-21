@@ -1,7 +1,9 @@
 package view.hotelView;
 
 import domain.Hotel;
+import javafx.application.Platform;
 import javafx.geometry.Pos;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -11,10 +13,11 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import sockets.Client;
 import utils.Action;
+import utils.FXUtility;
 
 import javax.swing.*;
 
-public class RegisterHotelView extends BorderPane implements Runnable{
+public class RegisterHotelView extends BorderPane implements Runnable {
 
     private Client client;
     private Pane contentPane;
@@ -103,24 +106,44 @@ public class RegisterHotelView extends BorderPane implements Runnable{
     }
 
     private void hotelRegister(Hotel hotel) {
-        this.client.getSend().println(Action.HOTEL_REGISTER +hotel.toString());
+        this.client.getSend().println(Action.HOTEL_REGISTER + hotel.toString());
     }
 
     @Override
     public void run() {
         while (this.isRunning) {
             try {
-                if (this.client.getRegistered() == 1) {
-                    JOptionPane.showMessageDialog(null, "Hotel" + tName.getText()+ " registered successfully!");
-                    this.tNumber.setText("");
-                    this.tName.setText("");
-                    this.tAddress.setText("");
+                // se enciclaba pero ya no:))
+                int estado = this.client.getRegistered();
+
+                if (estado == 1 || estado == 2) {
+                    // Se pone en 0 inmediatamente para evitar múltiples ejecuciones
                     this.client.setRegistered(0);
+
+                    Platform.runLater(() -> {
+                        Alert currentAlert = FXUtility.alert("Register Hotel", "Hotel");
+
+                        if (estado == 1) {
+                            currentAlert.setContentText("Hotel registered successfully!");
+                        } else if(estado==2){
+                            currentAlert.setContentText("The hotel already exists!");
+                        }
+
+                        currentAlert.setAlertType(Alert.AlertType.CONFIRMATION);
+                        currentAlert.showAndWait();
+
+                        this.tNumber.setText("");
+                        this.tName.setText("");
+                        this.tAddress.setText("");
+                    });
                 }
+
                 Thread.sleep(100);
             } catch (InterruptedException e) {
-                throw new RuntimeException(e);
+                Thread.currentThread().interrupt();
+                throw new RuntimeException("Hilo interrumpido durante la espera", e);
             }
         }
     }
 }
+
