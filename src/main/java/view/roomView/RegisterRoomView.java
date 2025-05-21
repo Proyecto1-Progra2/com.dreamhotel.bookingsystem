@@ -1,9 +1,11 @@
 package view.roomView;
 
+import domain.Image;
 import domain.Room;
 import javafx.application.Platform;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
@@ -16,6 +18,7 @@ import utils.FXUtility;
 
 import javax.swing.*;
 import java.io.*;
+import java.util.ArrayList;
 
 public class RegisterRoomView extends BorderPane implements Runnable {
 
@@ -30,6 +33,7 @@ public class RegisterRoomView extends BorderPane implements Runnable {
     private Stage primaryStage; //para que quede bien File
     private Alert alert = FXUtility.alert("Room", "Register Room");
 
+    private ArrayList<Image> images;
 
     public RegisterRoomView(Client client, Pane contentPane) {
         this.setStyle("-fx-border-color: black; -fx-background-color: white;");
@@ -38,6 +42,7 @@ public class RegisterRoomView extends BorderPane implements Runnable {
         this.setLayoutY(100);
 
         this.contentPane = contentPane;
+        this.images = new ArrayList<>();
 
         this.initComponents();
         this.client = client;
@@ -94,6 +99,10 @@ public class RegisterRoomView extends BorderPane implements Runnable {
         //cargar imagenes
         Button btnCargar = new Button("Upload images of the rooms");//revisar si esta bien traducido
 
+        ImageView imageView = new ImageView();
+        imageView.setFitWidth(300);
+        imageView.setPreserveRatio(true);
+
         // Contenido del formulario
         VBox contenido = new VBox(10);
         contenido.setStyle("-fx-padding: 10;");
@@ -107,7 +116,8 @@ public class RegisterRoomView extends BorderPane implements Runnable {
                 new Label("Room Price:"),
                 tPrice,
                 btnCargar,
-                btnRegister
+                btnRegister,
+                imageView
         );
         //int i = 1
         //int pos = i;
@@ -122,10 +132,11 @@ public class RegisterRoomView extends BorderPane implements Runnable {
             File archivo = fileChooser.showOpenDialog(primaryStage);//probar si ese primaryStage si es la imagen
             if (archivo != null) {
                 try {
-                    byte[] datos = archivoABytes(archivo);
+                    this.images.add(new Image(archivo, this.tRoomNumber.getText()));
+                    //byte[] datos = archivoABytes(archivo);
                     //int pos = posicionBox.getValue();
                     //imagenData.guardarImagen(datos, pos); //con un pos, guardo cuantas imagenes hay en esa habitación
-                    //imageView.setImage(new javafx.scene.image.Image(archivo.toURI().toString()));
+                    imageView.setImage(new javafx.scene.image.Image(archivo.toURI().toString()));
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
