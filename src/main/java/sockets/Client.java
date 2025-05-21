@@ -1,6 +1,7 @@
 package sockets;
 
 import domain.Hotel;
+import domain.Room;
 import utils.Action;
 
 import java.io.BufferedReader;
@@ -24,11 +25,17 @@ public class Client extends Thread {
 
     private Hotel hotelSolicitado;
 
+    private String mostrarRooms;
+    private Room roomSolicitado;
 
     // -> Observer
     private  boolean mostrado;
     private  boolean hotelesMostrado;
     private  boolean mostrarHotelSolicitado;
+
+    private boolean habitacionesMostrado;
+    private boolean mostrarHabitacionSolicitado;
+
     //
 
     // -> Validación de acciones
@@ -46,6 +53,9 @@ public class Client extends Thread {
         this.mostrado = false;
         this.hotelesMostrado = false;
         this.mostrarHotelSolicitado = false;
+
+        this.habitacionesMostrado = false;
+        this.mostrarHabitacionSolicitado = false;
         //
 
         // -> variables de validación de acciones => 1 = accion exitosa, 2 = accion no exitosa, 0 = no se ha realizado ninguna accion
@@ -53,10 +63,14 @@ public class Client extends Thread {
         this.updated = 0;
         this.deleted = 0;
 
-       this.infoMostrar ="";
+        this.infoMostrar ="";
         this.mostrarHoteles = "";
 
+        this.mostrarRooms = "";
+
         this.hotelSolicitado = null;
+        this.roomSolicitado = null;
+
     }
 
 
@@ -78,6 +92,16 @@ public class Client extends Thread {
                         }
                         this.hotelesMostrado = true;
                         break;
+                    case Action.ROOM_LIST:
+                        int numeroRoom = 1;
+                        for (int i = 1; i < datos.length - 1; i+=4) {
+                            this.mostrarRooms += numeroRoom+". Room Number: "+datos[i] + " Room Status: "+datos[i+1] +
+                                    " Room Style: "+datos[i+2]+ " Room Price: "+datos[i+3] + "\n";
+                            numeroRoom++;
+                        }
+                        this.habitacionesMostrado = true;
+                        break;
+
                     case Action.HOTEL_SEARCH:
                         this.hotelSolicitado = new Hotel(datos[1], datos[2], datos[3]);
                         this.mostrarHotelSolicitado = true;
@@ -92,6 +116,9 @@ public class Client extends Thread {
                         break;
                         ///
                     case Action.HOTEL_UPDATED:
+                        this.updated = 1;
+                        break;
+                    case Action.ROOM_UPDATED:
                         this.updated = 1;
                         break;
                     case Action.HOTEL_DELETED:
@@ -218,5 +245,37 @@ public class Client extends Thread {
 
     public void setLectura(String lectura) {
         this.lectura = lectura;
+    }
+
+    public boolean isHabitacionesMostrado() {
+        return habitacionesMostrado;
+    }
+
+    public void setHabitacionesMostrado(boolean habitacionesMostrado) {
+        this.habitacionesMostrado = habitacionesMostrado;
+    }
+
+    public boolean isMostrarHabitacionSolicitado() {
+        return mostrarHabitacionSolicitado;
+    }
+
+    public void setMostrarHabitacionSolicitado(boolean mostrarHabitacionSolicitado) {
+        this.mostrarHabitacionSolicitado = mostrarHabitacionSolicitado;
+    }
+
+    public String getMostrarRooms() {
+        return mostrarRooms;
+    }
+
+    public void setMostrarRooms(String mostrarRooms) {
+        this.mostrarRooms = mostrarRooms;
+    }
+
+    public Room getRoomSolicitado() {
+        return roomSolicitado;
+    }
+
+    public void setRoomSolicitado(Room roomSolicitado) {
+        this.roomSolicitado = roomSolicitado;
     }
 }

@@ -10,7 +10,10 @@ import view.hotelView.DeleteHotelView;
 import view.hotelView.RegisterHotelView;
 import view.hotelView.ShowHotelView;
 import view.hotelView.UpdateHotelView;
+import view.roomView.DeleteRoomView;
 import view.roomView.RegisterRoomView;
+import view.roomView.ShowRoomView;
+import view.roomView.UpdateRoomView;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -109,15 +112,15 @@ public class MainView extends VBox {
         roomRegister.setStyle("-fx-background-color: #8ec6af ");
 
         MenuItem roomView = new MenuItem("View all");
-        roomView.setOnAction(e -> new ShowHotelView(this.client, this.contentPane));
+        roomView.setOnAction(e -> new ShowRoomView(this.client, this.contentPane));
         roomView.setStyle("-fx-background-color: #8ec6af ");
 
         MenuItem roomUpdate = new MenuItem("Update");
-        roomUpdate.setOnAction(e -> new UpdateHotelView(this.client, this.contentPane));
+        roomUpdate.setOnAction(e -> new UpdateRoomView(this.client, this.contentPane));
         roomUpdate.setStyle("-fx-background-color: #8ec6af ");
 
         MenuItem roomDelete = new MenuItem("Delete");
-        roomDelete.setOnAction(e -> new DeleteHotelView(this.client, this.contentPane));
+        roomDelete.setOnAction(e -> new DeleteRoomView(this.client, this.contentPane));
         roomDelete.setStyle("-fx-background-color: #8ec6af ");
 
         menuRoom.getItems().addAll(roomRegister, roomView, roomUpdate, roomDelete);
@@ -138,7 +141,6 @@ public class MainView extends VBox {
         contentPane.getChildren().add(bienvenida);
 
         nodes.add(contentPane);
-
 
         this.getChildren().addAll(nodes);
     }
