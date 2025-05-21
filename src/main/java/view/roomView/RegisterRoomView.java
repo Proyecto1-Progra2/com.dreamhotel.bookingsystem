@@ -33,7 +33,10 @@ public class RegisterRoomView extends BorderPane implements Runnable {
     private Stage primaryStage; //para que quede bien File
     private Alert alert = FXUtility.alert("Room", "Register Room");
 
+    private File archivo;
+
     private ArrayList<Image> images;
+    private ArrayList<ImageView> imageViews;
 
     public RegisterRoomView(Client client, Pane contentPane) {
         this.setStyle("-fx-border-color: black; -fx-background-color: white;");
@@ -129,10 +132,10 @@ public class RegisterRoomView extends BorderPane implements Runnable {
                     new FileChooser.ExtensionFilter("Imágenes", "*.jpg", "*.png", "*.jpeg", "*.gif")
             );
             //declarar una variable int pos = 1
-            File archivo = fileChooser.showOpenDialog(primaryStage);//probar si ese primaryStage si es la imagen
+            archivo = fileChooser.showOpenDialog(primaryStage);//probar si ese primaryStage si es la imagen
             if (archivo != null) {
                 try {
-                    this.images.add(new Image(archivo, this.tRoomNumber.getText()));
+
                     //byte[] datos = archivoABytes(archivo);
                     //int pos = posicionBox.getValue();
                     //imagenData.guardarImagen(datos, pos); //con un pos, guardo cuantas imagenes hay en esa habitación
@@ -145,7 +148,7 @@ public class RegisterRoomView extends BorderPane implements Runnable {
         });
 
         btnRegister.setOnAction(e -> this.roomRegister(new Room(this.tRoomNumber.getText(), cbStatus.getValue(),
-                cbStyle.getValue(), Double.parseDouble(this.tPrice.getText())))); //debo agregar un arreglo de bytes
+                cbStyle.getValue(), Double.parseDouble(this.tPrice.getText()), new Image(this.tRoomNumber.getText(), this.archivo)))); //debo agregar un arreglo de bytes
 
         this.setTop(titleBar);
         this.setCenter(contenido);

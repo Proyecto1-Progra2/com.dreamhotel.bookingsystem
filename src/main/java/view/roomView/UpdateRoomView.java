@@ -109,7 +109,7 @@ public class UpdateRoomView extends BorderPane implements Runnable {
 
         btnRequest.setOnAction(e -> this.requestRoom(this.tRequestRoom.getText()));
         btnUpdate.setOnAction(e -> this.updateRoom(new Room(tRoomNumber.getText(), tRoomStatus.getText(),
-                tRoomStyle.getText(), Double.parseDouble(this.tRoomPrice.getText()) )));
+                tRoomStyle.getText(), Double.parseDouble(this.tRoomPrice.getText()), null)));
 
         this.setTop(titleBar);
         this.setCenter(contenido);
