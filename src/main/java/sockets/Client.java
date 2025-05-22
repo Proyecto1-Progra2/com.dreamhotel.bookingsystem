@@ -115,7 +115,7 @@ public class Client extends Thread {
                         this.updated = 1;
                         break;
                     case Action.ROOM_SEARCH:
-                        this.roomSolicitado = new Room(datos[1], datos[2], datos[3], Double.parseDouble(datos[4]), null, datos[6]);
+                        this.roomSolicitado = new Room(datos[1], datos[2], datos[3], Double.parseDouble(datos[4]), null, datos[7]);
                         this.mostrarHabitacionSolicitado = true;
                         break;
                     case Action.ROOM_NOT_REGISTER:
@@ -137,6 +137,38 @@ public class Client extends Thread {
             throw new RuntimeException(e);
         }
 
+    }
+
+    public String getMostrarRooms() {
+        return mostrarRooms;
+    }
+
+    public void setMostrarRooms(String mostrarRooms) {
+        this.mostrarRooms = mostrarRooms;
+    }
+
+    public Room getRoomSolicitado() {
+        return roomSolicitado;
+    }
+
+    public void setRoomSolicitado(Room roomSolicitado) {
+        this.roomSolicitado = roomSolicitado;
+    }
+
+    public boolean isHabitacionesMostrado() {
+        return habitacionesMostrado;
+    }
+
+    public void setHabitacionesMostrado(boolean habitacionesMostrado) {
+        this.habitacionesMostrado = habitacionesMostrado;
+    }
+
+    public boolean isMostrarHabitacionSolicitado() {
+        return mostrarHabitacionSolicitado;
+    }
+
+    public void setMostrarHabitacionSolicitado(boolean mostrarHabitacionSolicitado) {
+        this.mostrarHabitacionSolicitado = mostrarHabitacionSolicitado;
     }
 
     public int getDeleted() {

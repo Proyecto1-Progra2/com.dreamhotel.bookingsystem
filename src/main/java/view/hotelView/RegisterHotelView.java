@@ -16,6 +16,7 @@ import utils.Action;
 import utils.FXUtility;
 
 import javax.swing.*;
+import java.util.ArrayList;
 
 public class RegisterHotelView extends BorderPane implements Runnable {
 
@@ -99,7 +100,7 @@ public class RegisterHotelView extends BorderPane implements Runnable {
         );
 
         btnRegister.setOnAction(e -> this.hotelRegister(new Hotel(tNumber.getText(), tName.getText(),
-                tAddress.getText())));
+                tAddress.getText(), new ArrayList<>())));
 
         this.setTop(titleBar);
         this.setCenter(contenido);

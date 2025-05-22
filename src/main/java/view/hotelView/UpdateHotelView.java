@@ -15,6 +15,7 @@ import utils.Action;
 import utils.FXUtility;
 
 import javax.swing.*;
+import java.util.ArrayList;
 
 public class UpdateHotelView extends BorderPane implements Runnable{
 
@@ -104,7 +105,7 @@ public class UpdateHotelView extends BorderPane implements Runnable{
 
         btnRequest.setOnAction(e -> this.requestHotel(this.tRequestHotel.getText()));
         btnUpdate.setOnAction(e -> this.updateHotel(new Hotel(tNumber.getText(), tName.getText(),
-                tAddress.getText())));
+                tAddress.getText(), new ArrayList<>())));
 
         this.setTop(titleBar);
         this.setCenter(contenido);

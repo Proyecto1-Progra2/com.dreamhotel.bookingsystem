@@ -26,7 +26,9 @@ public class RegisterRoomView extends BorderPane implements Runnable {
     private Pane contentPane;
 
     private ComboBox<String> cbStatus, cbStyle;
-    private TextField tRoomNumber, tPrice;
+    private TextField tRoomNumber, tPrice, tHotelNumber;
+
+    private ImageView imageView;
 
     private volatile boolean isRunning = true;
 
@@ -91,20 +93,25 @@ public class RegisterRoomView extends BorderPane implements Runnable {
 
         // Recuperar datos
         cbStatus = new ComboBox<>();
+        cbStatus.setPromptText("Select Status"); // Placeholder
         cbStatus.getItems().addAll("Available", "Maintenance", "Booked");
 
         cbStyle = new ComboBox<>();
+        cbStyle.setPromptText("Select Style"); // Placeholder
         cbStyle.getItems().addAll("Standar", "Deluxe", "Suite", "Family");
 
         tRoomNumber = new TextField();
         tPrice = new TextField();
         Button btnRegister = new Button("Register");
+        tHotelNumber = new TextField();
         //cargar imagenes
         Button btnCargar = new Button("Upload images of the rooms");//revisar si esta bien traducido
 
-        ImageView imageView = new ImageView();
-        imageView.setFitWidth(300);
+        imageView = new ImageView();
+        imageView.setFitWidth(150); // Tamaño más pequeño para la vista previa
         imageView.setPreserveRatio(true);
+        imageView.setStyle("-fx-border-color: lightgray; -fx-border-width: 1; -fx-padding: 5;");
+
 
         // Contenido del formulario
         VBox contenido = new VBox(10);
@@ -112,6 +119,8 @@ public class RegisterRoomView extends BorderPane implements Runnable {
         contenido.getChildren().addAll(
                 new Label("Room Number:"),
                 tRoomNumber,
+                new Label("Hotel Number:"),
+                tHotelNumber,
                 new Label("Room Status:"),
                 cbStatus,
                 new Label("Room Style:"),
@@ -141,7 +150,9 @@ public class RegisterRoomView extends BorderPane implements Runnable {
         });
 
         btnRegister.setOnAction(e -> this.roomRegister(new Room(this.tRoomNumber.getText(), cbStatus.getValue(),
-                cbStyle.getValue(), Double.parseDouble(this.tPrice.getText()), new Image(this.tRoomNumber.getText(), this.archivo)))); //debo agregar un arreglo de bytes
+                cbStyle.getValue(), Double.parseDouble(this.tPrice.getText()), new Image(this.tRoomNumber.getText(), this.archivo),
+                tHotelNumber.getText()))
+        );
 
         this.setTop(titleBar);
         this.setCenter(contenido);

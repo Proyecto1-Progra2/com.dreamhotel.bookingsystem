@@ -21,7 +21,7 @@ public class UpdateRoomView extends BorderPane implements Runnable {
     private Pane contentPane;
 
     private ComboBox<String> cbStatus, cbStyle;
-    private TextField tRoomNumber, tRoomPrice, tRequestRoom;
+    private TextField tRoomNumber, tRoomPrice, tRequestRoom, tHotelNumber;
 
     private volatile boolean isRunning = true;
 
@@ -87,7 +87,7 @@ public class UpdateRoomView extends BorderPane implements Runnable {
         cbStatus.getItems().addAll("Available", "Maintenance", "Booked");
         this.cbStyle = new ComboBox<>();
         cbStyle.getItems().addAll("Standar", "Deluxe", "Suite", "Family");
-
+        tHotelNumber = new TextField();
         Button btnUpdate = new Button("Update Room");
 
         // Contenido del formulario
@@ -99,6 +99,8 @@ public class UpdateRoomView extends BorderPane implements Runnable {
                 btnRequest,
                 new Label("Room Number:"),
                 tRoomNumber,
+                new Label("Hotel Number:"),
+                tHotelNumber,
                 new Label("Room Status:"),
                 cbStatus,
                 new Label("Room Style:"),
@@ -111,7 +113,7 @@ public class UpdateRoomView extends BorderPane implements Runnable {
 
         btnRequest.setOnAction(e -> this.requestRoom(this.tRequestRoom.getText()));
         btnUpdate.setOnAction(e -> this.updateRoom(new Room(tRoomNumber.getText(), cbStatus.getValue(),
-                cbStyle.getValue(), Double.parseDouble(this.tRoomPrice.getText()), null)));
+                cbStyle.getValue(), Double.parseDouble(this.tRoomPrice.getText()), null, tHotelNumber.getText())));
 
         this.setTop(titleBar);
         this.setCenter(contenido);
