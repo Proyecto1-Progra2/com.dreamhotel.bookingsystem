@@ -20,8 +20,8 @@ public class UpdateRoomView extends BorderPane implements Runnable {
     private Client client;
     private Pane contentPane;
 
-    //private ComboBox<String> cbStatus, cbStyle;
-    private TextField tRoomNumber, tRoomPrice, tRequestRoom, tRoomStatus, tRoomStyle;
+    private ComboBox<String> cbStatus, cbStyle;
+    private TextField tRoomNumber, tRoomPrice, tRequestRoom;
 
     private volatile boolean isRunning = true;
 
@@ -83,8 +83,10 @@ public class UpdateRoomView extends BorderPane implements Runnable {
 
         this.tRoomNumber = new TextField();
         this.tRoomPrice = new TextField();
-        this.tRoomStatus = new TextField();
-        this.tRoomStyle = new TextField();
+        this.cbStatus = new ComboBox<>();
+        cbStatus.getItems().addAll("Available", "Maintenance", "Booked");
+        this.cbStyle = new ComboBox<>();
+        cbStyle.getItems().addAll("Standar", "Deluxe", "Suite", "Family");
 
         Button btnUpdate = new Button("Update Room");
 
@@ -98,9 +100,9 @@ public class UpdateRoomView extends BorderPane implements Runnable {
                 new Label("Room Number:"),
                 tRoomNumber,
                 new Label("Room Status:"),
-                tRoomStatus,
+                cbStatus,
                 new Label("Room Style:"),
-                tRoomStyle,
+                cbStyle,
                 new Label("Room Price"),
                 tRoomPrice,
                 //revisar si tambien hay que actualizar imagenes
@@ -108,8 +110,8 @@ public class UpdateRoomView extends BorderPane implements Runnable {
         );
 
         btnRequest.setOnAction(e -> this.requestRoom(this.tRequestRoom.getText()));
-        btnUpdate.setOnAction(e -> this.updateRoom(new Room(tRoomNumber.getText(), tRoomStatus.getText(),
-                tRoomStyle.getText(), Double.parseDouble(this.tRoomPrice.getText()), null)));
+        btnUpdate.setOnAction(e -> this.updateRoom(new Room(tRoomNumber.getText(), cbStatus.getValue(),
+                cbStyle.getValue(), Double.parseDouble(this.tRoomPrice.getText()), null)));
 
         this.setTop(titleBar);
         this.setCenter(contenido);
@@ -132,8 +134,8 @@ public class UpdateRoomView extends BorderPane implements Runnable {
             try {
                 if (this.client.isMostrarHabitacionSolicitado()) {
                     this.tRoomNumber.setText(this.client.getRoomSolicitado().getRoomNumber());
-                    this.tRoomStatus.setText(this.client.getRoomSolicitado().getStatus());
-                    this.tRoomStyle.setText(this.client.getRoomSolicitado().getStyle());
+                    this.cbStatus.setValue(this.client.getRoomSolicitado().getStatus());
+                    this.cbStyle.setValue(this.client.getRoomSolicitado().getStyle());
                     this.tRoomPrice.setText(String.valueOf(this.client.getRoomSolicitado().getPrice()));//maybe es aca
 
                     this.tRequestRoom.setText("");
@@ -147,8 +149,6 @@ public class UpdateRoomView extends BorderPane implements Runnable {
                         alert.showAndWait(); // Muestra la alerta y espera que el usuario la cierre
 
                         this.tRoomNumber.setText("");
-                        this.tRoomStatus.setText("");
-                        this.tRoomStyle.setText("");
                         this.tRoomPrice.setText("");
                     });
                     this.client.setUpdated(0);
