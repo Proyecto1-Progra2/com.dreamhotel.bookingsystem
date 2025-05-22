@@ -72,8 +72,7 @@ public class ShowHotelView extends BorderPane implements Runnable {
         titleBar.getChildren().addAll(title, closeBtn);
 
         closeBtn.setOnAction(e -> {
-            //this.isRunning = false;
-            this.setVisible(false);
+            this.isRunning = false;
           contentPane.getChildren().remove(this);
         });
 
@@ -119,13 +118,9 @@ public class ShowHotelView extends BorderPane implements Runnable {
     @Override
     public void run() {
         while (this.isRunning) {
-
             try {
-
                 if (this.client.isHotelesMostrado()) {
-
                     String resultHotels = this.client.getMostrarHoteles();
-
                     Platform.runLater(() -> {
                         if(data.isEmpty()) {  // solo carga si no hay datos aún
                             String[] rows = resultHotels.split("\n");
