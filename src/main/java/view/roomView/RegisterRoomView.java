@@ -122,8 +122,6 @@ public class RegisterRoomView extends BorderPane implements Runnable {
                 btnRegister,
                 imageView
         );
-        //int i = 1
-        //int pos = i;
 
         btnCargar.setOnAction(e -> {
             FileChooser fileChooser = new FileChooser();
@@ -131,14 +129,9 @@ public class RegisterRoomView extends BorderPane implements Runnable {
             fileChooser.getExtensionFilters().add(
                     new FileChooser.ExtensionFilter("Imágenes", "*.jpg", "*.png", "*.jpeg", "*.gif")
             );
-            //declarar una variable int pos = 1
-            archivo = fileChooser.showOpenDialog(primaryStage);//probar si ese primaryStage si es la imagen
+            archivo = fileChooser.showOpenDialog(primaryStage);
             if (archivo != null) {
                 try {
-
-                    //byte[] datos = archivoABytes(archivo);
-                    //int pos = posicionBox.getValue();
-                    //imagenData.guardarImagen(datos, pos); //con un pos, guardo cuantas imagenes hay en esa habitación
                     imageView.setImage(new javafx.scene.image.Image(archivo.toURI().toString()));
                 } catch (Exception ex) {
                     ex.printStackTrace();
@@ -167,7 +160,6 @@ public class RegisterRoomView extends BorderPane implements Runnable {
                 if (this.client.getRegistered() == 1) {
                     // Todas las actualizaciones de UI deben ir dentro de Platform.runLater
                     Platform.runLater(() -> { //
-//                        alert = FXUtility.alert("Room", "Register Room"); //
                         alert.setContentText("Room registered successfully!"); //
                         alert.setAlertType(Alert.AlertType.CONFIRMATION); //
                         alert.showAndWait(); // Muestra la alerta y espera que el usuario la cierre
@@ -181,26 +173,9 @@ public class RegisterRoomView extends BorderPane implements Runnable {
                 }
                 Thread.sleep(100);
             } catch (InterruptedException e) {
-                // Es mejor manejar la InterruptedException de una manera que no lance RuntimeException directamente,
-                // ya que eso detendría tu hilo. Por ejemplo, restaurar el estado de interrupción del hilo
-                // y salir del bucle si el hilo fue interrumpido.
                 Thread.currentThread().interrupt(); // Restaura el estado de interrupción
                 throw new RuntimeException("Hilo interrumpido durante la espera", e);
             }
-        }
-    }
-
-    //convierte una imagen a bytes
-    public static byte[] archivoABytes(File archivo) throws IOException {
-        try (InputStream is = new FileInputStream(archivo);
-             ByteArrayOutputStream buffer = new ByteArrayOutputStream()) {
-
-            byte[] datos = new byte[1024];
-            int n;
-            while ((n = is.read(datos)) != -1)
-                buffer.write(datos, 0, n);
-
-            return buffer.toByteArray();
         }
     }
 }

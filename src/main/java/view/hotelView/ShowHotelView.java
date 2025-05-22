@@ -12,6 +12,8 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import sockets.Client;
+import table.HotelTableModel;
+import table.RoomTableModel;
 import utils.Action;
 
 // cambios
@@ -22,8 +24,8 @@ public class ShowHotelView extends BorderPane implements Runnable {
 
     // private TextArea taView;
 
-    private TableView<ObservableList<String>> tableView;
-    private ObservableList<ObservableList<String>> data;
+    private TableView<HotelTableModel> tableView;
+    private ObservableList<HotelTableModel> data;
 
     private volatile boolean isRunning =true;
 
@@ -53,27 +55,16 @@ public class ShowHotelView extends BorderPane implements Runnable {
         data = FXCollections.observableArrayList();
         tableView.setItems(data);
 
-        TableColumn<ObservableList<String>, String> column1 = new TableColumn<>("ID");
-        column1.setCellValueFactory(param ->
-                new javafx.beans.property.SimpleStringProperty(param.getValue().get(0)));
-        column1.setCellFactory(TextFieldTableCell.forTableColumn());
+        TableColumn<HotelTableModel, String> column1 = new TableColumn<>("Hotel Number");
+        column1.setCellValueFactory(cellData -> cellData.getValue().hotelNumberProperty());
 
-        TableColumn<ObservableList<String>, String> column2 = new TableColumn<>("Number");
-        column2.setCellValueFactory(param ->
-                new javafx.beans.property.SimpleStringProperty(param.getValue().get(1)));
-        column2.setCellFactory(TextFieldTableCell.forTableColumn());
+        TableColumn<HotelTableModel, String> column2 = new TableColumn<>("Hotel Name");
+        column2.setCellValueFactory(cellData -> cellData.getValue().hotelNameProperty());
 
-        TableColumn<ObservableList<String>, String> column3 = new TableColumn<>("Hotel Name");
-        column3.setCellValueFactory(param ->
-                new javafx.beans.property.SimpleStringProperty(param.getValue().get(2)));
-        column3.setCellFactory(TextFieldTableCell.forTableColumn());
+        TableColumn<HotelTableModel, String> column3 = new TableColumn<>("Hotel Address");
+        column3.setCellValueFactory(cellData -> cellData.getValue().hotelAddressProperty());
 
-        TableColumn<ObservableList<String>, String> column4 = new TableColumn<>("Address");
-        column4.setCellValueFactory(param ->
-                new javafx.beans.property.SimpleStringProperty(param.getValue().get(3)));
-        column4.setCellFactory(TextFieldTableCell.forTableColumn());
-
-        tableView.getColumns().addAll(column1, column2, column3, column4);
+        tableView.getColumns().addAll(column1, column2, column3);
 
         titleBar.setAlignment(Pos.CENTER_RIGHT);
         titleBar.setSpacing(10);
@@ -138,19 +129,15 @@ public class ShowHotelView extends BorderPane implements Runnable {
                     Platform.runLater(() -> {
                         if(data.isEmpty()) {  // solo carga si no hay datos aún
                             String[] rows = resultHotels.split("\n");
-
                             for (String row : rows) {
-                                String[] parts = row.split(" Numero: | Nombre: | Direccion:"); //   | separa las columns
-                                if (parts.length == 4) {
-
-                                    ObservableList<String> rowData = FXCollections.observableArrayList(
-                                            parts[0].replace(".", "").trim(), // separar lo que entra desde client linea 73
-                                            parts[1].trim(),
-                                            parts[2].trim(),
-                                            parts[3].trim()
-                                            // el indice segun el valor de las columns definidas arriba
+                                String[] parts = row.split("-");
+                                if (parts.length == 3) {
+                                    HotelTableModel hotel = new HotelTableModel(
+                                            parts[0].trim(),  // hotelNumber
+                                            parts[1].trim(),  // hotelName
+                                            parts[2].trim()  // hotelAddress
                                     );
-                                    data.add(rowData);
+                                    data.add(hotel);
                                 }
                             }
                         }

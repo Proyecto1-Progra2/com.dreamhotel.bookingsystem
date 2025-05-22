@@ -84,20 +84,14 @@ public class Client extends Thread {
                 String accion = datos[0];
                 switch (accion) {
                     case Action.HOTEL_LIST:
-                        int numeroHotel = 1;
                         for (int i = 1; i < datos.length - 1; i+=3) {
-                            this.mostrarHoteles += numeroHotel+". Numero: "+datos[i] + " Nombre: "+datos[i+1] +
-                                    " Direccion: "+datos[i+2]+ "\n";
-                            numeroHotel++;
+                            this.mostrarHoteles += datos[i] + "-" + datos[i+1] + "-" + datos[i+2] + "\n";
                         }
                         this.hotelesMostrado = true;
                         break;
                     case Action.ROOM_LIST:
-                        int numeroRoom = 1;
                         for (int i = 1; i < datos.length - 1; i+=4) {
-                            this.mostrarRooms += numeroRoom+". Room Number: "+datos[i] + " Room Status: "+datos[i+1] +
-                                    " Room Style: "+datos[i+2]+ " Room Price: "+datos[i+3] + "\n";
-                            numeroRoom++;
+                            this.mostrarRooms += datos[i] + "-" + datos[i+1] + "-" + datos[i+2] + "-" + datos[i+3] + "\n";
                         }
                         this.habitacionesMostrado = true;
                         break;

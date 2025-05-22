@@ -8,23 +8,23 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import sockets.Client;
+import table.RoomTableModel;
 import utils.Action;
 
 public class ShowRoomView extends BorderPane implements Runnable {
 
-    private Client client;
-    private Pane contentPane;
+    private final Client client;
+    private final Pane contentPane;
 
-    private TableView<ObservableList<String>> tableView;
-    private ObservableList<ObservableList<String>> data;
+    private TableView<RoomTableModel> tableView;
+    private ObservableList<RoomTableModel> data;
 
-    private volatile boolean isRunning = true;
+    private final boolean isRunning = true;
 
     public ShowRoomView(Client client, Pane contentPane) {
         this.setStyle("-fx-border-color: black; -fx-background-color: white;");
@@ -51,25 +51,17 @@ public class ShowRoomView extends BorderPane implements Runnable {
         data = FXCollections.observableArrayList();
         tableView.setItems(data);
 
-        TableColumn<ObservableList<String>, String> column1 = new TableColumn<>("Room Number");
-        column1.setCellValueFactory(param ->
-                new javafx.beans.property.SimpleStringProperty(param.getValue().get(0)));//revisar porque no pasa el numero que quiero
-        column1.setCellFactory(TextFieldTableCell.forTableColumn());
+        TableColumn<RoomTableModel, String> column1 = new TableColumn<>("Room Number");
+        column1.setCellValueFactory(cellData -> cellData.getValue().roomNumberProperty());
 
-        TableColumn<ObservableList<String>, String> column2 = new TableColumn<>("Room Status");
-        column2.setCellValueFactory(param ->
-                new javafx.beans.property.SimpleStringProperty(param.getValue().get(1)));
-        column2.setCellFactory(TextFieldTableCell.forTableColumn());
+        TableColumn<RoomTableModel, String> column2 = new TableColumn<>("Room Status");
+        column2.setCellValueFactory(cellData -> cellData.getValue().roomStatusProperty());
 
-        TableColumn<ObservableList<String>, String> column3 = new TableColumn<>("Room Style");
-        column3.setCellValueFactory(param ->
-                new javafx.beans.property.SimpleStringProperty(param.getValue().get(2)));
-        column3.setCellFactory(TextFieldTableCell.forTableColumn());
+        TableColumn<RoomTableModel, String> column3 = new TableColumn<>("Room Style");
+        column3.setCellValueFactory(cellData -> cellData.getValue().roomStyleProperty());
 
-        TableColumn<ObservableList<String>, String> column4 = new TableColumn<>("Room Price");
-        column4.setCellValueFactory(param ->
-                new javafx.beans.property.SimpleStringProperty(param.getValue().get(3)));
-        column4.setCellFactory(TextFieldTableCell.forTableColumn());
+        TableColumn<RoomTableModel, Number> column4 = new TableColumn<>("Room Price");
+        column4.setCellValueFactory(cellData -> cellData.getValue().roomPriceProperty());
 
         tableView.getColumns().addAll(column1, column2, column3, column4);
 
@@ -121,38 +113,31 @@ public class ShowRoomView extends BorderPane implements Runnable {
 
     @Override
     public void run() {
-        while(this.isRunning){
-            try{
-                if(this.client.isHabitacionesMostrado()){
+        while (this.isRunning) {
+            try {
+                if (this.client.isHabitacionesMostrado()) {
                     String resultRooms = this.client.getMostrarRooms();
-
                     Platform.runLater(() -> {
-                        if(data.isEmpty()) {  // solo carga si no hay datos aún
+                        if (data.isEmpty()) {  // solo carga si no hay datos aún
                             String[] rows = resultRooms.split("\n");
-
                             for (String row : rows) {
-                                String[] parts = row.split(" Room Number: | Room Status: | Room Style: | Room Price:"); //   | separa las columns
-                                if (parts.length == 5) {
-                                    ObservableList<String> rowData = FXCollections.observableArrayList(
-                                            parts[0].replace(".", "").trim(), // separar lo que entra desde client linea 73
-                                            //creo que debo quitar el replace
-                                            //parts[0].trim(),
-                                            parts[1].trim(),
-                                            parts[2].trim(),
-                                            parts[3].trim(),
-                                            parts[4].trim()
-                                            // el indice segun el valor de las columns definidas arriba
+                                String[] parts = row.split("-");
+                                if (parts.length == 4) {
+                                    RoomTableModel room = new RoomTableModel(
+                                            parts[2].trim(),  // roomNumber
+                                            parts[0].trim(),  // roomStatus
+                                            parts[1].trim(),  // roomStyle
+                                            Double.parseDouble(parts[3].trim()) // roomPrice
                                     );
-                                    data.add(rowData);
+                                    data.add(room);
                                 }
                             }
                         }
-
                     });
                     this.client.setMostrarRooms("");
                     this.client.setHabitacionesMostrado(false);
                 }
-            Thread.sleep(0);
+                Thread.sleep(0);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
