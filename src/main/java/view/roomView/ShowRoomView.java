@@ -63,7 +63,10 @@ public class ShowRoomView extends BorderPane implements Runnable {
         TableColumn<RoomTableModel, Number> column4 = new TableColumn<>("Room Price");
         column4.setCellValueFactory(cellData -> cellData.getValue().roomPriceProperty());
 
-        tableView.getColumns().addAll(column1, column2, column3, column4);
+        TableColumn<RoomTableModel, String> column5 = new TableColumn<>("Hotel Number");
+        column5.setCellValueFactory(cellData -> cellData.getValue().roomHotelNumberProperty());
+
+        tableView.getColumns().addAll(column1, column2, column3, column4, column5);
 
         titleBar.setAlignment(Pos.CENTER_RIGHT);
         titleBar.setSpacing(10);
@@ -122,12 +125,13 @@ public class ShowRoomView extends BorderPane implements Runnable {
                             String[] rows = resultRooms.split("\n");
                             for (String row : rows) {
                                 String[] parts = row.split("-");
-                                if (parts.length == 4) {
+                                if (parts.length == 5) {
                                     RoomTableModel room = new RoomTableModel(
                                             parts[2].trim(),  // roomNumber
                                             parts[0].trim(),  // roomStatus
                                             parts[1].trim(),  // roomStyle
-                                            Double.parseDouble(parts[3].trim()) // roomPrice
+                                            Double.parseDouble(parts[3].trim()), // roomPrice
+                                            parts[4].trim()
                                     );
                                     data.add(room);
                                 }

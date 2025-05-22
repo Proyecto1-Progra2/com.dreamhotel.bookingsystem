@@ -91,8 +91,8 @@ public class Client extends Thread {
                         this.hotelesMostrado = true;
                         break;
                     case Action.ROOM_LIST:
-                        for (int i = 1; i < datos.length - 1; i+=4) {
-                            this.mostrarRooms += datos[i] + "-" + datos[i+1] + "-" + datos[i+2] + "-" + datos[i+3] + "\n";
+                        for (int i = 1; i < datos.length - 1; i+=5) {
+                            this.mostrarRooms += datos[i] + "-" + datos[i+1] + "-" + datos[i+2] + "-" + datos[i+3] + "-" + datos[i+4] + "\n";
                         }
                         this.habitacionesMostrado = true;
                         break;
