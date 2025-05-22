@@ -11,6 +11,7 @@ import java.io.PrintStream;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 
 public class Client extends Thread {
 
@@ -96,7 +97,7 @@ public class Client extends Thread {
                         this.habitacionesMostrado = true;
                         break;
                     case Action.HOTEL_SEARCH:
-                        this.hotelSolicitado = new Hotel(datos[1], datos[2], datos[3]);
+                        this.hotelSolicitado = new Hotel(datos[1], datos[2], datos[3], new ArrayList<>());
                         this.mostrarHotelSolicitado = true;
                         break;
                     case Action.HOTEL_REGISTERED, Action.ROOM_REGISTERED:
@@ -114,7 +115,7 @@ public class Client extends Thread {
                         this.updated = 1;
                         break;
                     case Action.ROOM_SEARCH:
-                        this.roomSolicitado = new Room(datos[1], datos[2], datos[3], Double.parseDouble(datos[4]), null);
+                        this.roomSolicitado = new Room(datos[1], datos[2], datos[3], Double.parseDouble(datos[4]), null, datos[6]);
                         this.mostrarHabitacionSolicitado = true;
                         break;
                     case Action.ROOM_NOT_REGISTER:
