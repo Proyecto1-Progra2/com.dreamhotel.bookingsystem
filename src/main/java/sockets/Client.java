@@ -249,36 +249,4 @@ public class Client extends Thread {
     public void setLectura(String lectura) {
         this.lectura = lectura;
     }
-
-    public boolean isHabitacionesMostrado() {
-        return habitacionesMostrado;
-    }
-
-    public void setHabitacionesMostrado(boolean habitacionesMostrado) {
-        this.habitacionesMostrado = habitacionesMostrado;
-    }
-
-    public boolean isMostrarHabitacionSolicitado() {
-        return mostrarHabitacionSolicitado;
-    }
-
-    public void setMostrarHabitacionSolicitado(boolean mostrarHabitacionSolicitado) {
-        this.mostrarHabitacionSolicitado = mostrarHabitacionSolicitado;
-    }
-
-    public String getMostrarRooms() {
-        return mostrarRooms;
-    }
-
-    public void setMostrarRooms(String mostrarRooms) {
-        this.mostrarRooms = mostrarRooms;
-    }
-
-    public Room getRoomSolicitado() {
-        return roomSolicitado;
-    }
-
-    public void setRoomSolicitado(Room roomSolicitado) {
-        this.roomSolicitado = roomSolicitado;
-    }
 }
