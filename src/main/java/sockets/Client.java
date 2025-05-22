@@ -28,11 +28,13 @@ public class Client extends Thread {
 
     private String mostrarRooms;
     private Room roomSolicitado;
+    private String hotelRooms;
 
     // -> Observer
     private  boolean mostrado;
     private  boolean hotelesMostrado;
     private  boolean mostrarHotelSolicitado;
+    private boolean mostrarRoomHotel;
 
     private boolean habitacionesMostrado;
     private boolean mostrarHabitacionSolicitado;
@@ -54,6 +56,7 @@ public class Client extends Thread {
         this.mostrado = false;
         this.hotelesMostrado = false;
         this.mostrarHotelSolicitado = false;
+        this.mostrarRoomHotel = false;
 
         this.habitacionesMostrado = false;
         this.mostrarHabitacionSolicitado = false;
@@ -80,7 +83,7 @@ public class Client extends Thread {
         try {
             while (true) {
                 this.lectura = this.receive.readLine();
-                //System.out.println(this.lectura);
+                System.out.println(this.lectura);
                 String[] datos = this.lectura.split("-");
                 String accion = datos[0];
                 switch (accion) {
@@ -128,6 +131,12 @@ public class Client extends Thread {
                     case Action.ROOM_DELETED:
                         this.deleted = 1;
                         break;
+                    case Action.HOTEL_ROOMS:
+                        for (int i = 1; i < datos.length - 1; i+=5) {
+                            this.hotelRooms += datos[i] + "-" + datos[i+1] + "-" + datos[i+2] + "-" + datos[i+3] + "-" + datos[i+4] + "\n";
+                        }
+                        this.mostrarRoomHotel = true;
+                        break;
                     default:
                         throw new IllegalStateException("Unexpected value: " + accion);
                 }
@@ -137,6 +146,22 @@ public class Client extends Thread {
             throw new RuntimeException(e);
         }
 
+    }
+
+    public boolean isMostrarRoomHotel() {
+        return mostrarRoomHotel;
+    }
+
+    public void setMostrarRoomHotel(boolean mostrarRoomHotel) {
+        this.mostrarRoomHotel = mostrarRoomHotel;
+    }
+
+    public String getHotelRooms() {
+        return hotelRooms;
+    }
+
+    public void setHotelRooms(String hotelRooms) {
+        this.hotelRooms = hotelRooms;
     }
 
     public String getMostrarRooms() {

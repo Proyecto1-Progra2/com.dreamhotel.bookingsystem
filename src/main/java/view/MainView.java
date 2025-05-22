@@ -6,10 +6,7 @@ import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import sockets.Client;
-import view.hotelView.DeleteHotelView;
-import view.hotelView.RegisterHotelView;
-import view.hotelView.ShowHotelView;
-import view.hotelView.UpdateHotelView;
+import view.hotelView.*;
 import view.roomView.DeleteRoomView;
 import view.roomView.RegisterRoomView;
 import view.roomView.ShowRoomView;
@@ -100,9 +97,11 @@ public class MainView extends VBox {
         hotelDelete.setOnAction(e -> new DeleteHotelView(this.client, this.contentPane));
         hotelDelete.setStyle("-fx-background-color: #93c195 ");
 
+        MenuItem hotelRooms = new MenuItem("Hotel´s Rooms");
+        hotelRooms.setOnAction(e -> new ShowRoomHotelView(this.client, this.contentPane));
+        hotelRooms.setStyle("-fx-background-color: #93c195 ");
 
-
-        menuHotel.getItems().addAll(hotelRegister, hotelView, hotelUpdate, hotelDelete);
+        menuHotel.getItems().addAll(hotelRegister, hotelView, hotelUpdate, hotelDelete, hotelRooms);
 
 
 

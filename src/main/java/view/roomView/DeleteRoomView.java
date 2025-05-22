@@ -20,7 +20,7 @@ public class DeleteRoomView extends BorderPane implements Runnable {
     
     private volatile boolean isRunning = true;
 
-    private TextField tNumber;
+    private TextField tNumber, tHotelNumber;
 
     private Alert alert = FXUtility.alert("Room", "Delete Room");
 
@@ -73,18 +73,21 @@ public class DeleteRoomView extends BorderPane implements Runnable {
 
         // Recuperar datos
         tNumber = new TextField();
+        tHotelNumber = new TextField();
         Button btnDelete = new Button("Delete");
 
         // Contenido del formulario
         VBox contenido = new VBox(10);
         contenido.setStyle("-fx-padding: 10;");
         contenido.getChildren().addAll(
+                new Label("Number Room you want to delete:"),
+                tNumber,
                 new Label("Phone Number of hotel you want to delete:"),
                 tNumber,
                 btnDelete
         );
 
-        btnDelete.setOnAction(e -> this.deleteNumber(tNumber.getText()));
+        btnDelete.setOnAction(e -> this.deleteNumber(tNumber.getText(), tHotelNumber.getText()));
 
         this.setTop(titleBar);
         this.setCenter(contenido);
@@ -92,8 +95,8 @@ public class DeleteRoomView extends BorderPane implements Runnable {
         contentPane.getChildren().add(this);
     }
 
-    private void deleteNumber(String number) {
-        this.client.getSend().println(Action.ROOM_DELETE+"-"+number);
+    private void deleteNumber(String number, String hotelNumber) {
+        this.client.getSend().println(Action.ROOM_DELETE+"-"+number+"-"+hotelNumber);
     }
 
     @Override
