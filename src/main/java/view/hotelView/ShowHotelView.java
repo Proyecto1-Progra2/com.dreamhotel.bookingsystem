@@ -105,23 +105,28 @@ public class ShowHotelView extends BorderPane implements Runnable {
                 btnEdit.setOnAction(e -> {
                     HotelTableModel hotel = getTableView().getItems().get(getIndex());
                     String hotelRequest = hotel.getHotelNumber();
+                    // variable que hice porque la llamada de getResource era muy larga
+                    String diseñoVnetanas = getClass().getResource("/main.css").toExternalForm();
 
                     TextInputDialog numberDialog = new TextInputDialog(hotel.getHotelName());
                     numberDialog.setTitle("Number edit");
                     numberDialog.setHeaderText("Edit hotel number:");
                     numberDialog.setContentText("Number:");
+                    numberDialog.getDialogPane().getStylesheets().add(diseñoVnetanas);
                     numberDialog.showAndWait().ifPresent(newNumber -> hotel.hotelNumberProperty().set(newNumber));
 
                     TextInputDialog nameDialog = new TextInputDialog(hotel.getHotelName());
                     nameDialog.setTitle("Name edit");
                     nameDialog.setHeaderText("Edit hotel name:");
                     nameDialog.setContentText("Name:");
+                    nameDialog.getDialogPane().getStylesheets().add(diseñoVnetanas);
                     nameDialog.showAndWait().ifPresent(newName -> hotel.hotelNameProperty().set(newName));
 
                     TextInputDialog addressDialog = new TextInputDialog(hotel.getHotelAddress());
                     addressDialog.setTitle("Address edit");
                     addressDialog.setHeaderText("Edit hotel address:");
                     addressDialog.setContentText("Address:");
+                    addressDialog.getDialogPane().getStylesheets().add(diseñoVnetanas);
                     addressDialog.showAndWait().ifPresent(newAddress -> hotel.hotelAddressProperty().set(newAddress));
 
                     updateHotel(new Hotel(hotel.getHotelNumber(), hotel.getHotelName(), hotel.getHotelAddress(), new ArrayList<>()), hotelRequest);
