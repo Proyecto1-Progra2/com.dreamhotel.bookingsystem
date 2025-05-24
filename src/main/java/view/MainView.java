@@ -78,7 +78,6 @@ public class MainView extends VBox {
             contentPane.getChildren().add(label);
         });
 
-
         // -> Hotels Menu
         MenuItem hotelRegister = new MenuItem("Register");
         hotelRegister.setOnAction(e -> new RegisterHotelView(this.client, this.contentPane));

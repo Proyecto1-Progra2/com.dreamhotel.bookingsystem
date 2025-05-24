@@ -36,9 +36,9 @@ public class ShowHotelView extends BorderPane implements Runnable {
 
     public ShowHotelView(Client client, Pane contentPane) {
         this.setStyle("-fx-border-color: black; -fx-background-color: white;");
-        this.setPrefSize(530, 530);
-        this.setLayoutX(150);
-        this.setLayoutY(130);
+        this.setPrefSize(680, 530);
+        this.setLayoutX(70);
+        this.setLayoutY(100);
         this.contentPane = contentPane;
 
         this.initComponents();
@@ -100,9 +100,11 @@ public class ShowHotelView extends BorderPane implements Runnable {
         columnActions.setCellFactory(col -> new TableCell<HotelTableModel, Void>() {
             private final Button btnEdit = new Button("Edit");
             private final Button btnDelete = new Button("Delete");
+            private final Button btnViewRooms = new Button("Rooms");
             {
                 btnEdit.setStyle("-fx-background-color: #87CEFA;");
                 btnDelete.setStyle("-fx-background-color: #FA8072;");
+                btnViewRooms.setStyle("-fx-background-color: #eff748;");
 
                 btnEdit.setOnMouseEntered(ev -> {
                     ScaleTransition st = new ScaleTransition(Duration.millis(150), btnEdit);
@@ -170,7 +172,7 @@ public class ShowHotelView extends BorderPane implements Runnable {
                     refreshTable();
                 });
             }
-            private final HBox hbox = new HBox(5, btnEdit, btnDelete);
+            private final HBox hbox = new HBox(5, btnEdit, btnDelete, btnViewRooms);
 
             @Override
             protected void updateItem(Void item, boolean empty) {
