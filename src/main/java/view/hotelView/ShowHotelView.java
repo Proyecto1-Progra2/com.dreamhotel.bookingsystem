@@ -19,6 +19,7 @@ import table.HotelTableModel;
 import utils.Action;
 
 import java.util.ArrayList;
+import java.util.Optional;
 
 // cambios
 public class ShowHotelView extends BorderPane implements Runnable {
@@ -26,7 +27,7 @@ public class ShowHotelView extends BorderPane implements Runnable {
     private Client client;
     private Pane contentPane;
 
-    // private TextArea taView;
+    private Button btnAddHotel;
 
     private TableView<HotelTableModel> tableView;
     private ObservableList<HotelTableModel> data;
@@ -61,7 +62,6 @@ public class ShowHotelView extends BorderPane implements Runnable {
         // ahora si funciona la flechita de los table view
 
         FilteredList<HotelTableModel> dataFiltered = new FilteredList<>(data, data -> true);
-
 
         Label searchLabel = new Label("Buscar por número de hotel:");
         TextField searchHotel = new TextField();
@@ -219,6 +219,39 @@ public class ShowHotelView extends BorderPane implements Runnable {
             this.setLayoutY(newY);
         });
 
+        this.btnAddHotel = new Button("Add Hotel");
+        this.btnAddHotel.setOnAction(e -> {
+            // variable que hice porque la llamada de getResource era muy larga
+            String diseñoVnetanas = getClass().getResource("/main.css").toExternalForm();
+
+            TextInputDialog numberDialog = new TextInputDialog();
+            numberDialog.setTitle("Number edit");
+            numberDialog.setHeaderText("Add hotel number:");
+            numberDialog.setContentText("Number:");
+            numberDialog.getDialogPane().getStylesheets().add(diseñoVnetanas);
+            Optional<String> number = numberDialog.showAndWait();
+            if (number.isEmpty()) return;
+
+            TextInputDialog nameDialog = new TextInputDialog("");
+            nameDialog.setTitle("Name edit");
+            nameDialog.setHeaderText("Add hotel name:");
+            nameDialog.setContentText("Name:");
+            nameDialog.getDialogPane().getStylesheets().add(diseñoVnetanas);
+            Optional<String> name = nameDialog.showAndWait();
+            if (name.isEmpty()) return;
+
+            TextInputDialog addressDialog = new TextInputDialog("");
+            addressDialog.setTitle("Address edit");
+            addressDialog.setHeaderText("Add hotel address:");
+            addressDialog.setContentText("Address:");
+            addressDialog.getDialogPane().getStylesheets().add(diseñoVnetanas);
+            Optional<String> address = addressDialog.showAndWait();
+            if (address.isEmpty()) return;
+
+            Hotel newHotel = new Hotel(number.get(), name.get(), address.get(), new ArrayList<>());
+            hotelRegister(newHotel);
+            refreshTable();
+        });
 
         HBox searchBox = new HBox(5);
         searchBox.setAlignment(Pos.CENTER_LEFT);
@@ -226,7 +259,7 @@ public class ShowHotelView extends BorderPane implements Runnable {
 
         VBox contenido = new VBox(10);
         contenido.setStyle("-fx-padding: 10;");
-        contenido.getChildren().addAll(searchBox, tableView);
+        contenido.getChildren().addAll(this.btnAddHotel, searchBox, tableView);
 
         this.setTop(titleBar);
         this.setCenter(contenido);
@@ -239,12 +272,12 @@ public class ShowHotelView extends BorderPane implements Runnable {
         this.client.getSend().println(accion + "-");
     }
 
-    private void deleteHotel(String number) {
-        this.client.getSend().println(Action.HOTEL_DELETE+"-"+number);
+    private void hotelRegister(Hotel hotel) {
+        this.client.getSend().println(Action.HOTEL_REGISTER + hotel.toString());
     }
 
-    private void requestHotel(String numberRequest) {
-        this.client.getSend().println(Action.HOTEL_SEARCH+"-"+numberRequest);
+    private void deleteHotel(String number) {
+        this.client.getSend().println(Action.HOTEL_DELETE+"-"+number);
     }
 
     private void updateHotel(Hotel hotel, String numberRequest) {
