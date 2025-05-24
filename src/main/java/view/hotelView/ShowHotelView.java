@@ -1,20 +1,20 @@
 package view.hotelView;
 
+import domain.Hotel;
 import javafx.application.Platform;
-import javafx.beans.Observable;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import sockets.Client;
 import table.HotelTableModel;
-import table.RoomTableModel;
 import utils.Action;
+
+import java.util.ArrayList;
 
 // cambios
 public class ShowHotelView extends BorderPane implements Runnable {
@@ -38,7 +38,7 @@ public class ShowHotelView extends BorderPane implements Runnable {
 
         this.initComponents();
         this.client = client;
-        this.HotelList(Action.HOTEL_LIST);
+        this.hotelList(Action.HOTEL_LIST);
 
 
         Thread thread = new Thread(this);
@@ -64,7 +64,62 @@ public class ShowHotelView extends BorderPane implements Runnable {
         TableColumn<HotelTableModel, String> column3 = new TableColumn<>("Hotel Address");
         column3.setCellValueFactory(cellData -> cellData.getValue().hotelAddressProperty());
 
-        tableView.getColumns().addAll(column1, column2, column3);
+        TableColumn<HotelTableModel, Void> columnActions = new TableColumn<>("Actions");
+        columnActions.setCellFactory(col -> new TableCell<HotelTableModel, Void>() {
+            private final Button btnEdit = new Button("Edit");
+            private final Button btnDelete = new Button("Delete");
+            {
+                btnEdit.setStyle("-fx-background-color: #87CEFA;");
+                btnDelete.setStyle("-fx-background-color: #FA8072;");
+
+                btnEdit.setOnAction(e -> {
+                    HotelTableModel hotel = getTableView().getItems().get(getIndex());
+
+                    String hotelRequest = hotel.getHotelNumber();
+
+                    TextInputDialog numberDialog = new TextInputDialog(hotel.getHotelName());
+                    numberDialog.setTitle("Number edit");
+                    numberDialog.setHeaderText("Edit hotel number:");
+                    numberDialog.setContentText("Number:");
+                    numberDialog.showAndWait().ifPresent(newNumber -> hotel.hotelNumberProperty().set(newNumber));
+
+                    TextInputDialog nameDialog = new TextInputDialog(hotel.getHotelName());
+                    nameDialog.setTitle("Name edit");
+                    nameDialog.setHeaderText("Edit hotel name:");
+                    nameDialog.setContentText("Name:");
+                    nameDialog.showAndWait().ifPresent(newName -> hotel.hotelNameProperty().set(newName));
+
+                    TextInputDialog addressDialog = new TextInputDialog(hotel.getHotelAddress());
+                    addressDialog.setTitle("Address edit");
+                    addressDialog.setHeaderText("Edit hotel address:");
+                    addressDialog.setContentText("Address:");
+                    addressDialog.showAndWait().ifPresent(newAddress -> hotel.hotelAddressProperty().set(newAddress));
+
+                    updateHotel(new Hotel(hotel.getHotelNumber(), hotel.getHotelName(), hotel.getHotelAddress(), new ArrayList<>()), hotelRequest);
+                    refreshTable();
+                });
+
+                btnDelete.setOnAction(e -> {
+                    HotelTableModel hotel = getTableView().getItems().get(getIndex());
+                    String hotelNumber = hotel.getHotelNumber();
+                    deleteHotel(hotelNumber);
+                    refreshTable();
+                });
+            }
+            private final HBox hbox = new HBox(5, btnEdit, btnDelete);
+
+            @Override
+            protected void updateItem(Void item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty) {
+                    setGraphic(null);
+                } else {
+                    setGraphic(hbox);
+                }
+            }
+        });
+
+        tableView.getColumns().addAll(column1, column2, column3, columnActions);
 
         titleBar.setAlignment(Pos.CENTER_RIGHT);
         titleBar.setSpacing(10);
@@ -110,10 +165,26 @@ public class ShowHotelView extends BorderPane implements Runnable {
     }
 
     // para encontrar la accion
-    private void HotelList(String accion) {
+    private void hotelList(String accion) {
         this.client.getSend().println(accion + "-");
     }
 
+    private void deleteHotel(String number) {
+        this.client.getSend().println(Action.HOTEL_DELETE+"-"+number);
+    }
+
+    private void requestHotel(String numberRequest) {
+        this.client.getSend().println(Action.HOTEL_SEARCH+"-"+numberRequest);
+    }
+
+    private void updateHotel(Hotel hotel, String numberRequest) {
+        this.client.getSend().println(Action.HOTEL_UPDATE+hotel.toString()+"-"+numberRequest);
+    }
+
+    private void refreshTable() {
+        data.clear();
+        this.hotelList(Action.HOTEL_LIST);
+    }
 
     @Override
     public void run() {
