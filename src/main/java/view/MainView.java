@@ -36,7 +36,7 @@ public class MainView extends VBox {
         }
 
         Scene scene = new Scene(this);
-        stage.setTitle("Principal Window");
+        stage.setTitle("Reservation System");
         stage.setScene(scene);
         stage.centerOnScreen();
         stage.show();
