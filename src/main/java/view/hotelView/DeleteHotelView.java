@@ -1,5 +1,6 @@
 package view.hotelView;
 
+import javafx.application.Platform;
 import javafx.geometry.Pos;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
@@ -15,7 +16,7 @@ import utils.FXUtility;
 
 import javax.swing.*;
 
-public class DeleteHotelView extends BorderPane implements Runnable{
+public class DeleteHotelView extends BorderPane implements Runnable {
 
     private Client client;
     private Pane contentPane;
@@ -94,20 +95,29 @@ public class DeleteHotelView extends BorderPane implements Runnable{
     }
 
     private void deleteNumber(String number) {
-        this.client.getSend().println(Action.HOTEL_DELETE+"-"+number);
+        this.client.getSend().println(Action.HOTEL_DELETE + "-" + number);
     }
 
     @Override
     public void run() {
         while (this.isRunning) {
             try {
-                if (this.client.getDeleted() == 1) {
-                    //JOptionPane.showMessageDialog(null, "Phone number hotel: " + tNumber.getText()+ " deleted successfully!");
-                    alert.setContentText("Hotel deleted successfully!");
-                    alert.setAlertType(Alert.AlertType.CONFIRMATION);
-                    alert.showAndWait();
-                    this.tNumber.setText("");
-                    this.client.setDeleted(0);
+                int deletedStatus = client.getDeleted();
+                if (deletedStatus == 1) {
+                    Platform.runLater(() -> {
+                        alert.setAlertType(Alert.AlertType.CONFIRMATION);
+                        alert.setContentText("Hotel deleted successfully!");
+                        alert.showAndWait();
+                        tNumber.setText("");
+                    });
+                    client.setDeleted(0);
+                } else if (deletedStatus == -1) {
+                    Platform.runLater(() -> {
+                        alert.setAlertType(Alert.AlertType.ERROR);
+                        alert.setContentText("That hotel number does not exist.");
+                        alert.showAndWait();
+                    });
+                    client.setDeleted(0);
                 }
                 Thread.sleep(100);
             } catch (InterruptedException e) {
@@ -116,3 +126,4 @@ public class DeleteHotelView extends BorderPane implements Runnable{
         }
     }
 }
+
