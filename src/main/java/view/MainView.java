@@ -133,7 +133,7 @@ public class MainView extends VBox {
         contentPane.setStyle("-fx-background-color:#cad1ce;");
 
 
-        Label bienvenida = new Label("Bienvenido al sistema de gestión de hoteles");
+        Label bienvenida = new Label("Welcome to the system hotel!");
         bienvenida.setStyle("-fx-font-family: 'Elephant'; -fx-font-size: 22px; -fx-text-fill: #2a2e2c;");
         bienvenida.setLayoutX(40);
         bienvenida.setLayoutY(40);
