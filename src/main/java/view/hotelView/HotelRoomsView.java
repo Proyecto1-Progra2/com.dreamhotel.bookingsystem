@@ -1,4 +1,4 @@
-package view.roomView;
+package view.hotelView;
 
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -16,33 +16,34 @@ import sockets.Client;
 import table.RoomTableModel;
 import utils.Action;
 
-public class ShowRoomView extends BorderPane implements Runnable {
+public class HotelRoomsView extends BorderPane implements Runnable {
 
-    private final Client client;
-    private final Pane contentPane;
+    private Client client;
+    private Pane contentPane;
+    private String hotelNumber;
 
     private TableView<RoomTableModel> tableView;
     private ObservableList<RoomTableModel> data;
 
-    private final boolean isRunning = true;
+    private volatile boolean isRunning =true;
 
-    public ShowRoomView(Client client, Pane contentPane) {
+    public HotelRoomsView(Client client, Pane contentPane, String hotelNumber) {
         this.setStyle("-fx-border-color: black; -fx-background-color: white;");
-        this.setPrefSize(530, 530);
-        this.setLayoutX(100);
+        this.setPrefSize(680, 530);
+        this.setLayoutX(70);
         this.setLayoutY(100);
         this.contentPane = contentPane;
 
         this.initComponents();
         this.client = client;
-        this.RoomList(Action.ROOM_LIST);
+
+        this.roomList(Action.HOTEL_ROOMS, hotelNumber);
 
         Thread thread = new Thread(this);
         thread.start();
     }
 
     private void initComponents() {
-        // Título con botón cerrar
         HBox titleBar = new HBox();
         Label title = new Label("Room List");
         Button closeBtn = new Button("X");
@@ -74,33 +75,18 @@ public class ShowRoomView extends BorderPane implements Runnable {
         titleBar.getChildren().addAll(title, closeBtn);
 
         closeBtn.setOnAction(e -> {
-            //this.isRunning = false;
-            this.setVisible(false);
+            this.isRunning = false;
             contentPane.getChildren().remove(this);
-        });
-
-        // Hacer movible la ventana dentro del contentPane
-        final double[] dragOffset = new double[2];
-        titleBar.setOnMousePressed(e -> {
-            dragOffset[0] = e.getSceneX() - this.getLayoutX();
-            dragOffset[1] = e.getSceneY() - this.getLayoutY();
-        });
-
-        titleBar.setOnMouseDragged(e -> {
-            double newX = e.getSceneX() - dragOffset[0];
-            double newY = e.getSceneY() - dragOffset[1];
-
-            // Restringir al área visible del contentPane
-            newX = Math.max(0, Math.min(newX, contentPane.getWidth() - this.getWidth()));
-            newY = Math.max(0, Math.min(newY, contentPane.getHeight() - this.getHeight()));
-
-            this.setLayoutX(newX);
-            this.setLayoutY(newY);
         });
 
         VBox contenido = new VBox(10);
         contenido.setStyle("-fx-padding: 10;");
         contenido.getChildren().addAll(tableView);
+
+        double widthPercent = 1.0 / tableView.getColumns().size();
+        for (TableColumn<?, ?> column : tableView.getColumns()) {
+            column.prefWidthProperty().bind(tableView.widthProperty().multiply(widthPercent));
+        }
 
         this.setTop(titleBar);
         this.setCenter(contenido);
@@ -108,18 +94,16 @@ public class ShowRoomView extends BorderPane implements Runnable {
         contentPane.getChildren().add(this);
     }
 
-
-    // para encontrar la accion
-    private void RoomList(String accion) {
-        this.client.getSend().println(accion + "-");
+    private void roomList(String accion, String hotelNumber) {
+        this.client.getSend().println(accion + "-" + hotelNumber);
     }
 
     @Override
     public void run() {
         while (this.isRunning) {
             try {
-                if (this.client.isHabitacionesMostrado()) {
-                    String resultRooms = this.client.getMostrarRooms();
+                if (this.client.isMostrarRoomHotel()) {
+                    String resultRooms = this.client.getHotelRooms();
                     Platform.runLater(() -> {
                         if (data.isEmpty()) {  // solo carga si no hay datos aún
                             String[] rows = resultRooms.split("\n");
@@ -131,15 +115,15 @@ public class ShowRoomView extends BorderPane implements Runnable {
                                             parts[1].trim(),  // roomStatus
                                             parts[2].trim(),  // roomStyle
                                             Double.parseDouble(parts[3].trim()), // roomPrice
-                                            parts[4].trim() // hotelNumber
+                                            parts[4].trim() // roomNumber
                                     );
                                     data.add(room);
                                 }
                             }
                         }
                     });
-                    this.client.setMostrarRooms("");
-                    this.client.setHabitacionesMostrado(false);
+                    this.client.setHotelRooms("");
+                    this.client.setMostrarRoomHotel(false);
                 }
                 Thread.sleep(0);
             } catch (InterruptedException e) {

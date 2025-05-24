@@ -69,6 +69,7 @@ public class Client extends Thread {
 
         this.infoMostrar ="";
         this.mostrarHoteles = "";
+        this.hotelRooms = "";
 
         this.mostrarRooms = "";
 
@@ -83,7 +84,7 @@ public class Client extends Thread {
         try {
             while (true) {
                 this.lectura = this.receive.readLine();
-                System.out.println(this.lectura);
+                //System.out.println(this.lectura);
                 String[] datos = this.lectura.split("-");
                 String accion = datos[0];
                 switch (accion) {
@@ -134,6 +135,7 @@ public class Client extends Thread {
                     case Action.HOTEL_ROOMS:
                         for (int i = 1; i < datos.length - 1; i+=5) {
                             this.hotelRooms += datos[i] + "-" + datos[i+1] + "-" + datos[i+2] + "-" + datos[i+3] + "-" + datos[i+4] + "\n";
+                            System.out.println(this.hotelRooms);
                         }
                         this.mostrarRoomHotel = true;
                         break;

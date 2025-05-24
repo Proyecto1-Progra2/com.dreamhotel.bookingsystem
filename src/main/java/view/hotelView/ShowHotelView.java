@@ -106,6 +106,20 @@ public class ShowHotelView extends BorderPane implements Runnable {
                 btnDelete.setStyle("-fx-background-color: #FA8072;");
                 btnViewRooms.setStyle("-fx-background-color: #eff748;");
 
+                btnViewRooms.setOnMouseEntered(ev -> {
+                    ScaleTransition st = new ScaleTransition(Duration.millis(150), btnViewRooms);
+                    st.setToX(1.03);
+                    st.setToY(1.03);
+                    st.play();
+                });
+
+                btnViewRooms.setOnMouseExited(ev -> {
+                    ScaleTransition st = new ScaleTransition(Duration.millis(150), btnViewRooms);
+                    st.setToX(1.0);
+                    st.setToY(1.0);
+                    st.play();
+                });
+
                 btnEdit.setOnMouseEntered(ev -> {
                     ScaleTransition st = new ScaleTransition(Duration.millis(150), btnEdit);
                     st.setToX(1.03);
@@ -132,6 +146,12 @@ public class ShowHotelView extends BorderPane implements Runnable {
                     st.setToX(1.0);
                     st.setToY(1.0);
                     st.play();
+                });
+
+                btnViewRooms.setOnAction(e -> {
+                    HotelTableModel hotel = getTableView().getItems().get(getIndex());
+                    String hotelRequest = hotel.getHotelNumber();
+                    new HotelRoomsView(client, contentPane, hotelRequest);
                 });
 
                 btnEdit.setOnAction(e -> {
