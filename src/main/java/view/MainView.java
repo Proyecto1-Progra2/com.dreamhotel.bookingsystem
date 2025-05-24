@@ -129,7 +129,7 @@ public class MainView extends VBox {
 
 
         contentPane = new Pane();
-        contentPane.setPrefSize(800, 800);
+        contentPane.setPrefSize(1000, 1000);
         contentPane.setStyle("-fx-background-color:#cad1ce;");
 
 

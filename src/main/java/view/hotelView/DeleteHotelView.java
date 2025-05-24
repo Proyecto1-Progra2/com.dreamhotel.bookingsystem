@@ -27,7 +27,7 @@ public class DeleteHotelView extends BorderPane implements Runnable{
 
     public DeleteHotelView(Client client, Pane contentPane) {
         this.setStyle("-fx-border-color: black; -fx-background-color: white;");
-        this.setPrefSize(300, 200);
+        this.setPrefSize(530, 530);
         this.setLayoutX(100);
         this.setLayoutY(100);
 

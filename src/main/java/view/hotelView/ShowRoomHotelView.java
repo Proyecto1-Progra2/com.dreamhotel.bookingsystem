@@ -25,7 +25,7 @@ public class ShowRoomHotelView extends BorderPane implements Runnable {
 
     public ShowRoomHotelView(Client client, Pane contentPane) {
         this.setStyle("-fx-border-color: black; -fx-background-color: white;");
-        this.setPrefSize(400, 300);
+        this.setPrefSize(530, 530);
         this.setLayoutX(100);
         this.setLayoutY(100);
         this.contentPane = contentPane;
