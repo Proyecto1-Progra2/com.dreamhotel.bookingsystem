@@ -1,6 +1,7 @@
 package view.hotelView;
 
 import domain.Hotel;
+import javafx.animation.ScaleTransition;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -12,6 +13,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import javafx.util.Duration;
 import sockets.Client;
 import table.HotelTableModel;
 import utils.Action;
@@ -102,6 +104,34 @@ public class ShowHotelView extends BorderPane implements Runnable {
                 btnEdit.setStyle("-fx-background-color: #87CEFA;");
                 btnDelete.setStyle("-fx-background-color: #FA8072;");
 
+                btnEdit.setOnMouseEntered(ev -> {
+                    ScaleTransition st = new ScaleTransition(Duration.millis(150), btnEdit);
+                    st.setToX(1.03);
+                    st.setToY(1.03);
+                    st.play();
+                });
+
+                btnEdit.setOnMouseExited(ev -> {
+                    ScaleTransition st = new ScaleTransition(Duration.millis(150), btnEdit);
+                    st.setToX(1.0);
+                    st.setToY(1.0);
+                    st.play();
+                });
+
+                btnDelete.setOnMouseEntered(ev -> {
+                    ScaleTransition st = new ScaleTransition(Duration.millis(150), btnDelete);
+                    st.setToX(1.03);
+                    st.setToY(1.03);
+                    st.play();
+                });
+
+                btnDelete.setOnMouseExited(ev -> {
+                    ScaleTransition st = new ScaleTransition(Duration.millis(150), btnDelete);
+                    st.setToX(1.0);
+                    st.setToY(1.0);
+                    st.play();
+                });
+
                 btnEdit.setOnAction(e -> {
                     HotelTableModel hotel = getTableView().getItems().get(getIndex());
                     String hotelRequest = hotel.getHotelNumber();
@@ -154,6 +184,11 @@ public class ShowHotelView extends BorderPane implements Runnable {
         });
 
         tableView.getColumns().addAll(column1, column2, column3, columnActions);
+
+        double widthPercent = 1.0 / tableView.getColumns().size();
+        for (TableColumn<?, ?> column : tableView.getColumns()) {
+            column.prefWidthProperty().bind(tableView.widthProperty().multiply(widthPercent));
+        }
 
         titleBar.setAlignment(Pos.CENTER_RIGHT);
         titleBar.setSpacing(10);

@@ -54,7 +54,6 @@
 
 .button:hover {
     -fx-background-color: #90a9b3;
-    -fx-transform: scale(1.03);
 }
 
 /* Botón por defecto (OK, por ejemplo) */
@@ -65,5 +64,4 @@
 
 .button:default:hover {
     -fx-background-color: #9ccdd9;
-    -fx-transform: scale(1.05);
 }
