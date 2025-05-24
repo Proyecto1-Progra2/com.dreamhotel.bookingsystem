@@ -4,6 +4,8 @@ import domain.Hotel;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
+import javafx.collections.transformation.SortedList;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
@@ -44,7 +46,6 @@ public class ShowHotelView extends BorderPane implements Runnable {
         Thread thread = new Thread(this);
         thread.start();
     }
-
     private void initComponents() {
         // Título con botón cerrar
         HBox titleBar = new HBox();
@@ -53,8 +54,37 @@ public class ShowHotelView extends BorderPane implements Runnable {
 
         tableView = new TableView<>();
         data = FXCollections.observableArrayList();
-        tableView.setItems(data);
 
+        // para buscar
+        // ahora si funciona la flechita de los table view
+
+        FilteredList<HotelTableModel> dataFiltered = new FilteredList<>(data, data -> true);
+
+
+        Label searchLabel = new Label("Buscar por número de hotel:");
+        TextField searchHotel = new TextField();
+        searchHotel.setPromptText("Número de hotel");
+
+        // Filtra de una con el texto que ingresa desde dataFiltered
+        searchHotel.textProperty().addListener((observable, info, enterInfo) -> {
+
+            dataFiltered.setPredicate(hotel -> {
+                if (enterInfo == null || enterInfo.isEmpty()) {// si no hay filtros debemos de mostrar todos
+                    return true;
+                }
+                String enterInfoLowerCase = enterInfo.toLowerCase();// POR AQUELLO que sea lower case
+                return hotel.getHotelNumber().toLowerCase().contains(enterInfoLowerCase);
+            });
+        });
+
+        // aqui ordenamos primero la info que llega de hotel table
+        SortedList<HotelTableModel> sortedInfo = new SortedList<>(dataFiltered);
+        sortedInfo.comparatorProperty().bind(tableView.comparatorProperty());
+
+        //agregamos con set la info a la table view
+        tableView.setItems(sortedInfo);
+
+        // Columnas
         TableColumn<HotelTableModel, String> column1 = new TableColumn<>("Hotel Number");
         column1.setCellValueFactory(cellData -> cellData.getValue().hotelNumberProperty());
 
@@ -74,7 +104,6 @@ public class ShowHotelView extends BorderPane implements Runnable {
 
                 btnEdit.setOnAction(e -> {
                     HotelTableModel hotel = getTableView().getItems().get(getIndex());
-
                     String hotelRequest = hotel.getHotelNumber();
 
                     TextInputDialog numberDialog = new TextInputDialog(hotel.getHotelName());
@@ -128,7 +157,7 @@ public class ShowHotelView extends BorderPane implements Runnable {
 
         closeBtn.setOnAction(e -> {
             this.isRunning = false;
-          contentPane.getChildren().remove(this);
+            contentPane.getChildren().remove(this);
         });
 
         // Hacer movible la ventana dentro del contentPane
@@ -149,14 +178,15 @@ public class ShowHotelView extends BorderPane implements Runnable {
             this.setLayoutX(newX);
             this.setLayoutY(newY);
         });
-        // Recuperar datos
-//        this.taView = new taView<>();
-//        this.taView.setEditable(false);
 
+
+        HBox searchBox = new HBox(5);
+        searchBox.setAlignment(Pos.CENTER_LEFT);
+        searchBox.getChildren().addAll(searchLabel, searchHotel);
 
         VBox contenido = new VBox(10);
         contenido.setStyle("-fx-padding: 10;");
-        contenido.getChildren().addAll(tableView);
+        contenido.getChildren().addAll(searchBox, tableView);
 
         this.setTop(titleBar);
         this.setCenter(contenido);
