@@ -12,6 +12,7 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.Base64;
 
 public class Client extends Thread {
 
@@ -41,6 +42,8 @@ public class Client extends Thread {
 
     //
 
+    private byte[] image;
+    private boolean imageReceived;
     // -> Validación de acciones
     private int registered;
     private int updated;
@@ -61,6 +64,8 @@ public class Client extends Thread {
         this.habitacionesMostrado = false;
         this.mostrarHabitacionSolicitado = false;
         //
+
+        this.imageReceived = false;
 
         // -> variables de validación de acciones => 1 = accion exitosa, 2 = accion no exitosa, 0 = no se ha realizado ninguna accion
         this.registered = 0;
@@ -133,10 +138,13 @@ public class Client extends Thread {
                         this.deleted = 1;
                         break;
                     case Action.HOTEL_ROOMS:
-                        for (int i = 1; i < datos.length - 1; i+=5) {
+                        for (int i = 1; i < datos.length - 1; i+=6) {
                             this.hotelRooms += datos[i] + "-" + datos[i+1] + "-" + datos[i+2] + "-" + datos[i+3] + "-" + datos[i+4] + "\n";
                         }
                         this.mostrarRoomHotel = true;
+                        break;
+                    case Action.IMAGE_REQUEST:
+                        this.image = Base64.getDecoder().decode(datos[1]);
                         break;
                     default:
                         throw new IllegalStateException("Unexpected value: " + accion);
@@ -147,6 +155,22 @@ public class Client extends Thread {
             throw new RuntimeException(e);
         }
 
+    }
+
+    public byte[] getImage() {
+        return image;
+    }
+
+    public void setImage(byte[] image) {
+        this.image = image;
+    }
+
+    public boolean isImageReceived() {
+        return imageReceived;
+    }
+
+    public void setImageReceived(boolean imageReceived) {
+        this.imageReceived = imageReceived;
     }
 
     public boolean isMostrarRoomHotel() {

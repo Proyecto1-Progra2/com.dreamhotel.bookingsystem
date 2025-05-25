@@ -3,17 +3,22 @@ package view.imagesView;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import sockets.Client;
+import utils.Action;
 
-public class RoomImagesView extends BorderPane {
+public class RoomImagesView extends BorderPane implements Runnable{
 
     private Client client;
     private Pane contentPane;
     private String roomNumber;
+    private volatile boolean isRunning = true;
+
+    private ImageView imageView;
 
     public RoomImagesView(Client client, Pane contentPane, String roomNumber) {
         this.setStyle("-fx-border-color: black; -fx-background-color: white;");
@@ -25,6 +30,8 @@ public class RoomImagesView extends BorderPane {
 
         this.initComponents();
         this.client = client;
+
+        this.requestImages(Action.IMAGE_REQUEST, this.roomNumber);
     }
 
     private void initComponents() {
@@ -38,12 +45,18 @@ public class RoomImagesView extends BorderPane {
         titleBar.getChildren().addAll(title, closeBtn);
 
         closeBtn.setOnAction(e -> {
+            this.isRunning = false;
             contentPane.getChildren().remove(this);
         });
 
+        imageView = new ImageView();
+        imageView.setFitWidth(300); // Tamaño más pequeño para la vista previa
+        imageView.setPreserveRatio(true);
+        imageView.setStyle("-fx-border-color: lightgray; -fx-border-width: 1; -fx-padding: 5;");
+
         VBox contenido = new VBox(10);
         contenido.setStyle("-fx-padding: 10;");
-        contenido.getChildren().addAll();
+        contenido.getChildren().addAll(imageView);
 
         this.setTop(titleBar);
         this.setCenter(contenido);
@@ -51,4 +64,23 @@ public class RoomImagesView extends BorderPane {
         contentPane.getChildren().add(this);
     }
 
+    private void requestImages(String accion, String roomNumber) {
+        this.client.getSend().println(accion+"-"+roomNumber);
+    }
+
+    @Override
+    public void run() {
+        while (this.isRunning) {
+            if (this.client.isImageReceived()) {
+                imageView.setImage(new javafx.scene.image.Image(new java.io.ByteArrayInputStream(this.client.getImage())));
+                this.client.setImage(null);
+                this.client.setImageReceived(false);
+            }
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
 }
