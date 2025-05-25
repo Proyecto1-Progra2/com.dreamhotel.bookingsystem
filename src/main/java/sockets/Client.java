@@ -135,7 +135,6 @@ public class Client extends Thread {
                     case Action.HOTEL_ROOMS:
                         for (int i = 1; i < datos.length - 1; i+=5) {
                             this.hotelRooms += datos[i] + "-" + datos[i+1] + "-" + datos[i+2] + "-" + datos[i+3] + "-" + datos[i+4] + "\n";
-                            System.out.println(this.hotelRooms);
                         }
                         this.mostrarRoomHotel = true;
                         break;

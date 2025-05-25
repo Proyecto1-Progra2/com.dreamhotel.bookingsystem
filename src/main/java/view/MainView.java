@@ -91,14 +91,11 @@ public class MainView extends VBox {
         hotelUpdate.setOnAction(e -> new UpdateHotelView(this.client, this.contentPane));
         hotelUpdate.setStyle("-fx-background-color: #93c195 ");
 
-
         MenuItem hotelDelete = new MenuItem("Delete");
         hotelDelete.setOnAction(e -> new DeleteHotelView(this.client, this.contentPane));
         hotelDelete.setStyle("-fx-background-color: #93c195 ");
 
         menuHotel.getItems().addAll(hotelView);
-
-
 
         // -> Rooms Menus
         MenuItem roomRegister = new MenuItem("Register");

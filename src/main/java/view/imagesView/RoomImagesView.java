@@ -1,0 +1,54 @@
+package view.imagesView;
+
+import javafx.geometry.Pos;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
+import sockets.Client;
+
+public class RoomImagesView extends BorderPane {
+
+    private Client client;
+    private Pane contentPane;
+    private String roomNumber;
+
+    public RoomImagesView(Client client, Pane contentPane, String roomNumber) {
+        this.setStyle("-fx-border-color: black; -fx-background-color: white;");
+        this.setPrefSize(680, 530);
+        this.setLayoutX(70);
+        this.setLayoutY(100);
+        this.contentPane = contentPane;
+        this.roomNumber = roomNumber;
+
+        this.initComponents();
+        this.client = client;
+    }
+
+    private void initComponents() {
+        HBox titleBar = new HBox();
+        Label title = new Label("Room List");
+        Button closeBtn = new Button("X");
+
+        titleBar.setAlignment(Pos.CENTER_RIGHT);
+        titleBar.setSpacing(10);
+        titleBar.setStyle("-fx-background-color: #cccccc; -fx-padding: 5;");
+        titleBar.getChildren().addAll(title, closeBtn);
+
+        closeBtn.setOnAction(e -> {
+            contentPane.getChildren().remove(this);
+        });
+
+        VBox contenido = new VBox(10);
+        contenido.setStyle("-fx-padding: 10;");
+        contenido.getChildren().addAll();
+
+        this.setTop(titleBar);
+        this.setCenter(contenido);
+
+        contentPane.getChildren().add(this);
+    }
+
+}

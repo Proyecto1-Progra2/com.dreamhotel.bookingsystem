@@ -15,10 +15,12 @@ import javafx.stage.Stage;
 import sockets.Client;
 import utils.Action;
 import utils.FXUtility;
+import utils.ImageUtils;
 
 import javax.swing.*;
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Base64;
 
 public class RegisterRoomView extends BorderPane implements Runnable {
 
@@ -36,6 +38,7 @@ public class RegisterRoomView extends BorderPane implements Runnable {
     private Alert alert = FXUtility.alert("Room", "Register Room");
 
     private File archivo;
+    private byte[] image;
 
     private ArrayList<Image> images;
     private ArrayList<ImageView> imageViews;
@@ -141,6 +144,7 @@ public class RegisterRoomView extends BorderPane implements Runnable {
             archivo = fileChooser.showOpenDialog(primaryStage);
             if (archivo != null) {
                 try {
+                    this.image = ImageUtils.archivoABytes(archivo);
                     imageView.setImage(new javafx.scene.image.Image(archivo.toURI().toString()));
                 } catch (Exception ex) {
                     ex.printStackTrace();
@@ -150,7 +154,7 @@ public class RegisterRoomView extends BorderPane implements Runnable {
         });
 
         btnRegister.setOnAction(e -> this.roomRegister(new Room(this.tRoomNumber.getText(), cbStatus.getValue(),
-                cbStyle.getValue(), Double.parseDouble(this.tPrice.getText()), new Image(this.tRoomNumber.getText(), this.archivo),
+                cbStyle.getValue(), Double.parseDouble(this.tPrice.getText()), new Image(this.tRoomNumber.getText(), this.image),
                 tHotelNumber.getText()))
         );
 
@@ -161,7 +165,17 @@ public class RegisterRoomView extends BorderPane implements Runnable {
     }
 
     private void roomRegister(Room room) {
-        this.client.getSend().println(Action.ROOM_REGISTER+room.toString());
+        String encodedImage = Base64.getEncoder().encodeToString(room.getImage().getImage());
+
+        this.client.getSend().println(Action.ROOM_REGISTER + "-" +
+                room.getRoomNumber() + "-" +
+                room.getStatus() + "-" +
+                room.getStyle() + "-" +
+                room.getPrice() + "-" +
+                room.getImage().getRoomNumber() + "-" +  // este es igual a room.getRoomNumber()
+                encodedImage + "-" +
+                room.getHotelNumber()
+        );
     }
 
     @Override

@@ -63,9 +63,9 @@ public class ShowHotelView extends BorderPane implements Runnable {
 
         FilteredList<HotelTableModel> dataFiltered = new FilteredList<>(data, data -> true);
 
-        Label searchLabel = new Label("Buscar por número de hotel:");
+        Label searchLabel = new Label("Search for hotel number:");
         TextField searchHotel = new TextField();
-        searchHotel.setPromptText("Número de hotel");
+        searchHotel.setPromptText("Hotel number:");
 
         // Filtra de una con el texto que ingresa desde dataFiltered
         searchHotel.textProperty().addListener((observable, info, enterInfo) -> {

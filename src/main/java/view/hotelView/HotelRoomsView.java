@@ -1,20 +1,20 @@
 package view.hotelView;
 
+import javafx.animation.ScaleTransition;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import javafx.util.Duration;
 import sockets.Client;
 import table.RoomTableModel;
 import utils.Action;
+import view.imagesView.RoomImagesView;
 
 public class HotelRoomsView extends BorderPane implements Runnable {
 
@@ -67,7 +67,46 @@ public class HotelRoomsView extends BorderPane implements Runnable {
         TableColumn<RoomTableModel, String> column5 = new TableColumn<>("Hotel Number");
         column5.setCellValueFactory(cellData -> cellData.getValue().roomHotelNumberProperty());
 
-        tableView.getColumns().addAll(column1, column2, column3, column4, column5);
+        TableColumn<RoomTableModel, Void> column6 = new TableColumn<>("Images");
+        column6.setCellFactory(col -> new TableCell<RoomTableModel, Void>() {
+            private final Button btnImage = new Button("View");
+            {
+                btnImage.setStyle("-fx-background-color: #eff748;");
+
+                btnImage.setOnMouseEntered(ev -> {
+                    ScaleTransition st = new ScaleTransition(Duration.millis(150), btnImage);
+                    st.setToX(1.03);
+                    st.setToY(1.03);
+                    st.play();
+                });
+
+                btnImage.setOnMouseExited(ev -> {
+                    ScaleTransition st = new ScaleTransition(Duration.millis(150), btnImage);
+                    st.setToX(1.0);
+                    st.setToY(1.0);
+                    st.play();
+                });
+
+                btnImage.setOnAction(e -> {
+                    RoomTableModel room = getTableView().getItems().get(getIndex());
+                    String roomNumber = room.getRoomNumber();
+                    new RoomImagesView(client, contentPane, roomNumber);
+                });
+            }
+            private final HBox hbox = new HBox(3, btnImage);
+
+            @Override
+            protected void updateItem(Void item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty) {
+                    setGraphic(null);
+                } else {
+                    setGraphic(hbox);
+                }
+            }
+        });
+
+        tableView.getColumns().addAll(column1, column2, column3, column4, column5, column6);
 
         titleBar.setAlignment(Pos.CENTER_RIGHT);
         titleBar.setSpacing(10);
