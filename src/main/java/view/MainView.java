@@ -26,7 +26,7 @@ public class MainView extends VBox {
 
 
     public MainView(Stage stage) {
-        this.setPrefSize(800, 700);
+        this.setPrefSize(1000, 700);
 
         try {
             this.client = new Client("localhost", 5025);
@@ -107,7 +107,7 @@ public class MainView extends VBox {
         roomView.setStyle("-fx-background-color: #8ec6af ");
 
         MenuItem roomUpdate = new MenuItem("Update");
-        roomUpdate.setOnAction(e -> new UpdateRoomView(this.client, this.contentPane));
+        roomUpdate.setOnAction(e -> new UpdateRoomView(this.client, this.contentPane, "", ""));
         roomUpdate.setStyle("-fx-background-color: #8ec6af ");
 
         MenuItem roomDelete = new MenuItem("Delete");

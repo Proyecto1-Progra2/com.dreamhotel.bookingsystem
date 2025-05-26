@@ -17,17 +17,18 @@ import javax.swing.*;
 
 public class UpdateRoomView extends BorderPane implements Runnable {
 
-    private Client client;
-    private Pane contentPane;
+    private final Client client;
+    private final Pane contentPane;
 
     private ComboBox<String> cbStatus, cbStyle;
-    private TextField tRoomNumber, tRoomPrice, tRequestRoom, tHotelNumber;
+    private TextField tRoomNumber, tRoomPrice;
+
+    private final String roomNumber;
+    private final String hotelNumber;
 
     private volatile boolean isRunning = true;
 
-    private Alert alert = FXUtility.alert("Room", "Update Room");
-
-    public UpdateRoomView(Client client, Pane contentPane) {
+    public UpdateRoomView(Client client, Pane contentPane, String roomNumber, String hotelNumber) {
         this.setStyle("-fx-border-color: black; -fx-background-color: white;");
         this.setPrefSize(530, 530);
         this.setLayoutX(100);
@@ -35,8 +36,13 @@ public class UpdateRoomView extends BorderPane implements Runnable {
 
         this.contentPane = contentPane;
 
+        this.roomNumber = roomNumber;
+        this.hotelNumber = hotelNumber;
+
         this.initComponents();
         this.client = client;
+
+        this.requestRoom(roomNumber, hotelNumber);
 
         Thread thread = new Thread(this);
         thread.start();
@@ -78,29 +84,21 @@ public class UpdateRoomView extends BorderPane implements Runnable {
         });
 
         // Recuperar datos
-        this.tRequestRoom = new TextField();
-        Button btnRequest = new Button("Request Room");
-
         this.tRoomNumber = new TextField();
+        tRoomNumber.setEditable(false);
         this.tRoomPrice = new TextField();
         this.cbStatus = new ComboBox<>();
         cbStatus.getItems().addAll("Available", "Maintenance", "Booked");
         this.cbStyle = new ComboBox<>();
         cbStyle.getItems().addAll("Standar", "Deluxe", "Suite", "Family");
-        tHotelNumber = new TextField();
         Button btnUpdate = new Button("Update Room");
 
         // Contenido del formulario
         VBox contenido = new VBox(10);
         contenido.setStyle("-fx-padding: 10;");
         contenido.getChildren().addAll(
-                new Label("Room number of hotel you want to update:"),
-                tRequestRoom,
-                btnRequest,
                 new Label("Room Number:"),
                 tRoomNumber,
-                new Label("Hotel Number:"),
-                tHotelNumber,
                 new Label("Room Status:"),
                 cbStatus,
                 new Label("Room Style:"),
@@ -111,9 +109,8 @@ public class UpdateRoomView extends BorderPane implements Runnable {
                 btnUpdate
         );
 
-        btnRequest.setOnAction(e -> this.requestRoom(this.tRequestRoom.getText()));
         btnUpdate.setOnAction(e -> this.updateRoom(new Room(tRoomNumber.getText(), cbStatus.getValue(),
-                cbStyle.getValue(), Double.parseDouble(this.tRoomPrice.getText()), null, tHotelNumber.getText())));
+                cbStyle.getValue(), Double.parseDouble(this.tRoomPrice.getText()), null, this.hotelNumber)));
 
         this.setTop(titleBar);
         this.setCenter(contenido);
@@ -122,39 +119,39 @@ public class UpdateRoomView extends BorderPane implements Runnable {
 
     }
 
-    private void requestRoom(String numberRoomRequest) {
-        this.client.getSend().println(Action.ROOM_SEARCH+"-"+numberRoomRequest);
+    private void requestRoom(String numberRoomRequest, String hotelNumberRequest) {
+        this.client.getSend().println(Action.ROOM_SEARCH + "-" + numberRoomRequest + "-" + hotelNumberRequest);
     }
 
     private void updateRoom(Room room) {
-        this.client.getSend().println(Action.ROOM_UPDATE+room.toString());
+        this.client.getSend().println(Action.ROOM_UPDATE + room.toString());
     }
 
     @Override
     public void run() {
         while (this.isRunning) {
             try {
-                if (this.client.isMostrarHabitacionSolicitado()) {
-                    this.tRoomNumber.setText(this.client.getRoomSolicitado().getRoomNumber());
-                    this.cbStatus.setValue(this.client.getRoomSolicitado().getStatus());
-                    this.cbStyle.setValue(this.client.getRoomSolicitado().getStyle());
-                    this.tRoomPrice.setText(String.valueOf(this.client.getRoomSolicitado().getPrice()));//maybe es aca
+                Platform.runLater(() -> {
+                    if (this.client.isMostrarHabitacionSolicitado()) {
+                        this.tRoomNumber.setText(this.client.getRoomSolicitado().getRoomNumber());
+                        this.cbStatus.setValue(this.client.getRoomSolicitado().getStatus());
+                        this.cbStyle.setValue(this.client.getRoomSolicitado().getStyle());
+                        this.tRoomPrice.setText(String.valueOf(this.client.getRoomSolicitado().getPrice()));//maybe es aca
 
-                    this.tRequestRoom.setText("");
-                    this.client.setRoomSolicitado(null);
-                    this.client.setMostrarHabitacionSolicitado(false);
-                } else if (this.client.getUpdated() == 1) {
-                    Platform.runLater(() -> { //
-//                        alert = FXUtility.alert("Room", "Register Room"); //
-                        alert.setContentText("Room update successfully!"); //
-                        alert.setAlertType(Alert.AlertType.CONFIRMATION); //
-                        alert.showAndWait(); // Muestra la alerta y espera que el usuario la cierre
+                        this.client.setRoomSolicitado(null);
+                        this.client.setMostrarHabitacionSolicitado(false);
+                    } else if (this.client.getUpdated() == 1) {
+                        Alert alert = FXUtility.alert("Room", "Update Room");
+                        alert.setContentText("Room update successfully!");
+                        alert.setAlertType(Alert.AlertType.CONFIRMATION);
+                        alert.showAndWait();
 
                         this.tRoomNumber.setText("");
                         this.tRoomPrice.setText("");
-                    });
-                    this.client.setUpdated(0);
-                }
+
+                        this.client.setUpdated(0);
+                    }
+                });
                 Thread.sleep(100);
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt(); // Restaura el estado de interrupción

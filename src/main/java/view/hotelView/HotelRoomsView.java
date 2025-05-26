@@ -16,6 +16,7 @@ import table.RoomTableModel;
 import utils.Action;
 import view.imagesView.RoomImagesView;
 import view.roomView.RegisterRoomView;
+import view.roomView.UpdateRoomView;
 
 public class HotelRoomsView extends BorderPane implements Runnable {
 
@@ -30,8 +31,8 @@ public class HotelRoomsView extends BorderPane implements Runnable {
 
     public HotelRoomsView(Client client, Pane contentPane, String hotelNumber) {
         this.setStyle("-fx-border-color: black; -fx-background-color: white;");
-        this.setPrefSize(680, 530);
-        this.setLayoutX(70);
+        this.setPrefSize(970, 530);
+        this.setLayoutX(30);
         this.setLayoutY(100);
         this.contentPane = contentPane;
         this.hotelNumber = hotelNumber;
@@ -69,11 +70,43 @@ public class HotelRoomsView extends BorderPane implements Runnable {
         TableColumn<RoomTableModel, String> column5 = new TableColumn<>("Hotel Number");
         column5.setCellValueFactory(cellData -> cellData.getValue().roomHotelNumberProperty());
 
-        TableColumn<RoomTableModel, Void> column6 = new TableColumn<>("Images");
+        TableColumn<RoomTableModel, Void> column6 = new TableColumn<>("Actions");
         column6.setCellFactory(col -> new TableCell<RoomTableModel, Void>() {
-            private final Button btnImage = new Button("View");
+            private final Button btnEdit = new Button("Edit");
+            private final Button btnDelete = new Button("Delete");
+            private final Button btnImage = new Button("Image");
             {
+                btnEdit.setStyle("-fx-background-color: #87CEFA;");
+                btnDelete.setStyle("-fx-background-color: #FA8072;");
                 btnImage.setStyle("-fx-background-color: #eff748;");
+
+                btnDelete.setOnMouseEntered(ev -> {
+                    ScaleTransition st = new ScaleTransition(Duration.millis(150), btnDelete);
+                    st.setToX(1.03);
+                    st.setToY(1.03);
+                    st.play();
+                });
+
+                btnDelete.setOnMouseExited(ev -> {
+                    ScaleTransition st = new ScaleTransition(Duration.millis(150), btnDelete);
+                    st.setToX(1.0);
+                    st.setToY(1.0);
+                    st.play();
+                });
+
+                btnEdit.setOnMouseEntered(ev -> {
+                    ScaleTransition st = new ScaleTransition(Duration.millis(150), btnEdit);
+                    st.setToX(1.03);
+                    st.setToY(1.03);
+                    st.play();
+                });
+
+                btnEdit.setOnMouseExited(ev -> {
+                    ScaleTransition st = new ScaleTransition(Duration.millis(150), btnEdit);
+                    st.setToX(1.0);
+                    st.setToY(1.0);
+                    st.play();
+                });
 
                 btnImage.setOnMouseEntered(ev -> {
                     ScaleTransition st = new ScaleTransition(Duration.millis(150), btnImage);
@@ -89,13 +122,28 @@ public class HotelRoomsView extends BorderPane implements Runnable {
                     st.play();
                 });
 
+                btnEdit.setOnAction(e -> {
+                    RoomTableModel room = getTableView().getItems().get(getIndex());
+                    String roomNumber = room.getRoomNumber();
+                    String hotelNumber = room.getRoomHotelNumber();
+                    new UpdateRoomView(client, contentPane, roomNumber, hotelNumber);
+                });
+
+                btnDelete.setOnAction(e -> {
+                    RoomTableModel room = getTableView().getItems().get(getIndex());
+                    String roomNumber = room.getRoomNumber();
+                    String hotelNumber = room.getRoomHotelNumber();
+                    roomDelete(Action.ROOM_DELETE, roomNumber, hotelNumber);
+                    refreshTable();
+                });
+
                 btnImage.setOnAction(e -> {
                     RoomTableModel room = getTableView().getItems().get(getIndex());
                     String roomNumber = room.getRoomNumber();
                     new RoomImagesView(client, contentPane, roomNumber);
                 });
             }
-            private final HBox hbox = new HBox(3, btnImage);
+            private final HBox hbox = new HBox(5, btnEdit, btnDelete, btnImage);
 
             @Override
             protected void updateItem(Void item, boolean empty) {
@@ -143,6 +191,15 @@ public class HotelRoomsView extends BorderPane implements Runnable {
 
     private void roomList(String accion, String hotelNumber) {
         this.client.getSend().println(accion + "-" + hotelNumber);
+    }
+
+    private void roomDelete(String accion, String roomNumber, String hotelNumber) {
+        this.client.getSend().println(accion + "-" + roomNumber + "-" + hotelNumber);
+    }
+
+    private void refreshTable() {
+        data.clear();
+        this.roomList(Action.HOTEL_ROOMS, this.hotelNumber);
     }
 
     @Override
