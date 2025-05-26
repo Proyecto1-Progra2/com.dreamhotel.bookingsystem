@@ -98,9 +98,9 @@ public class MainView extends VBox {
         menuHotel.getItems().addAll(hotelView);
 
         // -> Rooms Menus
-        MenuItem roomRegister = new MenuItem("Register");
-        roomRegister.setOnAction(e -> new RegisterRoomView(this.client, this.contentPane));
-        roomRegister.setStyle("-fx-background-color: #8ec6af ");
+//        MenuItem roomRegister = new MenuItem("Register");
+//        roomRegister.setOnAction(e -> new RegisterRoomView(this.client, this.contentPane));
+//        roomRegister.setStyle("-fx-background-color: #8ec6af ");
 
         MenuItem roomView = new MenuItem("View all");
         roomView.setOnAction(e -> new ShowRoomView(this.client, this.contentPane));
@@ -114,7 +114,7 @@ public class MainView extends VBox {
         roomDelete.setOnAction(e -> new DeleteRoomView(this.client, this.contentPane));
         roomDelete.setStyle("-fx-background-color: #8ec6af ");
 
-        menuRoom.getItems().addAll(roomRegister, roomView, roomUpdate, roomDelete);
+        menuRoom.getItems().addAll(/*roomRegister, */roomView, roomUpdate, roomDelete);
 
         menuBar.getMenus().addAll(menuHotel, menuRoom);
         nodes.add(menuBar);

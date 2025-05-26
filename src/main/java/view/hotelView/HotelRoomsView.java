@@ -15,6 +15,7 @@ import sockets.Client;
 import table.RoomTableModel;
 import utils.Action;
 import view.imagesView.RoomImagesView;
+import view.roomView.RegisterRoomView;
 
 public class HotelRoomsView extends BorderPane implements Runnable {
 
@@ -33,6 +34,7 @@ public class HotelRoomsView extends BorderPane implements Runnable {
         this.setLayoutX(70);
         this.setLayoutY(100);
         this.contentPane = contentPane;
+        this.hotelNumber = hotelNumber;
 
         this.initComponents();
         this.client = client;
@@ -118,9 +120,15 @@ public class HotelRoomsView extends BorderPane implements Runnable {
             contentPane.getChildren().remove(this);
         });
 
+        Button btnAddRoom = new Button("Add Room");
+        btnAddRoom.setOnAction(e -> {
+            String numberHotel = this.hotelNumber;
+            new RegisterRoomView(this.client, this.contentPane, numberHotel);
+        });
+
         VBox contenido = new VBox(10);
         contenido.setStyle("-fx-padding: 10;");
-        contenido.getChildren().addAll(tableView);
+        contenido.getChildren().addAll(btnAddRoom, tableView);
 
         double widthPercent = 1.0 / tableView.getColumns().size();
         for (TableColumn<?, ?> column : tableView.getColumns()) {

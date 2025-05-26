@@ -42,8 +42,9 @@ public class RegisterRoomView extends BorderPane implements Runnable {
 
     private ArrayList<Image> images;
     private ArrayList<ImageView> imageViews;
+    private String hotelNumber;
 
-    public RegisterRoomView(Client client, Pane contentPane) {
+    public RegisterRoomView(Client client, Pane contentPane, String hotelNumber) {
         this.setStyle("-fx-border-color: black; -fx-background-color: white;");
         this.setPrefSize(530, 530);
         this.setLayoutX(100);
@@ -51,6 +52,7 @@ public class RegisterRoomView extends BorderPane implements Runnable {
 
         this.contentPane = contentPane;
         this.images = new ArrayList<>();
+        this.hotelNumber = hotelNumber;
 
         this.initComponents();
         this.client = client;
@@ -107,6 +109,8 @@ public class RegisterRoomView extends BorderPane implements Runnable {
         tPrice = new TextField();
         Button btnRegister = new Button("Register");
         tHotelNumber = new TextField();
+        tHotelNumber.setText(this.hotelNumber);
+        tHotelNumber.setEditable(false);
         //cargar imagenes
         Button btnCargar = new Button("Upload images of the rooms");//revisar si esta bien traducido
 
