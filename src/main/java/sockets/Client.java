@@ -138,7 +138,7 @@ public class Client extends Thread {
                         this.deleted = 1;
                         break;
                     case Action.HOTEL_ROOMS:
-                        for (int i = 1; i < datos.length - 1; i+=6) {
+                        for (int i = 1; i < datos.length - 6; i += 7) {
                             this.hotelRooms += datos[i] + "-" + datos[i+1] + "-" + datos[i+2] + "-" + datos[i+3] + "-" + datos[i+6] + "\n";
                         }
                         System.out.println(hotelRooms);
