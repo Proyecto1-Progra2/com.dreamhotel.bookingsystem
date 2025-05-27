@@ -291,7 +291,7 @@ public class ShowHotelView extends BorderPane implements Runnable {
 
     // para encontrar la accion
     private void hotelList(String accion) {
-        this.client.getSend().println(accion + "-");
+        this.client.getSend().println(accion + "|||");
     }
 
     private void hotelRegister(Hotel hotel) {
@@ -299,11 +299,11 @@ public class ShowHotelView extends BorderPane implements Runnable {
     }
 
     private void deleteHotel(String number) {
-        this.client.getSend().println(Action.HOTEL_DELETE+"-"+number);
+        this.client.getSend().println(Action.HOTEL_DELETE+"|||"+number);
     }
 
     private void updateHotel(Hotel hotel, String numberRequest) {
-        this.client.getSend().println(Action.HOTEL_UPDATE+hotel.toString()+"-"+numberRequest);
+        this.client.getSend().println(Action.HOTEL_UPDATE+hotel.toString()+"|||"+numberRequest);
     }
 
     private void refreshTable() {
@@ -321,7 +321,7 @@ public class ShowHotelView extends BorderPane implements Runnable {
                         if(data.isEmpty()) {  // solo carga si no hay datos aún
                             String[] rows = resultHotels.split("\n");
                             for (String row : rows) {
-                                String[] parts = row.split("-");
+                                String[] parts = row.split("\\|\\|\\|");
                                 if (parts.length == 3) {
                                     HotelTableModel hotel = new HotelTableModel(
                                             parts[0].trim(),  // hotelNumber

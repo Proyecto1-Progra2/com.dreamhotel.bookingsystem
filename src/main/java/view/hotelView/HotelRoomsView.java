@@ -140,7 +140,8 @@ public class HotelRoomsView extends BorderPane implements Runnable {
                 btnImage.setOnAction(e -> {
                     RoomTableModel room = getTableView().getItems().get(getIndex());
                     String roomNumber = room.getRoomNumber();
-                    new RoomImagesView(client, contentPane, roomNumber);
+                    String hotelNumber = room.getRoomHotelNumber();
+                    new RoomImagesView(client, contentPane, roomNumber, hotelNumber);
                 });
             }
             private final HBox hbox = new HBox(5, btnEdit, btnDelete, btnImage);
@@ -190,11 +191,11 @@ public class HotelRoomsView extends BorderPane implements Runnable {
     }
 
     private void roomList(String accion, String hotelNumber) {
-        this.client.getSend().println(accion + "-" + hotelNumber);
+        this.client.getSend().println(accion + "|||" + hotelNumber);
     }
 
     private void roomDelete(String accion, String roomNumber, String hotelNumber) {
-        this.client.getSend().println(accion + "-" + roomNumber + "-" + hotelNumber);
+        this.client.getSend().println(accion + "|||" + roomNumber + "|||" + hotelNumber);
     }
 
     private void refreshTable() {
@@ -212,7 +213,7 @@ public class HotelRoomsView extends BorderPane implements Runnable {
                         if (data.isEmpty()) {  // solo carga si no hay datos aún
                             String[] rows = resultRooms.split("\n");
                             for (String row : rows) {
-                                String[] parts = row.split("-");
+                                String[] parts = row.split("\\|\\|\\|");
                                 if (parts.length == 5) {
                                     RoomTableModel room = new RoomTableModel(
                                             parts[0].trim(),  // roomNumber

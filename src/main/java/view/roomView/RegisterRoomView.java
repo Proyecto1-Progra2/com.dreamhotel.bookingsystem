@@ -171,13 +171,13 @@ public class RegisterRoomView extends BorderPane implements Runnable {
     private void roomRegister(Room room) {
         String encodedImage = Base64.getEncoder().encodeToString(room.getImage().getImage());
 
-        this.client.getSend().println(Action.ROOM_REGISTER + "-" +
-                room.getRoomNumber() + "-" +
-                room.getStatus() + "-" +
-                room.getStyle() + "-" +
-                room.getPrice() + "-" +
-                room.getImage().getRoomNumber() + "-" +  // este es igual a room.getRoomNumber()
-                encodedImage + "-" +
+        this.client.getSend().println(Action.ROOM_REGISTER + "|||" +
+                room.getRoomNumber() + "|||" +
+                room.getStatus() + "|||" +
+                room.getStyle() + "|||" +
+                room.getPrice() + "|||" +
+                room.getImage().getRoomNumber() + "|||" +  // este es igual a room.getRoomNumber()
+                encodedImage + "|||" +
                 room.getHotelNumber()
         );
     }

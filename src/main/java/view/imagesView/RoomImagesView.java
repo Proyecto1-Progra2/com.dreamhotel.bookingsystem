@@ -15,23 +15,27 @@ public class RoomImagesView extends BorderPane implements Runnable{
 
     private Client client;
     private Pane contentPane;
-    private String roomNumber;
+    private String roomNumber, hotelNumber;
     private volatile boolean isRunning = true;
 
     private ImageView imageView;
 
-    public RoomImagesView(Client client, Pane contentPane, String roomNumber) {
+    public RoomImagesView(Client client, Pane contentPane, String roomNumber, String hotelNumber) {
         this.setStyle("-fx-border-color: black; -fx-background-color: white;");
         this.setPrefSize(680, 530);
         this.setLayoutX(70);
         this.setLayoutY(100);
         this.contentPane = contentPane;
         this.roomNumber = roomNumber;
+        this.hotelNumber = hotelNumber;
 
         this.initComponents();
         this.client = client;
 
-        this.requestImages(Action.IMAGE_REQUEST, this.roomNumber);
+        this.requestImages(Action.IMAGE_REQUEST, this.roomNumber, this.hotelNumber);
+
+        Thread thread = new Thread(this);
+        thread.start();
     }
 
     private void initComponents() {
@@ -64,15 +68,22 @@ public class RoomImagesView extends BorderPane implements Runnable{
         contentPane.getChildren().add(this);
     }
 
-    private void requestImages(String accion, String roomNumber) {
-        this.client.getSend().println(accion+"-"+roomNumber);
+    private void requestImages(String accion, String roomNumber, String hotelNumber) {
+        this.client.getSend().println(accion+"|||"+roomNumber+"|||"+hotelNumber);
     }
 
     @Override
     public void run() {
         while (this.isRunning) {
             if (this.client.isImageReceived()) {
-                imageView.setImage(new javafx.scene.image.Image(new java.io.ByteArrayInputStream(this.client.getImage())));
+                byte[] imageData = this.client.getImage();
+                if (imageData != null && imageData.length > 0) {
+                    javafx.application.Platform.runLater(() -> {
+                        imageView.setImage(new javafx.scene.image.Image(new java.io.ByteArrayInputStream(imageData)));
+                    });
+                } else {
+                    System.out.println("⚠ Imagen recibida es nula o vacía");
+                }
                 this.client.setImage(null);
                 this.client.setImageReceived(false);
             }

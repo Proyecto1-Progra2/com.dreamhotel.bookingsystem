@@ -44,6 +44,7 @@ public class Client extends Thread {
 
     private byte[] image;
     private boolean imageReceived;
+    private ArrayList<byte[]> images;
     // -> Validación de acciones
     private int registered;
     private int updated;
@@ -66,6 +67,7 @@ public class Client extends Thread {
         //
 
         this.imageReceived = false;
+        this.images = new ArrayList<>();
 
         // -> variables de validación de acciones => 1 = accion exitosa, 2 = accion no exitosa, 0 = no se ha realizado ninguna accion
         this.registered = 0;
@@ -90,18 +92,18 @@ public class Client extends Thread {
             while (true) {
                 this.lectura = this.receive.readLine();
                 //System.out.println(this.lectura);
-                String[] datos = this.lectura.split("-");
+                String[] datos = this.lectura.split("\\|\\|\\|");
                 String accion = datos[0];
                 switch (accion) {
                     case Action.HOTEL_LIST:
                         for (int i = 1; i < datos.length - 1; i+=3) {
-                            this.mostrarHoteles += datos[i] + "-" + datos[i+1] + "-" + datos[i+2] + "\n";
+                            this.mostrarHoteles += datos[i] + "|||" + datos[i+1] + "|||" + datos[i+2] + "\n";
                         }
                         this.hotelesMostrado = true;
                         break;
                     case Action.ROOM_LIST:
                         for (int i = 1; i < datos.length - 1; i+=5) {
-                            this.mostrarRooms += datos[i] + "-" + datos[i+1] + "-" + datos[i+2] + "-" + datos[i+3] + "-" + datos[i+4] + "\n";
+                            this.mostrarRooms += datos[i] + "|||" + datos[i+1] + "|||" + datos[i+2] + "|||" + datos[i+3] + "|||" + datos[i+4] + "\n";
                         }
                         this.habitacionesMostrado = true;
                         break;
@@ -139,12 +141,18 @@ public class Client extends Thread {
                         break;
                     case Action.HOTEL_ROOMS:
                         for (int i = 1; i < datos.length - 6; i += 8) {
-                            this.hotelRooms += datos[i] + "-" + datos[i+1] + "-" + datos[i+2] + "-" + datos[i+3] + "-" + datos[i+7] + "\n";
+                            this.hotelRooms += datos[i] + "|||" + datos[i+1] + "|||" + datos[i+2] + "|||" + datos[i+3] + "|||" + datos[i+7] + "\n";
                         }
                         this.mostrarRoomHotel = true;
                         break;
                     case Action.IMAGE_REQUEST:
-                        this.image = Base64.getDecoder().decode(datos[1]);
+                        this.images.clear();
+                        for (int i = 1; i < datos.length; i++) {
+                            byte[] imgBytes = Base64.getDecoder().decode(datos[i]);
+                            this.images.add(imgBytes);
+                        }
+                        this.image = this.images.get(0); // opcional: poner la primera imagen como "principal"
+                        this.imageReceived = true;
                         break;
                     default:
                         throw new IllegalStateException("Unexpected value: " + accion);
@@ -155,6 +163,14 @@ public class Client extends Thread {
             throw new RuntimeException(e);
         }
 
+    }
+
+    public ArrayList<byte[]> getImages() {
+        return images;
+    }
+
+    public void setImages(ArrayList<byte[]> images) {
+        this.images = images;
     }
 
     public byte[] getImage() {
