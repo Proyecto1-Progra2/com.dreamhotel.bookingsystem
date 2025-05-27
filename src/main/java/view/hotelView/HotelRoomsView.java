@@ -4,6 +4,8 @@ import javafx.animation.ScaleTransition;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
+import javafx.collections.transformation.SortedList;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
@@ -31,7 +33,7 @@ public class HotelRoomsView extends BorderPane implements Runnable {
 
     public HotelRoomsView(Client client, Pane contentPane, String hotelNumber) {
         this.setStyle("-fx-border-color: black; -fx-background-color: white;");
-        this.setPrefSize(970, 530);
+        this.setPrefSize(800, 530);
         this.setLayoutX(30);
         this.setLayoutY(100);
         this.contentPane = contentPane;
@@ -53,7 +55,32 @@ public class HotelRoomsView extends BorderPane implements Runnable {
 
         tableView = new TableView<>();
         data = FXCollections.observableArrayList();
-        tableView.setItems(data);
+        //tableView.setItems(data);
+        FilteredList<RoomTableModel> dataFiltered= new FilteredList<>(data, data->true);
+
+        Label searchLabel= new Label("Search for a room:");
+        TextField searchRoom= new TextField();
+        searchRoom.setPromptText("Room number:");
+
+
+        // Filtra de una con el texto que ingresa desde dataFiltered
+        searchRoom.textProperty().addListener((observable, info, enterInfo) -> {
+
+            dataFiltered.setPredicate(hotel -> {
+                if (enterInfo == null || enterInfo.isEmpty()) {// si no hay filtros debemos de mostrar todos
+                    return true;
+                }
+                String enterInfoLowerCase = enterInfo.toLowerCase();// POR AQUELLO que sea lower case
+                return hotel.getRoomNumber().toLowerCase().contains(enterInfoLowerCase);
+            });
+        });
+        // aqui ordenamos primero la info que llega de hotel table
+        SortedList<RoomTableModel> sortedInfo = new SortedList<>(dataFiltered);
+        sortedInfo.comparatorProperty().bind(tableView.comparatorProperty());
+
+
+        //agregamos con set la info a la table view
+        tableView.setItems(sortedInfo);
 
         TableColumn<RoomTableModel, String> column1 = new TableColumn<>("Room Number");
         column1.setCellValueFactory(cellData -> cellData.getValue().roomNumberProperty());
@@ -175,14 +202,23 @@ public class HotelRoomsView extends BorderPane implements Runnable {
             new RegisterRoomView(this.client, this.contentPane, numberHotel);
         });
 
+        HBox searchBox = new HBox(5);
+        searchBox.setAlignment(Pos.CENTER_LEFT);
+        searchBox.getChildren().addAll(searchLabel, searchRoom);
+
         VBox contenido = new VBox(10);
         contenido.setStyle("-fx-padding: 10;");
-        contenido.getChildren().addAll(btnAddRoom, tableView);
+        contenido.getChildren().addAll(btnAddRoom, searchBox, tableView);
+
 
         double widthPercent = 1.0 / tableView.getColumns().size();
         for (TableColumn<?, ?> column : tableView.getColumns()) {
             column.prefWidthProperty().bind(tableView.widthProperty().multiply(widthPercent));
         }
+
+
+
+
 
         this.setTop(titleBar);
         this.setCenter(contenido);

@@ -3,16 +3,16 @@ package view.roomView;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
+import javafx.collections.transformation.SortedList;
 import javafx.geometry.Pos;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import sockets.Client;
+import table.HotelTableModel;
 import table.RoomTableModel;
 import utils.Action;
 
@@ -49,7 +49,32 @@ public class ShowRoomView extends BorderPane implements Runnable {
 
         tableView = new TableView<>();
         data = FXCollections.observableArrayList();
-        tableView.setItems(data);
+      //  tableView.setItems(data);
+
+        FilteredList<RoomTableModel>dataFiltered= new FilteredList<>(data, data->true);
+
+        Label searchLabel= new Label("Search for a room:");
+        TextField searchRoom= new TextField();
+        searchRoom.setPromptText("Room number:");
+
+        // Filtra de una con el texto que ingresa desde dataFiltered
+        searchRoom.textProperty().addListener((observable, info, enterInfo) -> {
+
+            dataFiltered.setPredicate(hotel -> {
+                if (enterInfo == null || enterInfo.isEmpty()) {// si no hay filtros debemos de mostrar todos
+                    return true;
+                }
+                String enterInfoLowerCase = enterInfo.toLowerCase();// POR AQUELLO que sea lower case
+                return hotel.getRoomNumber().toLowerCase().contains(enterInfoLowerCase);
+            });
+        });
+        // aqui ordenamos primero la info que llega de hotel table
+        SortedList<RoomTableModel> sortedInfo = new SortedList<>(dataFiltered);
+        sortedInfo.comparatorProperty().bind(tableView.comparatorProperty());
+
+
+        //agregamos con set la info a la table view
+        tableView.setItems(sortedInfo);
 
         TableColumn<RoomTableModel, String> column1 = new TableColumn<>("Room Number");
         column1.setCellValueFactory(cellData -> cellData.getValue().roomNumberProperty());
