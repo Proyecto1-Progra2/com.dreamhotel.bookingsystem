@@ -160,7 +160,7 @@ public class ShowHotelView extends BorderPane implements Runnable {
                     // variable que hice porque la llamada de getResource era muy larga
                     String diseñoVnetanas = getClass().getResource("/main.css").toExternalForm();
 
-                    TextInputDialog numberDialog = new TextInputDialog(hotel.getHotelName());
+                    TextInputDialog numberDialog = new TextInputDialog(hotel.getHotelNumber());
                     numberDialog.setTitle("Number edit");
                     numberDialog.setHeaderText("Edit hotel number:");
                     numberDialog.setContentText("Number:");
