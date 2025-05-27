@@ -124,8 +124,7 @@ public class Client extends Thread {
                         this.updated = 1;
                         break;
                     case Action.ROOM_SEARCH:
-                        this.roomSolicitado = new Room(datos[1], datos[2], datos[3], Double.parseDouble(datos[4]), null, datos[7]);
-                        System.out.println(this.roomSolicitado.toString());
+                        this.roomSolicitado = new Room(datos[1], datos[2], datos[3], Double.parseDouble(datos[4]), null, datos[8]);
                         this.mostrarHabitacionSolicitado = true;
                         break;
                     case Action.ROOM_NOT_REGISTER:
@@ -139,8 +138,8 @@ public class Client extends Thread {
                         this.deleted = 1;
                         break;
                     case Action.HOTEL_ROOMS:
-                        for (int i = 1; i < datos.length - 6; i += 7) {
-                            this.hotelRooms += datos[i] + "-" + datos[i+1] + "-" + datos[i+2] + "-" + datos[i+3] + "-" + datos[i+6] + "\n";
+                        for (int i = 1; i < datos.length - 6; i += 8) {
+                            this.hotelRooms += datos[i] + "-" + datos[i+1] + "-" + datos[i+2] + "-" + datos[i+3] + "-" + datos[i+7] + "\n";
                         }
                         this.mostrarRoomHotel = true;
                         break;

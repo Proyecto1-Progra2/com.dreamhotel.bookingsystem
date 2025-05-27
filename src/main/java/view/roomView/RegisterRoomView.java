@@ -158,8 +158,8 @@ public class RegisterRoomView extends BorderPane implements Runnable {
         });
 
         btnRegister.setOnAction(e -> this.roomRegister(new Room(this.tRoomNumber.getText(), cbStatus.getValue(),
-                cbStyle.getValue(), Double.parseDouble(this.tPrice.getText()), new Image(this.tRoomNumber.getText(), this.image),
-                tHotelNumber.getText()))
+                cbStyle.getValue(), Double.parseDouble(this.tPrice.getText()), new Image(this.tRoomNumber.getText(),
+                this.tHotelNumber.getText(), this.image), tHotelNumber.getText()))
         );
 
         this.setTop(titleBar);
