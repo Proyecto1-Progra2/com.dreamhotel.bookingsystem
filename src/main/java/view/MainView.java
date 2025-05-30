@@ -1,8 +1,11 @@
 package view;
 
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import sockets.Client;
@@ -48,52 +51,52 @@ public class MainView extends VBox {
         Collection<Node> nodes = new ArrayList<>();
 
         MenuBar menuBar = new MenuBar();
-        menuBar.setStyle("-fx-background-color: #e4e8e5  ;");
+        menuBar.setStyle("-fx-background-color: #cfd6d8  ;");
 
         Menu menuHotel = new Menu("Hotels");
         menuHotel.setStyle("-fx-font-size: 16px;");
-        menuHotel.setStyle("-fx-background-color: #abd8ad   ;");
+        menuHotel.setStyle("-fx-background-color: #87c1cc   ;");
 
 
-        Menu menuRoom = new Menu("Rooms");
-        menuRoom.setStyle("-fx-font-size: 16px;");
-        menuRoom.setStyle("-fx-background-color:#62c19a    ;");
+//        Menu menuRoom = new Menu("Rooms");
+//        menuRoom.setStyle("-fx-font-size: 16px;");
+//        menuRoom.setStyle("-fx-background-color:#62c19a    ;");
 
         // aparezca un contexto de lo que vamos a hacer
         menuHotel.setOnShowing(e -> {
             contentPane.getChildren().clear();
             Label label = new Label("Register of hotels");
-            label.setStyle("-fx-font-family: 'Elephant'; -fx-font-size: 20px; -fx-text-fill: #2a2e2c ;");
+            label.setStyle("-fx-font-family: 'Elephant'; -fx-font-size: 20px; -fx-text-fill: #59a5b3  ;");
             label.setLayoutX(20);
             label.setLayoutY(20);
             contentPane.getChildren().add(label);
         });
 
-        menuRoom.setOnShowing(e->{
-            contentPane.getChildren().clear();
-            Label label= new Label("Register of Rooms");
-            label.setStyle("-fx-font-family: 'Elephant';-fx-font-size: 20px; -fx-text-fill: #2a2e2c ;");
-            label.setLayoutX(20);
-            label.setLayoutY(20);
-            contentPane.getChildren().add(label);
-        });
+//        menuRoom.setOnShowing(e -> {
+//            contentPane.getChildren().clear();
+//            Label label = new Label("Register of Rooms");
+//            label.setStyle("-fx-font-family: 'Elephant';-fx-font-size: 20px; -fx-text-fill: #2a2e2c ;");
+//            label.setLayoutX(20);
+//            label.setLayoutY(20);
+//            contentPane.getChildren().add(label);
+//        });
 
         // -> Hotels Menu
         MenuItem hotelRegister = new MenuItem("Register");
         hotelRegister.setOnAction(e -> new RegisterHotelView(this.client, this.contentPane));
-        hotelRegister.setStyle("-fx-background-color: #93c195 ");
+        hotelRegister.setStyle("-fx-background-color: #87c1cc ");
 
         MenuItem hotelView = new MenuItem("View all");
         hotelView.setOnAction(e -> new ShowHotelView(this.client, this.contentPane));
-        hotelView.setStyle("-fx-background-color: #93c195 ");
+        hotelView.setStyle("-fx-background-color: #87c1cc ");
 
         MenuItem hotelUpdate = new MenuItem("Update");
         hotelUpdate.setOnAction(e -> new UpdateHotelView(this.client, this.contentPane));
-        hotelUpdate.setStyle("-fx-background-color: #93c195 ");
+        hotelUpdate.setStyle("-fx-background-color: #87c1cc ");
 
         MenuItem hotelDelete = new MenuItem("Delete");
         hotelDelete.setOnAction(e -> new DeleteHotelView(this.client, this.contentPane));
-        hotelDelete.setStyle("-fx-background-color: #93c195 ");
+        hotelDelete.setStyle("-fx-background-color: #87c1cc ");
 
         menuHotel.getItems().addAll(hotelView);
 
@@ -114,24 +117,51 @@ public class MainView extends VBox {
         roomDelete.setOnAction(e -> new DeleteRoomView(this.client, this.contentPane));
         roomDelete.setStyle("-fx-background-color: #8ec6af ");
 
-        menuRoom.getItems().addAll(/*roomRegister, */roomView, roomUpdate, roomDelete);
+//        menuRoom.getItems().addAll(/*roomRegister, */roomView, roomUpdate, roomDelete);
 
-        menuBar.getMenus().addAll(menuHotel, menuRoom);
+        //menuBar.getMenus().addAll(menuHotel */menuRoom);
+        menuBar.getMenus().add(menuHotel);
         nodes.add(menuBar);
-
 
         contentPane = new Pane();
         contentPane.setPrefSize(1000, 1000);
-        contentPane.setStyle("-fx-background-color:#cad1ce;");
+        contentPane.setStyle("-fx-background-color:#ccd2d3 ;");
 
 
-        Label bienvenida = new Label("Welcome to the system hotel!");
-        bienvenida.setStyle("-fx-font-family: 'Elephant'; -fx-font-size: 22px; -fx-text-fill: #2a2e2c;");
-        bienvenida.setLayoutX(40);
-        bienvenida.setLayoutY(40);
-        contentPane.getChildren().add(bienvenida);
+        VBox vbox = new VBox(10);
+        vbox.setAlignment(Pos.CENTER);
+        vbox.setPrefWidth(1000);
+
+
+        vbox.layoutYProperty().bind(contentPane.heightProperty().subtract(vbox.heightProperty()).divide(2));
+
+
+        Image image = new Image(getClass().getResource("/image2.png").toExternalForm());
+        ImageView imageView = new ImageView(image);
+        imageView.setFitWidth(400);
+        imageView.setPreserveRatio(true);
+
+
+        Label bienvenida = new Label("Welcome to the Hotel Register!");
+        Label inicio = new Label("Let’s Get You Checked In");
+        Label mensaje = new Label("Efficiency, comfort, success — all in one stay");
+        Label pressOn = new Label("Press on the menuBar!");
+
+
+        inicio.setStyle("-fx-font-family: 'Elephant'; -fx-font-size: 20px; -fx-text-fill: #3a6972 ;");
+        bienvenida.setStyle("-fx-font-family: 'Elephant'; -fx-font-size: 40px; -fx-text-fill: #2a2e2c;");
+        mensaje.setStyle("-fx-font-family: 'Elephant'; -fx-font-size: 30px; -fx-text-fill: #59a5b3 ;");
+        pressOn.setStyle("-fx-font-family: 'Elephant'; -fx-font-size: 15px; -fx-text-fill: #101111  ;");
+
+
+        vbox.getChildren().addAll(inicio, bienvenida, mensaje, imageView, pressOn);
+
+
+        contentPane.getChildren().add(vbox);
+
 
         nodes.add(contentPane);
+
 
         this.getChildren().addAll(nodes);
     }
