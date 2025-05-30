@@ -7,8 +7,11 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
@@ -50,10 +53,33 @@ public class ShowHotelView extends BorderPane implements Runnable {
         thread.start();
     }
     private void initComponents() {
+
+
         // Título con botón cerrar
         HBox titleBar = new HBox();
         Label title = new Label("Hotel List");
         Button closeBtn = new Button("X");
+
+        // Configuración del titleBar
+        titleBar.setAlignment(Pos.CENTER_RIGHT);
+        titleBar.setSpacing(10);
+        titleBar.setStyle("-fx-background-color: #cccccc; -fx-padding: 5;");
+        titleBar.getChildren().addAll(title, closeBtn);
+
+        // imagen
+        Image image = new Image(getClass().getResource("/image.png").toExternalForm());
+        ImageView imageView = new ImageView(image);
+        imageView.setFitWidth(160);
+        imageView.setPreserveRatio(true);
+
+        HBox imageBox = new HBox();
+        imageBox.setAlignment(Pos.BASELINE_CENTER);
+        imageBox.getChildren().add(imageView);
+
+
+
+        VBox topBox = new VBox(3);
+        topBox.getChildren().addAll(titleBar, imageBox);
 
         tableView = new TableView<>();
         data = FXCollections.observableArrayList();
@@ -212,10 +238,6 @@ public class ShowHotelView extends BorderPane implements Runnable {
             column.prefWidthProperty().bind(tableView.widthProperty().multiply(widthPercent));
         }
 
-        titleBar.setAlignment(Pos.CENTER_RIGHT);
-        titleBar.setSpacing(10);
-        titleBar.setStyle("-fx-background-color: #cccccc; -fx-padding: 5;");
-        titleBar.getChildren().addAll(title, closeBtn);
 
         closeBtn.setOnAction(e -> {
             this.isRunning = false;
@@ -275,15 +297,17 @@ public class ShowHotelView extends BorderPane implements Runnable {
             refreshTable();
         });
 
+
         HBox searchBox = new HBox(5);
         searchBox.setAlignment(Pos.CENTER_LEFT);
         searchBox.getChildren().addAll(searchLabel, searchHotel);
 
-        VBox contenido = new VBox(10);
-        contenido.setStyle("-fx-padding: 10;");
-        contenido.getChildren().addAll(this.btnAddHotel, searchBox, tableView);
 
-        this.setTop(titleBar);
+        VBox contenido = new VBox(10);
+        contenido.setPadding(new Insets(10));
+        contenido.getChildren().addAll(btnAddHotel, searchBox, tableView);
+
+        this.setTop(topBox);
         this.setCenter(contenido);
 
         contentPane.getChildren().add(this);
