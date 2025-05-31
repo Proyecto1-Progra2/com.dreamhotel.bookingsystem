@@ -13,7 +13,7 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Base64;
-
+/// la clase cliente que se conecta al servidor y procesa las respuestas
 public class Client extends Thread {
 
     private Socket socket;
@@ -126,9 +126,24 @@ public class Client extends Thread {
                         this.updated = 1;
                         break;
                     case Action.ROOM_SEARCH:
-                        this.roomSolicitado = new Room(datos[1], datos[2], datos[3], Double.parseDouble(datos[4]), null, datos[8]);
-                        this.mostrarHabitacionSolicitado = true;
+
+                        if (datos.length < 6) {
+                            this.roomSolicitado = null;  // No se encontró habitación
+                            this.mostrarHabitacionSolicitado = false;
+                        } else {
+
+                            this.roomSolicitado = new Room(
+                                    datos[1],         // roomNumber
+                                    datos[2],         // hotelNumber
+                                    datos[3],         // tipo
+                                    Double.parseDouble(datos[4]),  // precio
+                                    null,             // imágenes
+                                    datos[5]          //
+                            );
+                            this.mostrarHabitacionSolicitado = true;
+                        }
                         break;
+
                     case Action.ROOM_NOT_REGISTER:
                         this.registered=2;
                         break;

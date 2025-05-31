@@ -177,13 +177,16 @@ public class ShowHotelView extends BorderPane implements Runnable {
                 btnViewRooms.setOnAction(e -> {
                     HotelTableModel hotel = getTableView().getItems().get(getIndex());
                     String hotelRequest = hotel.getHotelNumber();
-                    new HotelRoomsView(client, contentPane, hotelRequest);
+                    new HotelRoomsView(client, contentPane, hotelRequest, hotelRequest);
+
                 });
 
                 btnEdit.setOnAction(e -> {
                     HotelTableModel hotel = getTableView().getItems().get(getIndex());
                     String hotelRequest = hotel.getHotelNumber();
                     // variable que hice porque la llamada de getResource era muy larga
+
+
                     String diseñoVnetanas = getClass().getResource("/main.css").toExternalForm();
 
 //                    TextInputDialog numberDialog = new TextInputDialog(hotel.getHotelNumber());

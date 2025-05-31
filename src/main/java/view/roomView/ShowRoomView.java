@@ -7,10 +7,7 @@ import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import sockets.Client;
 import table.HotelTableModel;
 import table.RoomTableModel;
@@ -49,31 +46,35 @@ public class ShowRoomView extends BorderPane implements Runnable {
 
         tableView = new TableView<>();
         data = FXCollections.observableArrayList();
-      //  tableView.setItems(data);
 
-        FilteredList<RoomTableModel>dataFiltered= new FilteredList<>(data, data->true);
+        FilteredList<RoomTableModel> dataFiltered = new FilteredList<>(data, data -> true);
 
-        Label searchLabel= new Label("Search for a room:");
-        TextField searchRoom= new TextField();
+        Label searchLabel = new Label("Search for a room:");
+        TextField searchRoom = new TextField();
         searchRoom.setPromptText("Room number:");
 
-        // Filtra de una con el texto que ingresa desde dataFiltered
-        searchRoom.textProperty().addListener((observable, info, enterInfo) -> {
+        // Nuevo TextArea a la par del TextField
+        TextArea textArea = new TextArea();
+        textArea.setPromptText("Additional info or notes...");
+        textArea.setPrefRowCount(3);
+        textArea.setPrefColumnCount(15);
+        textArea.setPrefWidth(200);
+        textArea.setMinWidth(150);
 
-            dataFiltered.setPredicate(hotel -> {
-                if (enterInfo == null || enterInfo.isEmpty()) {// si no hay filtros debemos de mostrar todos
+        // Filtra de una con el texto que ingresa desde dataFiltered
+        searchRoom.textProperty().addListener((observable, oldValue, newValue) -> {
+            dataFiltered.setPredicate(room -> {
+                if (newValue == null || newValue.isEmpty()) {
                     return true;
                 }
-                String enterInfoLowerCase = enterInfo.toLowerCase();// POR AQUELLO que sea lower case
-                return hotel.getRoomNumber().toLowerCase().contains(enterInfoLowerCase);
+                String lowerCaseFilter = newValue.toLowerCase();
+                return room.getRoomNumber().toLowerCase().contains(lowerCaseFilter);
             });
         });
-        // aqui ordenamos primero la info que llega de hotel table
+
         SortedList<RoomTableModel> sortedInfo = new SortedList<>(dataFiltered);
         sortedInfo.comparatorProperty().bind(tableView.comparatorProperty());
 
-
-        //agregamos con set la info a la table view
         tableView.setItems(sortedInfo);
 
         TableColumn<RoomTableModel, String> column1 = new TableColumn<>("Room Number");
@@ -99,12 +100,10 @@ public class ShowRoomView extends BorderPane implements Runnable {
         titleBar.getChildren().addAll(title, closeBtn);
 
         closeBtn.setOnAction(e -> {
-            //this.isRunning = false;
             this.setVisible(false);
             contentPane.getChildren().remove(this);
         });
 
-        // Hacer movible la ventana dentro del contentPane
         final double[] dragOffset = new double[2];
         titleBar.setOnMousePressed(e -> {
             dragOffset[0] = e.getSceneX() - this.getLayoutX();
@@ -115,7 +114,6 @@ public class ShowRoomView extends BorderPane implements Runnable {
             double newX = e.getSceneX() - dragOffset[0];
             double newY = e.getSceneY() - dragOffset[1];
 
-            // Restringir al área visible del contentPane
             newX = Math.max(0, Math.min(newX, contentPane.getWidth() - this.getWidth()));
             newY = Math.max(0, Math.min(newY, contentPane.getHeight() - this.getHeight()));
 
@@ -123,9 +121,20 @@ public class ShowRoomView extends BorderPane implements Runnable {
             this.setLayoutY(newY);
         });
 
+        // Contenedor horizontal para el searchLabel, searchRoom y el TextArea
+        HBox searchBox = new HBox(10);
+        searchBox.setAlignment(Pos.CENTER_LEFT);
+        searchBox.getChildren().addAll(searchLabel, searchRoom, textArea);
+
+        // Que el TextArea crezca si hay espacio
+        HBox.setHgrow(textArea, Priority.ALWAYS);
+
         VBox contenido = new VBox(10);
         contenido.setStyle("-fx-padding: 10;");
-        contenido.getChildren().addAll(tableView);
+        contenido.getChildren().addAll(searchBox, tableView);
+
+        // Para que la tabla crezca verticalmente y ocupe espacio
+        VBox.setVgrow(tableView, Priority.ALWAYS);
 
         this.setTop(titleBar);
         this.setCenter(contenido);

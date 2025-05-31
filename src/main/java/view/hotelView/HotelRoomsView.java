@@ -25,24 +25,32 @@ public class HotelRoomsView extends BorderPane implements Runnable {
     private Client client;
     private Pane contentPane;
     private String hotelNumber;
+    private String hotelName;
+    private String  hotelAdress;
+    private Label hotelLabel;
 
     private TableView<RoomTableModel> tableView;
     private ObservableList<RoomTableModel> data;
 
     private volatile boolean isRunning =true;
 
-    public HotelRoomsView(Client client, Pane contentPane, String hotelNumber) {
+    public HotelRoomsView(Client client, Pane contentPane, String hotelNumber, String hotelName) {
         this.setStyle("-fx-border-color: black; -fx-background-color: white;");
         this.setPrefSize(800, 530);
         this.setLayoutX(30);
         this.setLayoutY(100);
         this.contentPane = contentPane;
         this.hotelNumber = hotelNumber;
+        this.hotelName= hotelName;
+        this.hotelAdress=hotelAdress;
+
 
         this.initComponents();
         this.client = client;
 
         this.roomList(Action.HOTEL_ROOMS, hotelNumber);
+        this.hotelInfo(Action.HOTEL_SEARCH, hotelName);
+
 
         Thread thread = new Thread(this);
         thread.start();
@@ -50,36 +58,62 @@ public class HotelRoomsView extends BorderPane implements Runnable {
 
     private void initComponents() {
         HBox titleBar = new HBox();
+
         Label title = new Label("Room List");
         Button closeBtn = new Button("X");
 
         tableView = new TableView<>();
         data = FXCollections.observableArrayList();
-        //tableView.setItems(data);
-        FilteredList<RoomTableModel> dataFiltered= new FilteredList<>(data, data->true);
+        FilteredList<RoomTableModel> dataFiltered = new FilteredList<>(data, data -> true);
 
-        Label searchLabel= new Label("Search for a room:");
-        TextField searchRoom= new TextField();
+
+
+
+        Label searchLabel = new Label("Search for a room:");
+        TextField searchRoom = new TextField();
         searchRoom.setPromptText("Room number:");
 
+       // Label infoTitle = new Label("Hotel Information");
 
-        // Filtra de una con el texto que ingresa desde dataFiltered
-        searchRoom.textProperty().addListener((observable, info, enterInfo) -> {
+        TextArea infoTextArea = new TextArea();
+        infoTextArea.setPromptText("Information of your hotel");
+        infoTextArea.setPrefRowCount(1);
+        infoTextArea.setPrefColumnCount(20);
+        infoTextArea.setEditable(false);
+        infoTextArea.setWrapText(true);
 
+        hotelLabel = new Label("Hotel Name:" + this.hotelName);
+        hotelLabel.setStyle("-fx-font-weight: bold; -fx-font-size: 18px;");
+
+        infoTextArea.setText("Hotel Name: " + this.hotelName);
+
+///  esto definitivamente se triene que revisar
+
+        //
+        VBox infoBox = new VBox(50);
+        infoBox.getChildren().addAll(infoTextArea);
+
+
+
+
+
+        HBox searchBox = new HBox(10);
+        searchBox.setAlignment(Pos.CENTER_LEFT);
+        searchBox.getChildren().addAll(searchLabel, searchRoom, infoTextArea);
+
+
+        searchRoom.textProperty().addListener((observable, oldValue, newValue) -> {
             dataFiltered.setPredicate(hotel -> {
-                if (enterInfo == null || enterInfo.isEmpty()) {// si no hay filtros debemos de mostrar todos
+                if (newValue == null || newValue.isEmpty()) {
                     return true;
                 }
-                String enterInfoLowerCase = enterInfo.toLowerCase();// POR AQUELLO que sea lower case
-                return hotel.getRoomNumber().toLowerCase().contains(enterInfoLowerCase);
+                String lowerCaseFilter = newValue.toLowerCase();
+                return hotel.getRoomNumber().toLowerCase().contains(lowerCaseFilter);
             });
         });
-        // aqui ordenamos primero la info que llega de hotel table
+
         SortedList<RoomTableModel> sortedInfo = new SortedList<>(dataFiltered);
         sortedInfo.comparatorProperty().bind(tableView.comparatorProperty());
-
-
-        //agregamos con set la info a la table view
         tableView.setItems(sortedInfo);
 
         TableColumn<RoomTableModel, String> column1 = new TableColumn<>("Room Number");
@@ -102,6 +136,7 @@ public class HotelRoomsView extends BorderPane implements Runnable {
             private final Button btnEdit = new Button("Edit");
             private final Button btnDelete = new Button("Delete");
             private final Button btnImage = new Button("Image");
+
             {
                 btnEdit.setStyle("-fx-background-color: #87CEFA;");
                 btnDelete.setStyle("-fx-background-color: #FA8072;");
@@ -171,6 +206,7 @@ public class HotelRoomsView extends BorderPane implements Runnable {
                     new RoomImagesView(client, contentPane, roomNumber, hotelNumber);
                 });
             }
+
             private final HBox hbox = new HBox(5, btnEdit, btnDelete, btnImage);
 
             @Override
@@ -202,23 +238,14 @@ public class HotelRoomsView extends BorderPane implements Runnable {
             new RegisterRoomView(this.client, this.contentPane, numberHotel);
         });
 
-        HBox searchBox = new HBox(5);
-        searchBox.setAlignment(Pos.CENTER_LEFT);
-        searchBox.getChildren().addAll(searchLabel, searchRoom);
-
         VBox contenido = new VBox(10);
         contenido.setStyle("-fx-padding: 10;");
         contenido.getChildren().addAll(btnAddRoom, searchBox, tableView);
-
 
         double widthPercent = 1.0 / tableView.getColumns().size();
         for (TableColumn<?, ?> column : tableView.getColumns()) {
             column.prefWidthProperty().bind(tableView.widthProperty().multiply(widthPercent));
         }
-
-
-
-
 
         this.setTop(titleBar);
         this.setCenter(contenido);
@@ -226,9 +253,15 @@ public class HotelRoomsView extends BorderPane implements Runnable {
         contentPane.getChildren().add(this);
     }
 
+
     private void roomList(String accion, String hotelNumber) {
         this.client.getSend().println(accion + "|||" + hotelNumber);
     }
+
+    private void hotelInfo(String accion, String hotelName) {
+        this.client.getSend().println(accion + "|||" + hotelName);
+    }
+
 
     private void roomDelete(String accion, String roomNumber, String hotelNumber) {
         this.client.getSend().println(accion + "|||" + roomNumber + "|||" + hotelNumber);
