@@ -120,7 +120,7 @@ public class UpdateRoomView extends BorderPane implements Runnable {
     }
 
     private void requestRoom(String numberRoomRequest, String hotelNumberRequest) {
-        this.client.getSend().println(Action.ROOM_SEARCH + "-" + numberRoomRequest + "-" + hotelNumberRequest);
+        this.client.getSend().println(Action.ROOM_SEARCH + "|||" + numberRoomRequest + "|||" + hotelNumberRequest);
     }
 
     private void updateRoom(Room room) {
