@@ -53,8 +53,6 @@ public class ShowHotelView extends BorderPane implements Runnable {
         thread.start();
     }
     private void initComponents() {
-
-
         // Título con botón cerrar
         HBox titleBar = new HBox();
         Label title = new Label("Hotel List");

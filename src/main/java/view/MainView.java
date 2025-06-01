@@ -9,6 +9,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import sockets.Client;
+import view.bookingView.ShowBookingView;
 import view.hotelView.*;
 import view.roomView.DeleteRoomView;
 import view.roomView.RegisterRoomView;
@@ -30,7 +31,6 @@ public class MainView extends VBox {
 
     public MainView(Client client, Stage stage) {
         this.setPrefSize(1000, 700);
-        this.client = client;
 
 
         Scene scene = new Scene(this);
@@ -40,8 +40,7 @@ public class MainView extends VBox {
         stage.show();
 
         this.initComponents();
-        Thread thread = new Thread((Runnable) this);
-        thread.start();
+        this.client = client;
     }
 
     private void initComponents() {
@@ -52,12 +51,11 @@ public class MainView extends VBox {
 
         Menu menuHotel = new Menu("Hotels");
         menuHotel.setStyle("-fx-font-size: 16px;");
-        menuHotel.setStyle("-fx-background-color: #87c1cc   ;");
+        menuHotel.setStyle("-fx-background-color: #87c1cc;");
 
-
-//        Menu menuRoom = new Menu("Rooms");
-//        menuRoom.setStyle("-fx-font-size: 16px;");
-//        menuRoom.setStyle("-fx-background-color:#62c19a    ;");
+        Menu menuBooking = new Menu("Booking");
+        menuBooking.setStyle("-fx-font-size: 16px;");
+        menuBooking.setStyle("-fx-background-color: #87c1cc;");
 
         // aparezca un contexto de lo que vamos a hacer
         menuHotel.setOnShowing(e -> {
@@ -69,55 +67,21 @@ public class MainView extends VBox {
             contentPane.getChildren().add(label);
         });
 
-//        menuRoom.setOnShowing(e -> {
-//            contentPane.getChildren().clear();
-//            Label label = new Label("Register of Rooms");
-//            label.setStyle("-fx-font-family: 'Elephant';-fx-font-size: 20px; -fx-text-fill: #2a2e2c ;");
-//            label.setLayoutX(20);
-//            label.setLayoutY(20);
-//            contentPane.getChildren().add(label);
-//        });
-
         // -> Hotels Menu
-        MenuItem hotelRegister = new MenuItem("Register");
-        hotelRegister.setOnAction(e -> new RegisterHotelView(this.client, this.contentPane));
-        hotelRegister.setStyle("-fx-background-color: #87c1cc ");
-
         MenuItem hotelView = new MenuItem("View all");
         hotelView.setOnAction(e -> new ShowHotelView(this.client, this.contentPane));
         hotelView.setStyle("-fx-background-color: #87c1cc ");
 
-        MenuItem hotelUpdate = new MenuItem("Update");
-        hotelUpdate.setOnAction(e -> new UpdateHotelView(this.client, this.contentPane));
-        hotelUpdate.setStyle("-fx-background-color: #87c1cc ");
-
-        MenuItem hotelDelete = new MenuItem("Delete");
-        hotelDelete.setOnAction(e -> new DeleteHotelView(this.client, this.contentPane));
-        hotelDelete.setStyle("-fx-background-color: #87c1cc ");
-
         menuHotel.getItems().addAll(hotelView);
 
-        // -> Rooms Menus
-//        MenuItem roomRegister = new MenuItem("Register");
-//        roomRegister.setOnAction(e -> new RegisterRoomView(this.client, this.contentPane));
-//        roomRegister.setStyle("-fx-background-color: #8ec6af ");
+        // -> Booking Menu
+        MenuItem bookingView = new MenuItem("Bookings");
+        bookingView.setOnAction(e -> new ShowBookingView(this.client, this.contentPane));
+        bookingView.setStyle("-fx-background-color: #87c1cc ");
 
-        MenuItem roomView = new MenuItem("View all");
-        roomView.setOnAction(e -> new ShowRoomView(this.client, this.contentPane));
-        roomView.setStyle("-fx-background-color: #8ec6af ");
+        menuBooking.getItems().addAll(bookingView);
 
-        MenuItem roomUpdate = new MenuItem("Update");
-        roomUpdate.setOnAction(e -> new UpdateRoomView(this.client, this.contentPane, "", ""));
-        roomUpdate.setStyle("-fx-background-color: #8ec6af ");
-
-        MenuItem roomDelete = new MenuItem("Delete");
-        roomDelete.setOnAction(e -> new DeleteRoomView(this.client, this.contentPane));
-        roomDelete.setStyle("-fx-background-color: #8ec6af ");
-
-//        menuRoom.getItems().addAll(/*roomRegister, */roomView, roomUpdate, roomDelete);
-
-        //menuBar.getMenus().addAll(menuHotel */menuRoom);
-        menuBar.getMenus().add(menuHotel);
+        menuBar.getMenus().addAll(menuHotel, menuBooking);
         nodes.add(menuBar);
 
         contentPane = new Pane();
