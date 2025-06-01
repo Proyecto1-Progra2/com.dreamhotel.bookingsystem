@@ -1,5 +1,6 @@
 package sockets;
 
+import domain.Receptionist;
 import domain.Hotel;
 import domain.Room;
 import utils.Action;
@@ -30,12 +31,15 @@ public class Client extends Thread {
     private String mostrarRooms;
     private Room roomSolicitado;
     private String hotelRooms;
+    private Receptionist receptionist;//nuevo
 
     // -> Observer
     private  boolean mostrado;
     private  boolean hotelesMostrado;
     private  boolean mostrarHotelSolicitado;
     private boolean mostrarRoomHotel;
+    private boolean mostrarRecepcionistaSolicitado; //nuevo
+
 
     private boolean habitacionesMostrado;
     private boolean mostrarHabitacionSolicitado;
@@ -61,7 +65,7 @@ public class Client extends Thread {
         this.hotelesMostrado = false;
         this.mostrarHotelSolicitado = false;
         this.mostrarRoomHotel = false;
-
+        this.mostrarRecepcionistaSolicitado = false;
         this.habitacionesMostrado = false;
         this.mostrarHabitacionSolicitado = false;
         //
@@ -82,6 +86,7 @@ public class Client extends Thread {
 
         this.hotelSolicitado = null;
         this.roomSolicitado = null;
+        this.receptionist = null;
 
     }
 
@@ -111,11 +116,11 @@ public class Client extends Thread {
                         this.hotelSolicitado = new Hotel(datos[1], datos[2], datos[3], new ArrayList<>());
                         this.mostrarHotelSolicitado = true;
                         break;
-                    case Action.HOTEL_REGISTERED, Action.ROOM_REGISTERED:
+                    case Action.HOTEL_REGISTERED, Action.ROOM_REGISTERED, Action.RECEPTIONIST_REGISTERED:
                         this.registered = 1;
                         break;
                     ///
-                    case Action.HOTEL_NOT_REGISTER:
+                    case Action.HOTEL_NOT_REGISTER, Action.RECEPTIONIST_NOT_REGISTERED:
                         this.registered=2;
                         break;
                         ///
@@ -168,6 +173,9 @@ public class Client extends Thread {
                         }
                         this.image = this.images.get(0); // opcional: poner la primera imagen como "principal"
                         this.imageReceived = true;
+                        break;
+                    case Action.RECEPTIONIST_LOGIN://nuevo
+                        this.mostrarRecepcionistaSolicitado = true;
                         break;
                     default:
                         throw new IllegalStateException("Unexpected value: " + accion);

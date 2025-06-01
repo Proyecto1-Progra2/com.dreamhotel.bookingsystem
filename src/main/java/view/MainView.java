@@ -28,15 +28,10 @@ public class MainView extends VBox {
     private Label title;
 
 
-    public MainView(Stage stage) {
+    public MainView(Client client, Stage stage) {
         this.setPrefSize(1000, 700);
+        this.client = client;
 
-        try {
-            this.client = new Client("localhost", 5025);
-            this.client.start();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
 
         Scene scene = new Scene(this);
         stage.setTitle("Reservation System");
@@ -45,6 +40,8 @@ public class MainView extends VBox {
         stage.show();
 
         this.initComponents();
+        Thread thread = new Thread((Runnable) this);
+        thread.start();
     }
 
     private void initComponents() {
