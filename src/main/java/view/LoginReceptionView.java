@@ -8,6 +8,8 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
@@ -68,11 +70,25 @@ public class LoginReceptionView extends BorderPane {
         Collection<Node> nodes = new ArrayList<>();
 
         titleLogin = new Label("Login");
+        titleLogin.setStyle("-fx-font-family: 'Elephant'; -fx-font-size: 15px; -fx-text-fill: #596fa8  ;");
+
+
         tUser = new TextField();
+        tUser.setPrefWidth(200);
+
+
         titlePassword = new Label("Password");
+        titlePassword.setStyle("-fx-font-family: 'Elephant'; -fx-font-size: 15px; -fx-text-fill: #596fa8 ;");
+
         tPassword = new TextField();
+        tPassword.setPrefWidth(200);
+
         Button btnLogin = new Button("Login");
+        btnLogin.setStyle("-fx-background-color: #596fa8; -fx-text-fill: white;");
+
         Button btnRegister = new Button("Register");
+        btnRegister.setStyle("-fx-background-color: #596fa8; -fx-text-fill: white;");
+
 
         VBox vbox = new VBox(10); // espacio entre nodos
         vbox.setAlignment(Pos.CENTER);
@@ -110,7 +126,7 @@ public class LoginReceptionView extends BorderPane {
 //                  MainView(contentPane);
                     alert = FXUtility.alert("Welcome", "Login Receptionist");
                     alert.setAlertType(Alert.AlertType.CONFIRMATION);
-                    alert.setContentText("Tu username y password son correctos");
+                    alert.setContentText("Your username and password are correct!");
                     alert.showAndWait();
 
                     // 1. Crear una instancia de la nueva vista (DashboardView)
@@ -127,7 +143,7 @@ public class LoginReceptionView extends BorderPane {
             }else{
                     alert = FXUtility.alert("Login", "Login Receptionist");
                     alert.setAlertType(Alert.AlertType.INFORMATION);
-                    alert.setContentText("Tu username o password son incorrectas");
+                    alert.setContentText("Your username and password are correct!");
                     alert.showAndWait();
                     return;
             }
@@ -142,14 +158,28 @@ public class LoginReceptionView extends BorderPane {
 
         contentPane = new Pane();
         contentPane.setPrefSize(1000, 1000);
-        contentPane.setStyle("-fx-background-color:#cad1ce;");
+        contentPane.setStyle("-fx-background-color:#dcdee2;");
+
+        Image image = new Image(getClass().getResource("/image3.png").toExternalForm());
+        ImageView imageView = new ImageView(image);
+        imageView.setFitWidth(200);
+        imageView.setPreserveRatio(true);
+
+// para centrar la imagen
+        double paneWidth = 1000;
+        double imageWidth = 150;
+        double imageX = (paneWidth - imageWidth) / 1.9999;// la mitad osea en el centro
+        double imageY = (1000 - (imageWidth * (image.getHeight() / image.getWidth()))) / 11;// calculado con priuebas
+
+        imageView.setLayoutX(imageX);
+        imageView.setLayoutY(imageY);
 
 
-        Label bienvenida = new Label("Welcome Receptionist to the system hotel!");
-        bienvenida.setStyle("-fx-font-family: 'Elephant'; -fx-font-size: 22px; -fx-text-fill: #2a2e2c;");
-        bienvenida.setLayoutX(40);
-        bienvenida.setLayoutY(40);
-        contentPane.getChildren().add(bienvenida);
+        Label bienvenida = new Label("Register here and let you have a great moment!");
+        bienvenida.setStyle("-fx-font-family: 'Elephant'; -fx-font-size: 30px; -fx-text-fill:#566ead ;");
+        bienvenida.setLayoutX(80);
+        bienvenida.setLayoutY(20);
+        contentPane.getChildren().addAll(bienvenida, imageView);
 
         nodes.add(contentPane);
 
