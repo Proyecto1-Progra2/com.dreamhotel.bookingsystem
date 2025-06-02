@@ -10,21 +10,23 @@ import javafx.scene.layout.VBox;
 import javafx.util.Duration;
 import sockets.Client;
 import table.BookingTableModel;
+import table.RoomTableModel;
 
-public class ShowBookingView extends BorderPane implements Runnable {
+public class BookingRoomsView extends BorderPane implements Runnable {
 
     private Client client;
     private Pane contentPane;
-    private TableView<BookingTableModel> tableView;
-    private volatile boolean isRunning = false;
-    private String hotelNumber;
+    private TableView<RoomTableModel> tableView;
+    private String bookingNumber, roomNumber, hotelNumber;
 
-    public ShowBookingView(Client client, Pane contentPane, String hotelNumber) {
+    public BookingRoomsView(Client client, Pane contentPane, String bookingNumber, String roomNumber, String hotelNumber) {
         this.setStyle("-fx-border-color: black; -fx-background-color: white;");
         this.setPrefSize(680, 530);
         this.setLayoutX(70);
         this.setLayoutY(100);
         this.contentPane = contentPane;
+        this.bookingNumber = bookingNumber;
+        this.roomNumber = roomNumber;
         this.hotelNumber = hotelNumber;
 
         this.initComponents();
@@ -37,7 +39,7 @@ public class ShowBookingView extends BorderPane implements Runnable {
     private void initComponents() {
         // Título con botón cerrar
         HBox titleBar = new HBox();
-        Label title = new Label("Show Bookings");
+        Label title = new Label("Show Booking´s rooms");
         Button closeBtn = new Button("X");
 
         titleBar.setAlignment(Pos.CENTER_RIGHT);
@@ -46,7 +48,7 @@ public class ShowBookingView extends BorderPane implements Runnable {
         titleBar.getChildren().addAll(title, closeBtn);
 
         closeBtn.setOnAction(e -> {
-            this.isRunning = false;
+            //this.isRunning = false;
             contentPane.getChildren().remove(this);
         });
 
@@ -73,63 +75,18 @@ public class ShowBookingView extends BorderPane implements Runnable {
         this.tableView = new TableView<>();
 
         //-> Columns
-        TableColumn<BookingTableModel, String> column1 = new TableColumn<>("Booking Number");
-        column1.setCellValueFactory(cellData -> cellData.getValue().bookingNumberProperty());
 
-        TableColumn<BookingTableModel, String> column2 = new TableColumn<>("Host Name");
-        column2.setCellValueFactory(cellData -> cellData.getValue().hostNameProperty());
 
-        TableColumn<BookingTableModel, String> column3 = new TableColumn<>("Start Date");
-        column3.setCellValueFactory(cellData -> cellData.getValue().startDateProperty());
-
-        TableColumn<BookingTableModel, String> column4 = new TableColumn<>("Departure Date");
-        column4.setCellValueFactory(cellData -> cellData.getValue().departureDateProperty());
-
-        TableColumn<BookingTableModel, String> column5 = new TableColumn<>("Receptionist Name");
-        column5.setCellValueFactory(cellData -> cellData.getValue().receptionistNameProperty());
-
-        TableColumn<BookingTableModel, Void> columnActions = new TableColumn<>("Actions");
-        columnActions.setCellFactory(col -> new TableCell<BookingTableModel, Void>(){
-            private final Button btnRooms = new Button("View Rooms");
-            {
-                btnRooms.setStyle("-fx-background-color: #eff748;");
-
-                btnRooms.setOnMouseEntered(ev -> {
-                    ScaleTransition st = new ScaleTransition(Duration.millis(150), btnRooms);
-                    st.setToX(1.03);
-                    st.setToY(1.03);
-                    st.play();
-                });
-
-                btnRooms.setOnMouseExited(ev -> {
-                    ScaleTransition st = new ScaleTransition(Duration.millis(150), btnRooms);
-                    st.setToX(1.0);
-                    st.setToY(1.0);
-                    st.play();
-                });
-
-                btnRooms.setOnAction(e -> {
-
-                });
-            }
-        });
-
-        this.tableView.getColumns().addAll(column1, column2, column3, column4, column5);
+        this.tableView.getColumns().addAll();
         double widthPercent = 1.0 / tableView.getColumns().size();
         for (TableColumn<?, ?> column : tableView.getColumns()) {
             column.prefWidthProperty().bind(tableView.widthProperty().multiply(widthPercent));
         }
 
-
-        Button btnRegister = new Button("Add Booking");
-        btnRegister.setOnAction(e -> {
-            new RegisterBookingView(this.client, this.contentPane, this.hotelNumber);
-        });
-
         // -> Se añade lo que se quiere mostrar en la interfaz
         VBox contenido = new VBox(10);
         contenido.setStyle("-fx-padding: 10;");
-        contenido.getChildren().addAll(btnRegister, this.tableView);
+        contenido.getChildren().addAll(this.tableView);
 
         this.setTop(titleBar);
         this.setCenter(contenido);
@@ -139,8 +96,6 @@ public class ShowBookingView extends BorderPane implements Runnable {
 
     @Override
     public void run() {
-//        while (this.isRunning) {
-//
-//        }
+
     }
 }

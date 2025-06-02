@@ -9,14 +9,8 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import sockets.Client;
-import view.bookingView.ShowBookingView;
 import view.hotelView.*;
-import view.roomView.DeleteRoomView;
-import view.roomView.RegisterRoomView;
-import view.roomView.ShowRoomView;
-import view.roomView.UpdateRoomView;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -74,14 +68,7 @@ public class MainView extends VBox {
 
         menuHotel.getItems().addAll(hotelView);
 
-        // -> Booking Menu
-        MenuItem bookingView = new MenuItem("Bookings");
-        bookingView.setOnAction(e -> new ShowBookingView(this.client, this.contentPane));
-        bookingView.setStyle("-fx-background-color: #87c1cc ");
-
-        menuBooking.getItems().addAll(bookingView);
-
-        menuBar.getMenus().addAll(menuHotel, menuBooking);
+        menuBar.getMenus().addAll(menuHotel);
         nodes.add(menuBar);
 
         contentPane = new Pane();

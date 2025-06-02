@@ -39,6 +39,7 @@ public class Client extends Thread {
     private  boolean mostrarHotelSolicitado;
     private boolean mostrarRoomHotel;
     private boolean mostrarRecepcionistaSolicitado; //nuevo
+    private int bookingNumberExiste;
 
 
     private boolean habitacionesMostrado;
@@ -68,6 +69,7 @@ public class Client extends Thread {
         this.mostrarRecepcionistaSolicitado = false;
         this.habitacionesMostrado = false;
         this.mostrarHabitacionSolicitado = false;
+        this.bookingNumberExiste = 0; // 1 no existe, 2 existe, 0 listo
         //
 
         this.imageReceived = false;
@@ -177,6 +179,12 @@ public class Client extends Thread {
                     case Action.RECEPTIONIST_LOGIN://nuevo
                         this.mostrarRecepcionistaSolicitado = true;
                         break;
+                    case Action.BOOKING_NUMBER_EXIST:
+                        this.bookingNumberExiste = 2;
+                        break;
+                    case Action.BOOKING_NUMBER_NO_EXIST:
+                        this.bookingNumberExiste = 1;
+                        break;
                     default:
                         throw new IllegalStateException("Unexpected value: " + accion);
                 }
@@ -186,6 +194,14 @@ public class Client extends Thread {
             throw new RuntimeException(e);
         }
 
+    }
+
+    public int getBookingNumberExiste() {
+        return bookingNumberExiste;
+    }
+
+    public void setBookingNumberExiste(int bookingNumberExiste) {
+        this.bookingNumberExiste = bookingNumberExiste;
     }
 
     public ArrayList<byte[]> getImages() {

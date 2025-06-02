@@ -20,6 +20,7 @@ import javafx.util.Duration;
 import sockets.Client;
 import table.HotelTableModel;
 import utils.Action;
+import view.bookingView.ShowBookingView;
 
 import java.util.ArrayList;
 import java.util.Optional;
@@ -39,7 +40,7 @@ public class ShowHotelView extends BorderPane implements Runnable {
 
     public ShowHotelView(Client client, Pane contentPane) {
         this.setStyle("-fx-border-color: black; -fx-background-color: white;");
-        this.setPrefSize(680, 530);
+        this.setPrefSize(900, 530);
         this.setLayoutX(70);
         this.setLayoutY(100);
         this.contentPane = contentPane;
@@ -125,10 +126,26 @@ public class ShowHotelView extends BorderPane implements Runnable {
             private final Button btnEdit = new Button("Edit");
             private final Button btnDelete = new Button("Delete");
             private final Button btnViewRooms = new Button("Rooms");
+            private final Button btnBooking = new Button("Booking");
             {
                 btnEdit.setStyle("-fx-background-color: #87CEFA;");
                 btnDelete.setStyle("-fx-background-color: #FA8072;");
                 btnViewRooms.setStyle("-fx-background-color: #eff748;");
+                btnBooking.setStyle("-fx-background-color: #5dd2c0;");
+
+                btnBooking.setOnMouseEntered(ev -> {
+                    ScaleTransition st = new ScaleTransition(Duration.millis(150), btnBooking);
+                    st.setToX(1.03);
+                    st.setToY(1.03);
+                    st.play();
+                });
+
+                btnBooking.setOnMouseExited(ev -> {
+                    ScaleTransition st = new ScaleTransition(Duration.millis(150), btnBooking);
+                    st.setToX(1.0);
+                    st.setToY(1.0);
+                    st.play();
+                });
 
                 btnViewRooms.setOnMouseEntered(ev -> {
                     ScaleTransition st = new ScaleTransition(Duration.millis(150), btnViewRooms);
@@ -172,6 +189,12 @@ public class ShowHotelView extends BorderPane implements Runnable {
                     st.play();
                 });
 
+                btnBooking.setOnAction(e -> {
+                    HotelTableModel hotel = getTableView().getItems().get(getIndex());
+                    String hotelNumber = hotel.getHotelNumber();
+                    new ShowBookingView(client, contentPane, hotelNumber);
+                });
+
                 btnViewRooms.setOnAction(e -> {
                     HotelTableModel hotel = getTableView().getItems().get(getIndex());
                     String hotelRequest = hotel.getHotelNumber();
@@ -186,13 +209,6 @@ public class ShowHotelView extends BorderPane implements Runnable {
 
 
                     String diseñoVnetanas = getClass().getResource("/main.css").toExternalForm();
-
-//                    TextInputDialog numberDialog = new TextInputDialog(hotel.getHotelNumber());
-//                    numberDialog.setTitle("Number edit");
-//                    numberDialog.setHeaderText("Edit hotel number:");
-//                    numberDialog.setContentText("Number:");
-//                    numberDialog.getDialogPane().getStylesheets().add(diseñoVnetanas);
-//                    numberDialog.showAndWait().ifPresent(newNumber -> hotel.hotelNumberProperty().set(newNumber));
 
                     TextInputDialog nameDialog = new TextInputDialog(hotel.getHotelName());
                     nameDialog.setTitle("Name edit");
@@ -219,7 +235,7 @@ public class ShowHotelView extends BorderPane implements Runnable {
                     refreshTable();
                 });
             }
-            private final HBox hbox = new HBox(5, btnEdit, btnDelete, btnViewRooms);
+            private final HBox hbox = new HBox(5, btnEdit, btnDelete, btnViewRooms, btnBooking);
 
             @Override
             protected void updateItem(Void item, boolean empty) {
