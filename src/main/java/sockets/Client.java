@@ -97,7 +97,7 @@ public class Client extends Thread {
         this.hotelSolicitado = null;
         this.roomSolicitado = null;
         this.receptionist = new Receptionist("123", "name", "lastName", 123, "name.lastName", "123");
-
+        this.hostList = null;
 
     }
 
@@ -195,12 +195,12 @@ public class Client extends Thread {
                         break;
 
                     case Action.HOST_REGISTER:
-                        this.loged=1;
+                        this.registered=1;
                         this.hostList=new Host(datos[1], datos[2], datos[3], Integer.parseInt(datos[4]), datos[5], datos[6],datos[7]) ;
                         case Action.BOOKING_NUMBER_EXIST:
                             break;
                     case Action.HOST_NOT_REGISTERED:
-                        this.loged=2;
+                        this.registered=2;
                         System.out.println(this.lectura);
                         break;
                     case Action.BOOKING_NUMBER_NO_EXIST:

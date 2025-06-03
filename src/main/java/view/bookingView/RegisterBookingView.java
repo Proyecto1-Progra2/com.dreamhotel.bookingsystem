@@ -120,6 +120,7 @@ public class RegisterBookingView extends BorderPane implements Runnable {
 
         btnHost.setOnAction(e -> {
             // Se llama la ventana de registrar el huesped
+            new RegisterHostView(client, contentPane);
         });
 
         btnAddRoom.setOnAction(e -> {

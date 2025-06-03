@@ -1,6 +1,7 @@
 package view.bookingView;
 
 import domain.Host;
+import javafx.application.Platform;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Alert;
@@ -23,8 +24,8 @@ public class RegisterHostView extends BorderPane implements Runnable{
 
     private Pane contentPane;
 
-    // id, name, last name , phone number, adress mail, country
-    private TextField id, name, lastName,  phoneNumber,adress, mail, country, tUsername, tPassword;
+    // id, name, last name , phone number, address mail, country
+    private TextField id, name, lastName,  phoneNumber, address, email, country;
     private Label titleRegister, LabeltitleId, LabeltitleName, LabeltitleLastName, LabeltitleHostNumber,LabeladressLabel , labelMail,labelCountry, LabeltitleUsername, titlePassword;
 
     private volatile boolean isRunning = true;
@@ -92,9 +93,10 @@ public class RegisterHostView extends BorderPane implements Runnable{
         lastName = new TextField();
         phoneNumber = new TextField();
         id = new TextField();
-        tUsername = new TextField();
-        tUsername.setText("Your name will automatically be (name.lastname)");
-        tPassword = new TextField();
+        address = new TextField();
+        email = new TextField();
+        country = new TextField();
+
         Button btnRegister = new Button("Register");
 
         // Contenido del registro
@@ -111,15 +113,11 @@ public class RegisterHostView extends BorderPane implements Runnable{
                 LabeltitleHostNumber = new Label("Phone Number:"),
                 phoneNumber,
                 LabeladressLabel = new Label("Host Adress:"),
-                adress,
+                address,
                 labelMail = new Label("Mail"),
-                mail,
+                email,
                 labelCountry= new Label("Country"),
                 country,
-                LabeltitleUsername= new Label("UserName:"),
-                tUsername,
-                titlePassword = new Label("PassWord:"),
-                tPassword,
                 btnRegister
         );
 
@@ -127,9 +125,8 @@ public class RegisterHostView extends BorderPane implements Runnable{
         btnRegister.setOnAction(e -> {
             // Validación de campos vacíos
             if (id.getText().isEmpty() || name.getText().isEmpty() || lastName.getText().isEmpty() ||
-                    phoneNumber.getText().isEmpty() || adress.getText().isEmpty() ||
-                    mail.getText().isEmpty() || country.getText().isEmpty() ||
-                    tUsername.getText().isEmpty() || tPassword.getText().isEmpty()) {
+                    phoneNumber.getText().isEmpty() || address.getText().isEmpty() ||
+                    email.getText().isEmpty() || country.getText().isEmpty()) {
 
                 alert.setAlertType(Alert.AlertType.WARNING);
 
@@ -141,16 +138,12 @@ public class RegisterHostView extends BorderPane implements Runnable{
                     alert.setContentText("¡El apellido no puede estar vacío!");
                 } else if (phoneNumber.getText().isEmpty()) {
                     alert.setContentText("¡El número de teléfono no puede estar vacío!");
-                } else if (adress.getText().isEmpty()) {
+                } else if (address.getText().isEmpty()) {
                     alert.setContentText("¡La dirección no puede estar vacía!");
-                } else if (mail.getText().isEmpty()) {
+                } else if (email.getText().isEmpty()) {
                     alert.setContentText("¡El correo no puede estar vacío!");
                 } else if (country.getText().isEmpty()) {
                     alert.setContentText("¡El país no puede estar vacío!");
-                } else if (tUsername.getText().isEmpty()) {
-                    alert.setContentText("¡El nombre de usuario no puede estar vacío!");
-                } else if (tPassword.getText().isEmpty()) {
-                    alert.setContentText("¡La contraseña no puede estar vacía!");
                 }
 
                 alert.showAndWait();
@@ -165,20 +158,19 @@ public class RegisterHostView extends BorderPane implements Runnable{
                         name.getText(),
                         lastName.getText(),
                         phone,
-                        adress.getText(),
-                        mail.getText(),
+                        address.getText(),
+                        email.getText(),
                         country.getText()
                 );
 
                 hostRegister(host);
 
-                alert.setAlertType(Alert.AlertType.INFORMATION);
-                alert.setContentText("¡Host registrado exitosamente!");
-                alert.showAndWait();
+//                alert.setAlertType(Alert.AlertType.INFORMATION);
+//                alert.setContentText("¡Host registrado exitosamente!");
+//                alert.showAndWait();
 
                 // Limpiar campos
-                id.clear(); name.clear(); lastName.clear(); phoneNumber.clear();
-                adress.clear(); mail.clear(); country.clear(); tUsername.clear(); tPassword.clear();
+
 
                 contentPane.getChildren().remove(this);
 
@@ -219,6 +211,44 @@ public class RegisterHostView extends BorderPane implements Runnable{
 
     @Override
     public void run() {
+        while (this.isRunning) {
+            try {
+                int estado = this.client.getRegistered();
 
+                if (estado == 1 || estado == 2) {
+                    // Se pone en 0 inmediatamente para evitar múltiples ejecuciones
+                    this.client.setRegistered(0);
+
+                    Platform.runLater(() -> {
+                        alert = FXUtility.alert("Host Receptionist", "Host");
+
+                        if (estado == 1) {
+                            alert.setContentText("Host registered successfully!");
+                        } else if(estado==2){
+                            alert.setContentText("The Host already exists!");
+                        }
+                        //confirmar la alert
+                        alert.setAlertType(Alert.AlertType.CONFIRMATION);
+                        alert.showAndWait();
+
+                        this.name.setText("");
+                        this.lastName.setText("");
+                        this.phoneNumber.setText("");
+                        this.id.setText("");
+                        this.country.setText("");
+                        this.address.setText("");
+                        this.email.setText("");
+
+                    });
+                }
+
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                throw new RuntimeException("Hilo interrumpido durante la espera", e);
+            }
+        }
     }
+
+
 }
