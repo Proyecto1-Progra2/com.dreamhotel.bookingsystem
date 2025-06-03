@@ -203,9 +203,6 @@ public class Client extends Thread {
                         this.loged=2;
                         System.out.println(this.lectura);
                         break;
-
-                        this.bookingNumberExiste = 2;
-                        break;
                     case Action.BOOKING_NUMBER_NO_EXIST:
                         this.bookingNumberExiste = 1;
                         break;
