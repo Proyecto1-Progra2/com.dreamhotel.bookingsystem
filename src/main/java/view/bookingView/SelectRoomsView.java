@@ -16,7 +16,6 @@ import javafx.util.Duration;
 import sockets.Client;
 import table.RoomTableModel;
 import utils.Action;
-import view.imagesView.RoomImagesView;
 import view.roomView.RegisterRoomView;
 import view.roomView.UpdateRoomView;
 
@@ -28,6 +27,8 @@ public class SelectRoomsView extends BorderPane implements Runnable {
     private String hotelName;
     private String  hotelAdress;
     private Label hotelLabel;
+
+    private String roomNumbers;
 
     private TableView<RoomTableModel> tableView;
     private ObservableList<RoomTableModel> data;
@@ -43,7 +44,7 @@ public class SelectRoomsView extends BorderPane implements Runnable {
         this.hotelNumber = hotelNumber;
         this.hotelName= hotelName;
         this.hotelAdress=hotelAdress;
-
+        this.roomNumbers = "";
 
         this.initComponents();
         this.client = client;
@@ -126,81 +127,35 @@ public class SelectRoomsView extends BorderPane implements Runnable {
 
         TableColumn<RoomTableModel, Void> column6 = new TableColumn<>("Actions");
         column6.setCellFactory(col -> new TableCell<RoomTableModel, Void>() {
-            private final Button btnEdit = new Button("Edit");
-            private final Button btnDelete = new Button("Delete");
-            private final Button btnImage = new Button("Image");
+            private final CheckBox btnSelect = new CheckBox("Edit");
 
             {
-                btnEdit.setStyle("-fx-background-color: #87CEFA;");
-                btnDelete.setStyle("-fx-background-color: #FA8072;");
-                btnImage.setStyle("-fx-background-color: #eff748;");
+                btnSelect.setStyle("-fx-background-color: #87CEFA;");
 
-                btnDelete.setOnMouseEntered(ev -> {
-                    ScaleTransition st = new ScaleTransition(Duration.millis(150), btnDelete);
+                btnSelect.setOnMouseEntered(ev -> {
+                    ScaleTransition st = new ScaleTransition(Duration.millis(150), btnSelect);
                     st.setToX(1.03);
                     st.setToY(1.03);
                     st.play();
                 });
 
-                btnDelete.setOnMouseExited(ev -> {
-                    ScaleTransition st = new ScaleTransition(Duration.millis(150), btnDelete);
+                btnSelect.setOnMouseExited(ev -> {
+                    ScaleTransition st = new ScaleTransition(Duration.millis(150), btnSelect);
                     st.setToX(1.0);
                     st.setToY(1.0);
                     st.play();
                 });
 
-                btnEdit.setOnMouseEntered(ev -> {
-                    ScaleTransition st = new ScaleTransition(Duration.millis(150), btnEdit);
-                    st.setToX(1.03);
-                    st.setToY(1.03);
-                    st.play();
-                });
-
-                btnEdit.setOnMouseExited(ev -> {
-                    ScaleTransition st = new ScaleTransition(Duration.millis(150), btnEdit);
-                    st.setToX(1.0);
-                    st.setToY(1.0);
-                    st.play();
-                });
-
-                btnImage.setOnMouseEntered(ev -> {
-                    ScaleTransition st = new ScaleTransition(Duration.millis(150), btnImage);
-                    st.setToX(1.03);
-                    st.setToY(1.03);
-                    st.play();
-                });
-
-                btnImage.setOnMouseExited(ev -> {
-                    ScaleTransition st = new ScaleTransition(Duration.millis(150), btnImage);
-                    st.setToX(1.0);
-                    st.setToY(1.0);
-                    st.play();
-                });
-
-                btnEdit.setOnAction(e -> {
-                    RoomTableModel room = getTableView().getItems().get(getIndex());
-                    String roomNumber = room.getRoomNumber();
-                    String hotelNumber = room.getRoomHotelNumber();
-                    new UpdateRoomView(client, contentPane, roomNumber, hotelNumber);
-                });
-
-                btnDelete.setOnAction(e -> {
-                    RoomTableModel room = getTableView().getItems().get(getIndex());
-                    String roomNumber = room.getRoomNumber();
-                    String hotelNumber = room.getRoomHotelNumber();
-                    roomDelete(Action.ROOM_DELETE, roomNumber, hotelNumber);
-                    refreshTable();
-                });
-
-                btnImage.setOnAction(e -> {
-                    RoomTableModel room = getTableView().getItems().get(getIndex());
-                    String roomNumber = room.getRoomNumber();
-                    String hotelNumber = room.getRoomHotelNumber();
-                    new RoomImagesView(client, contentPane, roomNumber, hotelNumber);
+                btnSelect.setOnAction(e -> {
+                    if (btnSelect.isSelected()) {
+                        RoomTableModel room = getTableView().getItems().get(getIndex());
+                        String roomNumber = room.getRoomNumber();
+                        roomNumbers += roomNumber + ", ";
+                    }
                 });
             }
 
-            private final HBox hbox = new HBox(5, btnEdit, btnDelete, btnImage);
+            private final HBox hbox = new HBox(5, btnSelect);
 
             @Override
             protected void updateItem(Void item, boolean empty) {
@@ -225,15 +180,15 @@ public class SelectRoomsView extends BorderPane implements Runnable {
             contentPane.getChildren().remove(this);
         });
 
-        Button btnAddRoom = new Button("Add Room");
+        Button btnAddRoom = new Button("Add Rooms");
         btnAddRoom.setOnAction(e -> {
-            String numberHotel = this.hotelNumber;
-            new RegisterRoomView(this.client, this.contentPane, numberHotel);
+            System.out.println(this.roomNumbers);
+            this.roomNumbers = "";
         });
 
         VBox contenido = new VBox(10);
         contenido.setStyle("-fx-padding: 10;");
-        contenido.getChildren().addAll(btnAddRoom, searchBox, tableView);
+        contenido.getChildren().addAll(searchBox, tableView, btnAddRoom);
 
         double widthPercent = 1.0 / tableView.getColumns().size();
         for (TableColumn<?, ?> column : tableView.getColumns()) {
