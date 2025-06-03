@@ -1,6 +1,7 @@
 package view.bookingView;
 
 import domain.Booking;
+import domain.Person;
 import javafx.application.Platform;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
@@ -95,7 +96,7 @@ public class RegisterBookingView extends BorderPane implements Runnable {
         tHotelNumber.setText(this.hotelNumber);
         tHotelNumber.setEditable(false);
         tPrice = new TextField();
-        tPrice.setVisible(false);
+        tPrice.setEditable(false);
         Button btnCalendar = new Button("Open Calendar");
         Button btnRegister = new Button("Register");
 
@@ -113,8 +114,24 @@ public class RegisterBookingView extends BorderPane implements Runnable {
                 btnRegister
         );
 
-        btnRegister.setOnAction(e -> this.bookingRegister(null));
-        btnCalendar.setOnAction(e -> new CalendarView(this.client, this.contentPane));
+        btnRegister.setOnAction(e -> this.bookingRegister(
+                new Booking(this.tBookingNumber.getText(), new Person("host", "lastname", 123),
+                        this.startDate, this.endDate, new Person(this.client.getReceptionist().getName(),
+                        this.client.getReceptionist().getLastName(), 0), "001", this.hotelNumber)
+        ));
+
+        btnCalendar.setOnAction(e -> {
+            CalendarView calendarView = new CalendarView(client, contentPane, (start, end) -> {
+                this.startDate = start;
+                this.endDate = end;
+                System.out.println("Fechas recibidas en RegisterBookingView: " + start + " - " + end);
+
+                // (Opcional) Calcula un precio y lo actualiza
+                long days = java.time.temporal.ChronoUnit.DAYS.between(start, end);
+                double price = days * 100; // Suponiendo ₡100 por día
+                tPrice.setText(String.valueOf(price));
+            });
+        });
 
         this.setTop(titleBar);
         this.setCenter(contenido);

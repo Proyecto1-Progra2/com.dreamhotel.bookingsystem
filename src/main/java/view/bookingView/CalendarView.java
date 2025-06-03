@@ -1,6 +1,7 @@
 package view.bookingView;
 
 import javafx.geometry.Pos;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -25,11 +26,14 @@ public class CalendarView extends BorderPane {
     private LocalDate startDate;
     private LocalDate endDate;
 
-    public CalendarView(Client client, Pane contentPane) {
+    private DateRangeCallback callback;
+
+    public CalendarView(Client client, Pane contentPane, DateRangeCallback callback) {
         this.setStyle("-fx-border-color: black; -fx-background-color: white;");
         this.setLayoutX(100);
         this.setLayoutY(100);
         this.contentPane = contentPane;
+        this.callback = callback;
         this.client = client;
         this.startDate = null;
         this.endDate = null;
@@ -102,7 +106,24 @@ public class CalendarView extends BorderPane {
         // Contenido de la ventana
         VBox contenido = new VBox(10);
         contenido.setStyle("-fx-padding: 10;");
-        contenido.getChildren().addAll(header, calendarGrid);
+        // Botón de confirmación
+        Button confirmButton = new Button("Confirm Dates");
+        confirmButton.setOnAction(e -> {
+            if (startDate != null && endDate != null) {
+                if (callback != null) {
+                    callback.onDateRangeSelected(startDate, endDate);
+                }
+                contentPane.getChildren().remove(this); // Cierra la vista al confirmar
+            } else {
+                Alert alert = new Alert(Alert.AlertType.WARNING);
+                alert.setTitle("Selection incomplete");
+                alert.setHeaderText(null);
+                alert.setContentText("Please, select a date range valid.");
+                alert.showAndWait();
+            }
+        });
+
+        contenido.getChildren().addAll(header, calendarGrid, confirmButton);
 
         this.setTop(titleBar);
         this.setCenter(contenido);

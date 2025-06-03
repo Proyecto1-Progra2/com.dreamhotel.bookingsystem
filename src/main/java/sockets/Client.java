@@ -88,7 +88,7 @@ public class Client extends Thread {
 
         this.hotelSolicitado = null;
         this.roomSolicitado = null;
-        this.receptionist = null;
+        this.receptionist = new Receptionist("123", "name", "lastName", 123, "name.lastName", "123");
 
     }
 
@@ -194,6 +194,14 @@ public class Client extends Thread {
             throw new RuntimeException(e);
         }
 
+    }
+
+    public Receptionist getReceptionist() {
+        return receptionist;
+    }
+
+    public void setReceptionist(Receptionist receptionist) {
+        this.receptionist = receptionist;
     }
 
     public int getBookingNumberExiste() {
