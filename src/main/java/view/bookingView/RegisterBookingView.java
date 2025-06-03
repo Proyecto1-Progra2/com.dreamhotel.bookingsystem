@@ -98,6 +98,7 @@ public class RegisterBookingView extends BorderPane implements Runnable {
         tPrice = new TextField();
         tPrice.setEditable(false);
         Button btnCalendar = new Button("Open Calendar");
+        Button btnAddRoom = new Button("Add Room");
         Button btnHost = new Button("Add Host");
         Button btnRegister = new Button("Register");
 
@@ -112,12 +113,17 @@ public class RegisterBookingView extends BorderPane implements Runnable {
                 new Label("Booking Price:"),
                 tPrice,
                 btnCalendar,
+                btnAddRoom,
                 btnHost,
                 btnRegister
         );
 
         btnHost.setOnAction(e -> {
             // Se llama la ventana de registrar el huesped
+        });
+
+        btnAddRoom.setOnAction(e -> {
+            new SelectRoomsView(client, contentPane, hotelNumber, "");
         });
 
         btnRegister.setOnAction(e -> this.bookingRegister(

@@ -16,7 +16,9 @@ import javafx.util.Duration;
 import sockets.Client;
 import table.BookingTableModel;
 import table.HotelTableModel;
+import table.RoomTableModel;
 import utils.Action;
+import view.roomView.UpdateRoomView;
 
 public class ShowBookingView extends BorderPane implements Runnable {
 
@@ -157,7 +159,7 @@ public class ShowBookingView extends BorderPane implements Runnable {
                 });
 
                 btnRooms.setOnAction(e -> {
-                    System.out.println("Rooms");
+
                 });
             }
 
