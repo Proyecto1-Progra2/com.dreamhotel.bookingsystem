@@ -25,7 +25,7 @@ public class MainView extends VBox {
 
     public MainView(Client client, Stage stage) {
         this.setPrefSize(1000, 700);
-
+        this.client = client;
 
         Scene scene = new Scene(this);
         stage.setTitle("Reservation System");
@@ -34,7 +34,6 @@ public class MainView extends VBox {
         stage.show();
 
         this.initComponents();
-        this.client = client;
     }
 
     private void initComponents() {
@@ -90,19 +89,21 @@ public class MainView extends VBox {
         imageView.setPreserveRatio(true);
 
 
+        Label receptionist = new Label("Receptionist: "+this.client.getReceptionist().getName()+" "+
+                this.client.getReceptionist().getLastName());
         Label bienvenida = new Label("Welcome to the Hotel Register!");
         Label inicio = new Label("Let’s Get You Checked In");
         Label mensaje = new Label("Efficiency, comfort, success — all in one stay");
         Label pressOn = new Label("Press on the menuBar!");
 
-
+        receptionist.setStyle("-fx-font-family: 'Elephant'; -fx-font-size: 25px; -fx-text-fill: #3a6972 ;");
         inicio.setStyle("-fx-font-family: 'Elephant'; -fx-font-size: 20px; -fx-text-fill: #3a6972 ;");
         bienvenida.setStyle("-fx-font-family: 'Elephant'; -fx-font-size: 40px; -fx-text-fill: #2a2e2c;");
         mensaje.setStyle("-fx-font-family: 'Elephant'; -fx-font-size: 30px; -fx-text-fill: #59a5b3 ;");
         pressOn.setStyle("-fx-font-family: 'Elephant'; -fx-font-size: 15px; -fx-text-fill: #101111  ;");
 
 
-        vbox.getChildren().addAll(inicio, bienvenida, mensaje, imageView, pressOn);
+        vbox.getChildren().addAll(receptionist, inicio, bienvenida, mensaje, imageView, pressOn);
 
 
         contentPane.getChildren().add(vbox);

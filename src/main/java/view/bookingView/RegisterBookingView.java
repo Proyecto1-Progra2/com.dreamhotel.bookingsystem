@@ -98,6 +98,7 @@ public class RegisterBookingView extends BorderPane implements Runnable {
         tPrice = new TextField();
         tPrice.setEditable(false);
         Button btnCalendar = new Button("Open Calendar");
+        Button btnHost = new Button("Add Host");
         Button btnRegister = new Button("Register");
 
         // Contenido del formulario
@@ -111,8 +112,13 @@ public class RegisterBookingView extends BorderPane implements Runnable {
                 new Label("Booking Price:"),
                 tPrice,
                 btnCalendar,
+                btnHost,
                 btnRegister
         );
+
+        btnHost.setOnAction(e -> {
+            // Se llama la ventana de registrar el huesped
+        });
 
         btnRegister.setOnAction(e -> this.bookingRegister(
                 new Booking(this.tBookingNumber.getText(), new Person("host", "lastname", 123),
