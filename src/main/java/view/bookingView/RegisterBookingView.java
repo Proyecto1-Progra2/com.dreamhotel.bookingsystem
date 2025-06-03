@@ -14,6 +14,7 @@ import sockets.Client;
 import utils.Action;
 import utils.FXUtility;
 
+import java.time.LocalDate;
 import java.util.Random;
 
 public class RegisterBookingView extends BorderPane implements Runnable {
@@ -29,6 +30,9 @@ public class RegisterBookingView extends BorderPane implements Runnable {
 
     private String hotelNumber, bookingNumber;
 
+    private LocalDate startDate;
+    private LocalDate endDate;
+
     public RegisterBookingView(Client client, Pane contentPane, String hotelNumber) {
         this.setStyle("-fx-border-color: black; -fx-background-color: white;");
         this.setPrefSize(530, 530);
@@ -38,6 +42,9 @@ public class RegisterBookingView extends BorderPane implements Runnable {
         this.contentPane = contentPane;
         this.hotelNumber = hotelNumber;
         this.bookingNumber = this.generateRandomBookingNumber();
+
+        this.startDate = null;
+        this.endDate = null;
 
         this.initComponents();
         this.client = client;
@@ -83,12 +90,13 @@ public class RegisterBookingView extends BorderPane implements Runnable {
         });
 
         tBookingNumber = new TextField();
-        //tBookingNumber.setText(generateUniqueBookingNumber(this.client.getBookingNumberExiste()));
         tBookingNumber.setEditable(false);
         tHotelNumber = new TextField();
         tHotelNumber.setText(this.hotelNumber);
         tHotelNumber.setEditable(false);
         tPrice = new TextField();
+        tPrice.setVisible(false);
+        Button btnCalendar = new Button("Open Calendar");
         Button btnRegister = new Button("Register");
 
         // Contenido del formulario
@@ -101,10 +109,12 @@ public class RegisterBookingView extends BorderPane implements Runnable {
                 tHotelNumber,
                 new Label("Booking Price:"),
                 tPrice,
+                btnCalendar,
                 btnRegister
         );
 
         btnRegister.setOnAction(e -> this.bookingRegister(null));
+        btnCalendar.setOnAction(e -> new CalendarView(this.client, this.contentPane));
 
         this.setTop(titleBar);
         this.setCenter(contenido);
