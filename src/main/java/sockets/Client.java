@@ -1,5 +1,6 @@
 package sockets;
 
+import domain.Host;
 import domain.Receptionist;
 import domain.Hotel;
 import domain.Room;
@@ -33,6 +34,7 @@ public class Client extends Thread {
     private String hotelRooms;
     private String bookings;
     private Receptionist receptionist;//nuevo
+    private Host hostList;
 
     // -> Observer
     private  boolean mostrado;
@@ -95,6 +97,7 @@ public class Client extends Thread {
         this.hotelSolicitado = null;
         this.roomSolicitado = null;
         this.receptionist = new Receptionist("123", "name", "lastName", 123, "name.lastName", "123");
+
 
     }
 
@@ -190,7 +193,17 @@ public class Client extends Thread {
                         this.loged = 2;
                         System.out.println(this.lectura);
                         break;
-                    case Action.BOOKING_NUMBER_EXIST:
+
+                    case Action.HOST_REGISTER:
+                        this.loged=1;
+                        this.hostList=new Host(datos[1], datos[2], datos[3], Integer.parseInt(datos[4]), datos[5], datos[6],datos[7]) ;
+                        case Action.BOOKING_NUMBER_EXIST:
+                            break;
+                    case Action.HOST_NOT_REGISTERED:
+                        this.loged=2;
+                        System.out.println(this.lectura);
+                        break;
+
                         this.bookingNumberExiste = 2;
                         break;
                     case Action.BOOKING_NUMBER_NO_EXIST:
