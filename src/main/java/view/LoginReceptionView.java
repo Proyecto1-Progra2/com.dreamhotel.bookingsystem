@@ -1,5 +1,6 @@
 package view;
 
+import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -22,7 +23,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 
-public class LoginReceptionView extends BorderPane {
+public class LoginReceptionView extends BorderPane implements Runnable {
     //inicia el programa
     private Pane contentPane;
     private final Client client;
@@ -30,6 +31,7 @@ public class LoginReceptionView extends BorderPane {
 
     private Label titleLogin, titlePassword;
     private TextField tUser, tPassword;
+    private Button btnLogin;
     private Alert alert;
 
     public LoginReceptionView(Stage stage) {
@@ -48,6 +50,8 @@ public class LoginReceptionView extends BorderPane {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+        Thread thread = new Thread(this);
+        thread.start();
     }
 
     private void initComponents() {
@@ -68,7 +72,7 @@ public class LoginReceptionView extends BorderPane {
         tPassword = new TextField();
         tPassword.setPrefWidth(200);
 
-        Button btnLogin = new Button("Login");
+        this.btnLogin = new Button("Login");
         btnLogin.setStyle("-fx-background-color: #596fa8; -fx-text-fill: white;");
 
         Button btnRegister = new Button("Register");
@@ -83,37 +87,18 @@ public class LoginReceptionView extends BorderPane {
         this.setCenter(vbox); // Coloca el VBox en el centro del BorderPane
 
         btnLogin.setOnAction(e -> {
-            new MainView(client, stage);
-
-//            if (tUser.getText().isEmpty() || tPassword.getText().isEmpty()) {
-//                alert = FXUtility.alert("Login", "Login Receptionist");
-//                alert.setAlertType(Alert.AlertType.WARNING);
-//
-//                if (tUser.getText().isEmpty()) {
-//                    alert.setContentText("¡El nombre de usuario no puede estar vacío!");
-//                } else {
-//                    alert.setContentText("¡La contraseña no puede estar vacía!");
-//                }
-//
-//                alert.showAndWait();
-//                return;
-//            }
-//
-//            receptionistLogin(tUser.getText(), tPassword.getText());
-//            //esto debe devolver un boolean para saber si se puede loguear
-//            if (true) {
-//                //ir al mainView
-//                new MainView(client, stage);
-//                alert = FXUtility.alert("Welcome", "Login Receptionist");
-//                alert.setAlertType(Alert.AlertType.CONFIRMATION);
-//                alert.setContentText("Your username and password are correct!");
-//                alert.showAndWait();
-//            } else {
-//                alert = FXUtility.alert("Login", "Login Receptionist");
-//                alert.setAlertType(Alert.AlertType.INFORMATION);
-//                alert.setContentText("Your username and password are correct!");
-//                alert.showAndWait();
-//            }
+            if (tUser.getText().isEmpty() || tPassword.getText().isEmpty()) {
+                alert = FXUtility.alert("Login", "Login Receptionist");
+                alert.setAlertType(Alert.AlertType.WARNING);
+                if (tUser.getText().isEmpty()) {
+                    alert.setContentText("¡El nombre de usuario no puede estar vacío!");
+                } else {
+                    alert.setContentText("¡La contraseña no puede estar vacía!");
+                }
+                alert.showAndWait();
+            } else {
+                receptionistLogin(tUser.getText(), tPassword.getText());
+            }
         });
 
         btnRegister.setOnAction(e -> new RegisterView(this.client, this.contentPane));
@@ -127,7 +112,6 @@ public class LoginReceptionView extends BorderPane {
         imageView.setFitWidth(200);
         imageView.setPreserveRatio(true);
 
-// para centrar la imagen
         double paneWidth = 1000;
         double imageWidth = 150;
         double imageX = (paneWidth - imageWidth) / 1.9999;// la mitad osea en el centro
@@ -149,10 +133,9 @@ public class LoginReceptionView extends BorderPane {
     }
 
     private void receptionistLogin(String username, String password) {
-        this.client.getSend().println(Action.RECEPTIONIST_LOGIN + "|||" + username + "|||" + password);
+        this.client.getSend().println(Action.RECEPTIONIST_SEARCH + "|||" + username + "|||" + password);
     }
 
-    // Metodo auxiliar para mostrar alertas
     private void showAlert(Alert.AlertType type, String title, String message) {
         Alert alert = new Alert(type);
         alert.setTitle(title);
@@ -161,4 +144,32 @@ public class LoginReceptionView extends BorderPane {
         alert.showAndWait();
     }
 
+    @Override
+    public void run() {
+        while (true) {
+            if (this.client.getLoged() == 1) {
+                Platform.runLater(() -> {
+                    new MainView(client, stage);
+                    alert = FXUtility.alert("Welcome", "Login Receptionist");
+                    alert.setAlertType(Alert.AlertType.CONFIRMATION);
+                    alert.setContentText("Your username and password are correct!");
+                    alert.showAndWait();
+                });
+                this.client.setLoged(0);
+            } else if (this.client.getLoged() == 2) {
+                Platform.runLater(() -> {
+                    alert = FXUtility.alert("Login", "Login Receptionist");
+                    alert.setAlertType(Alert.AlertType.INFORMATION);
+                    alert.setContentText("Your username or password aren´t correct!");
+                    alert.showAndWait();
+                });
+                this.client.setLoged(0);
+            }
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
 }

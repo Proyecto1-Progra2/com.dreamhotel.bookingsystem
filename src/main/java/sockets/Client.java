@@ -54,6 +54,7 @@ public class Client extends Thread {
     private int registered;
     private int updated;
     private int deleted;
+    private volatile int loged = 0;
 
     public Client(String ip, int puerto) throws UnknownHostException, IOException {
         this.direccion = InetAddress.getByName(ip);
@@ -173,11 +174,16 @@ public class Client extends Thread {
                             byte[] imgBytes = Base64.getDecoder().decode(datos[i]);
                             this.images.add(imgBytes);
                         }
-                        this.image = this.images.get(0); // opcional: poner la primera imagen como "principal"
+                        this.image = this.images.get(0);
                         this.imageReceived = true;
                         break;
-                    case Action.RECEPTIONIST_LOGIN://nuevo
-                        this.mostrarRecepcionistaSolicitado = true;
+                    case Action.RECEPTIONIST_LOGIN:
+                        this.loged = 1;
+                        this.receptionist = new Receptionist(datos[1], datos[2], datos[3], Integer.parseInt(datos[4]), datos[5], datos[6]);
+                        break;
+                    case Action.RECEPTIONIST_NOT_LOGIN:
+                        this.loged = 2;
+                        System.out.println(this.lectura);
                         break;
                     case Action.BOOKING_NUMBER_EXIST:
                         this.bookingNumberExiste = 2;
@@ -194,6 +200,22 @@ public class Client extends Thread {
             throw new RuntimeException(e);
         }
 
+    }
+
+    public boolean isMostrarRecepcionistaSolicitado() {
+        return mostrarRecepcionistaSolicitado;
+    }
+
+    public void setMostrarRecepcionistaSolicitado(boolean mostrarRecepcionistaSolicitado) {
+        this.mostrarRecepcionistaSolicitado = mostrarRecepcionistaSolicitado;
+    }
+
+    public int getLoged() {
+        return loged;
+    }
+
+    public void setLoged(int loged) {
+        this.loged = loged;
     }
 
     public Receptionist getReceptionist() {

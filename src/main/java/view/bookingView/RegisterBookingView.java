@@ -160,14 +160,6 @@ public class RegisterBookingView extends BorderPane implements Runnable {
         return String.format("%06d", rand.nextInt(1_000_000)); // Números de 6 dígitos
     }
 
-    private String generateUniqueBookingNumber(int bookingExist) {
-        String bookingNumber;
-        do {
-            bookingNumber = generateRandomBookingNumber();
-        } while (bookingExist == 2);
-        return bookingNumber;
-    }
-
     @Override
     public void run() {
         while (this.isRunning) {
