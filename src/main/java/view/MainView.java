@@ -74,7 +74,6 @@ public class MainView extends VBox {
         contentPane.setPrefSize(1000, 1000);
         contentPane.setStyle("-fx-background-color:#ccd2d3 ;");
 
-
         VBox vbox = new VBox(10);
         vbox.setAlignment(Pos.CENTER);
         vbox.setPrefWidth(1000);

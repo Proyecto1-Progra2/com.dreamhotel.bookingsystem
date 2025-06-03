@@ -31,6 +31,7 @@ public class Client extends Thread {
     private String mostrarRooms;
     private Room roomSolicitado;
     private String hotelRooms;
+    private String bookings;
     private Receptionist receptionist;//nuevo
 
     // -> Observer
@@ -41,6 +42,7 @@ public class Client extends Thread {
     private boolean mostrarRecepcionistaSolicitado; //nuevo
     private int bookingNumberExiste;
 
+    private boolean bookingMostrado;
 
     private boolean habitacionesMostrado;
     private boolean mostrarHabitacionSolicitado;
@@ -71,6 +73,8 @@ public class Client extends Thread {
         this.habitacionesMostrado = false;
         this.mostrarHabitacionSolicitado = false;
         this.bookingNumberExiste = 0; // 1 no existe, 2 existe, 0 listo
+
+        this.bookingMostrado = false;
         //
 
         this.imageReceived = false;
@@ -84,6 +88,7 @@ public class Client extends Thread {
         this.infoMostrar ="";
         this.mostrarHoteles = "";
         this.hotelRooms = "";
+        this.bookings = "";
 
         this.mostrarRooms = "";
 
@@ -191,6 +196,14 @@ public class Client extends Thread {
                     case Action.BOOKING_NUMBER_NO_EXIST:
                         this.bookingNumberExiste = 1;
                         break;
+                    case Action.BOOKING_LIST:
+                        System.out.println(this.lectura);
+                        for (int i = 1; i < datos.length - 1; i+=9) {
+                            this.bookings += datos[i] + "|||" + datos[i+1] + "|||" + datos[i+2] + "|||" + datos[i+3] + "|||" + datos[i+4] +
+                                    "|||" + datos[i+5] +"|||" + datos[i+6] + "|||" + datos[i+7] + "|||" + datos[i+8] + "\n";
+                        }
+                        this.bookingMostrado = true;
+                        break;
                     default:
                         throw new IllegalStateException("Unexpected value: " + accion);
                 }
@@ -200,6 +213,22 @@ public class Client extends Thread {
             throw new RuntimeException(e);
         }
 
+    }
+
+    public String getBookings() {
+        return bookings;
+    }
+
+    public void setBookings(String bookings) {
+        this.bookings = bookings;
+    }
+
+    public boolean isBookingMostrado() {
+        return bookingMostrado;
+    }
+
+    public void setBookingMostrado(boolean bookingMostrado) {
+        this.bookingMostrado = bookingMostrado;
     }
 
     public boolean isMostrarRecepcionistaSolicitado() {
