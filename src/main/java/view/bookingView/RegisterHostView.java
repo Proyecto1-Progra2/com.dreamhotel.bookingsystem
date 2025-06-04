@@ -104,11 +104,11 @@ public class RegisterHostView extends BorderPane implements Runnable{
         contenido.setStyle("-fx-padding: 10;");
         contenido.getChildren().addAll(
                 titleRegister = new Label("Register New Host"),
-                LabeltitleId= new Label("ID:"),
+                LabeltitleId= new Label("ID"),
                 id,
-                LabeltitleName = new Label("Name: Your exact name will be used for your username."),
+                LabeltitleName = new Label("Name"),
                 name,
-                LabeltitleLastName = new Label("Last Name: Your exact last name will be used for your username."),
+                LabeltitleLastName = new Label("Last Name"),
                 lastName,
                 LabeltitleHostNumber = new Label("Phone Number:"),
                 phoneNumber,

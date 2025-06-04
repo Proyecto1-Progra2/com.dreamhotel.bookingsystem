@@ -193,21 +193,19 @@ public class Client extends Thread {
                         this.loged = 2;
                         System.out.println(this.lectura);
                         break;
-
-                    case Action.HOST_REGISTER:
+                    case Action.HOST_REGISTERED:
                         this.registered=1;
-                        this.hostList=new Host(datos[1], datos[2], datos[3], Integer.parseInt(datos[4]), datos[5], datos[6],datos[7]) ;
-                        case Action.BOOKING_NUMBER_EXIST:
-                            break;
+                        break;
                     case Action.HOST_NOT_REGISTERED:
                         this.registered=2;
-                        System.out.println(this.lectura);
+                        break;
+                    case Action.BOOKING_NUMBER_EXIST:
+                        this.bookingNumberExiste = 2;
                         break;
                     case Action.BOOKING_NUMBER_NO_EXIST:
                         this.bookingNumberExiste = 1;
                         break;
                     case Action.BOOKING_LIST:
-                        System.out.println(this.lectura);
                         for (int i = 1; i < datos.length - 1; i+=9) {
                             this.bookings += datos[i] + "|||" + datos[i+1] + "|||" + datos[i+2] + "|||" + datos[i+3] + "|||" + datos[i+4] +
                                     "|||" + datos[i+5] +"|||" + datos[i+6] + "|||" + datos[i+7] + "|||" + datos[i+8] + "\n";
