@@ -16,8 +16,8 @@ import javafx.util.Duration;
 import sockets.Client;
 import table.RoomTableModel;
 import utils.Action;
-import view.roomView.RegisterRoomView;
-import view.roomView.UpdateRoomView;
+
+import java.util.Optional;
 
 public class SelectRoomsView extends BorderPane implements Runnable {
 
@@ -25,7 +25,7 @@ public class SelectRoomsView extends BorderPane implements Runnable {
     private Pane contentPane;
     private String hotelNumber;
     private String hotelName;
-    private String  hotelAdress;
+    private String hotelAdress;
     private Label hotelLabel;
 
     private String roomNumbers;
@@ -33,7 +33,7 @@ public class SelectRoomsView extends BorderPane implements Runnable {
     private TableView<RoomTableModel> tableView;
     private ObservableList<RoomTableModel> data;
 
-    private volatile boolean isRunning =true;
+    private volatile boolean isRunning = true;
 
     public SelectRoomsView(Client client, Pane contentPane, String hotelNumber, String hotelName) {
         this.setStyle("-fx-border-color: black; -fx-background-color: white;");
@@ -42,8 +42,8 @@ public class SelectRoomsView extends BorderPane implements Runnable {
         this.setLayoutY(100);
         this.contentPane = contentPane;
         this.hotelNumber = hotelNumber;
-        this.hotelName= hotelName;
-        this.hotelAdress=hotelAdress;
+        this.hotelName = hotelName;
+        this.hotelAdress = hotelAdress;
         this.roomNumbers = "";
 
         this.initComponents();
@@ -51,7 +51,6 @@ public class SelectRoomsView extends BorderPane implements Runnable {
 
         this.roomList(Action.HOTEL_ROOMS, hotelNumber);
         this.hotelInfo(Action.HOTEL_SEARCH, hotelName);
-
 
         Thread thread = new Thread(this);
         thread.start();
@@ -67,14 +66,9 @@ public class SelectRoomsView extends BorderPane implements Runnable {
         data = FXCollections.observableArrayList();
         FilteredList<RoomTableModel> dataFiltered = new FilteredList<>(data, data -> true);
 
-
-
-
         Label searchLabel = new Label("Search for a room:");
         TextField searchRoom = new TextField();
         searchRoom.setPromptText("Room number:");
-
-        // Label infoTitle = new Label("Hotel Information");
 
         TextArea infoTextArea = new TextArea();
         infoTextArea.setPromptText("Information of your hotel");
@@ -83,7 +77,7 @@ public class SelectRoomsView extends BorderPane implements Runnable {
         infoTextArea.setEditable(false);
         infoTextArea.setWrapText(true);
 
-        hotelLabel = new Label("Hotel Name:" + this.hotelName);
+        hotelLabel = new Label("Hotel Name: " + this.hotelName);
         hotelLabel.setStyle("-fx-font-weight: bold; -fx-font-size: 18px;");
 
         infoTextArea.setText("Hotel Name: " + this.hotelName);
@@ -95,14 +89,13 @@ public class SelectRoomsView extends BorderPane implements Runnable {
         searchBox.setAlignment(Pos.CENTER_LEFT);
         searchBox.getChildren().addAll(searchLabel, searchRoom, infoTextArea);
 
-
         searchRoom.textProperty().addListener((observable, oldValue, newValue) -> {
-            dataFiltered.setPredicate(hotel -> {
+            dataFiltered.setPredicate(room -> {
                 if (newValue == null || newValue.isEmpty()) {
                     return true;
                 }
                 String lowerCaseFilter = newValue.toLowerCase();
-                return hotel.getRoomNumber().toLowerCase().contains(lowerCaseFilter);
+                return room.getRoomNumber().toLowerCase().contains(lowerCaseFilter);
             });
         });
 
@@ -125,45 +118,28 @@ public class SelectRoomsView extends BorderPane implements Runnable {
         TableColumn<RoomTableModel, String> column5 = new TableColumn<>("Hotel Number");
         column5.setCellValueFactory(cellData -> cellData.getValue().roomHotelNumberProperty());
 
-        TableColumn<RoomTableModel, Void> column6 = new TableColumn<>("Actions");
-        column6.setCellFactory(col -> new TableCell<RoomTableModel, Void>() {
-            private final CheckBox btnSelect = new CheckBox("Edit");
+        TableColumn<RoomTableModel, Boolean> column6 = new TableColumn<>("Select");
+        column6.setCellFactory(col -> new TableCell<RoomTableModel, Boolean>() {
+            private final CheckBox checkBox = new CheckBox();
 
             {
-                btnSelect.setStyle("-fx-background-color: #87CEFA;");
-
-                btnSelect.setOnMouseEntered(ev -> {
-                    ScaleTransition st = new ScaleTransition(Duration.millis(150), btnSelect);
-                    st.setToX(1.03);
-                    st.setToY(1.03);
-                    st.play();
-                });
-
-                btnSelect.setOnMouseExited(ev -> {
-                    ScaleTransition st = new ScaleTransition(Duration.millis(150), btnSelect);
-                    st.setToX(1.0);
-                    st.setToY(1.0);
-                    st.play();
-                });
-
-                btnSelect.setOnAction(e -> {
-                    if (btnSelect.isSelected()) {
-                        RoomTableModel room = getTableView().getItems().get(getIndex());
-                        String roomNumber = room.getRoomNumber();
-                        roomNumbers += roomNumber + ", ";
+                checkBox.setOnAction(e -> {
+                    RoomTableModel room = getTableView().getItems().get(getIndex());
+                    if (checkBox.isSelected()) {
+                        roomNumbers += room.getRoomNumber() + ", ";
+                    } else {
+                        roomNumbers = roomNumbers.replace(room.getRoomNumber() + ", ", "");
                     }
                 });
             }
 
-            private final HBox hbox = new HBox(5, btnSelect);
-
             @Override
-            protected void updateItem(Void item, boolean empty) {
+            protected void updateItem(Boolean item, boolean empty) {
                 super.updateItem(item, empty);
                 if (empty) {
                     setGraphic(null);
                 } else {
-                    setGraphic(hbox);
+                    setGraphic(checkBox);
                 }
             }
         });
@@ -182,7 +158,7 @@ public class SelectRoomsView extends BorderPane implements Runnable {
 
         Button btnAddRoom = new Button("Add Rooms");
         btnAddRoom.setOnAction(e -> {
-            System.out.println(this.roomNumbers);
+            System.out.println("Selected Rooms: " + this.roomNumbers);
             this.roomNumbers = "";
         });
 
@@ -201,7 +177,6 @@ public class SelectRoomsView extends BorderPane implements Runnable {
         contentPane.getChildren().add(this);
     }
 
-
     private void roomList(String accion, String hotelNumber) {
         this.client.getSend().println(accion + "|||" + hotelNumber);
     }
@@ -209,7 +184,6 @@ public class SelectRoomsView extends BorderPane implements Runnable {
     private void hotelInfo(String accion, String hotelName) {
         this.client.getSend().println(accion + "|||" + hotelName);
     }
-
 
     private void roomDelete(String accion, String roomNumber, String hotelNumber) {
         this.client.getSend().println(accion + "|||" + roomNumber + "|||" + hotelNumber);
@@ -237,7 +211,7 @@ public class SelectRoomsView extends BorderPane implements Runnable {
                                             parts[1].trim(),  // roomStatus
                                             parts[2].trim(),  // roomStyle
                                             Double.parseDouble(parts[3].trim()), // roomPrice
-                                            parts[4].trim() // roomNumber
+                                            parts[4].trim() // hotelNumber
                                     );
                                     data.add(room);
                                 }
