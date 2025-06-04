@@ -55,19 +55,18 @@ public class LoginReceptionView extends BorderPane implements Runnable {
     }
 
     private void initComponents() {
-        //Login del recepcionista
+        // Login del recepcionista
         Collection<Node> nodes = new ArrayList<>();
 
+        // Cambios de color en etiquetas
         titleLogin = new Label("Login");
-        titleLogin.setStyle("-fx-font-family: 'Elephant'; -fx-font-size: 15px; -fx-text-fill: #596fa8  ;");
-
+        titleLogin.setStyle("-fx-font-family: 'Elephant'; -fx-font-size: 15px; -fx-text-fill: #2b2b2b;");
 
         tUser = new TextField();
         tUser.setPrefWidth(200);
 
-
         titlePassword = new Label("Password");
-        titlePassword.setStyle("-fx-font-family: 'Elephant'; -fx-font-size: 15px; -fx-text-fill: #596fa8 ;");
+        titlePassword.setStyle("-fx-font-family: 'Elephant'; -fx-font-size: 15px; -fx-text-fill: #2b2b2b;");
 
         tPassword = new TextField();
         tPassword.setPrefWidth(200);
@@ -78,13 +77,15 @@ public class LoginReceptionView extends BorderPane implements Runnable {
         Button btnRegister = new Button("Register");
         btnRegister.setStyle("-fx-background-color: #596fa8; -fx-text-fill: white;");
 
-
-        VBox vbox = new VBox(10); // espacio entre nodos
+        VBox vbox = new VBox(10);
         vbox.setAlignment(Pos.CENTER);
         vbox.setPadding(new Insets(200));
         vbox.getChildren().addAll(titleLogin, tUser, titlePassword, tPassword, btnLogin, btnRegister);
 
-        this.setCenter(vbox); // Coloca el VBox en el centro del BorderPane
+        this.setCenter(vbox);
+
+        // Cambia el fondo general de la interfaz principal
+        this.setStyle("-fx-background-color: #f2f2f2;");
 
         btnLogin.setOnAction(e -> {
             if (tUser.getText().isEmpty() || tPassword.getText().isEmpty()) {
@@ -103,32 +104,27 @@ public class LoginReceptionView extends BorderPane implements Runnable {
 
         btnRegister.setOnAction(e -> new RegisterView(this.client, this.contentPane));
 
+        // Banner superior y contenido gráfico
         contentPane = new Pane();
         contentPane.setPrefSize(1000, 1000);
-        contentPane.setStyle("-fx-background-color:#dcdee2;");
+        contentPane.setStyle("-fx-background-color:#f2f2f2;");
+
 
         Image image = new Image(getClass().getResource("/image3.png").toExternalForm());
         ImageView imageView = new ImageView(image);
         imageView.setFitWidth(200);
         imageView.setPreserveRatio(true);
-
-        double paneWidth = 1000;
-        double imageWidth = 150;
-        double imageX = (paneWidth - imageWidth) / 1.9999;// la mitad osea en el centro
-        double imageY = (1000 - (imageWidth * (image.getHeight() / image.getWidth()))) / 11;// calculado con priuebas
-
-        imageView.setLayoutX(imageX);
-        imageView.setLayoutY(imageY);
+        imageView.setLayoutX(400);
+        imageView.setLayoutY(90);
 
 
-        Label bienvenida = new Label("Register here and let you have a great moment!");
-        bienvenida.setStyle("-fx-font-family: 'Elephant'; -fx-font-size: 30px; -fx-text-fill:#566ead ;");
-        bienvenida.setLayoutX(80);
-        bienvenida.setLayoutY(20);
+        Label bienvenida = new Label("Join us today and enjoy exclusive features!");
+        bienvenida.setStyle("-fx-font-family: 'Elephant'; -fx-font-size: 26px; -fx-text-fill: #596fa8;");
+        bienvenida.setLayoutX(160); // centrado aproximado
+        bienvenida.setLayoutY(40);
+
         contentPane.getChildren().addAll(bienvenida, imageView);
-
         nodes.add(contentPane);
-
         this.getChildren().addAll(nodes);
     }
 
