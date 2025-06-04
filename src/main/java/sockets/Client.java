@@ -221,6 +221,12 @@ public class Client extends Thread {
                     case Action.HOST_NO_EXIST:
                         this.hostExist = 2;
                         break;
+                    case Action.ROOM_NOT_REGISTERED:
+                        this.registered=2;
+                        break;
+                    case Action.HOTEL_NOT_REGISTERED:
+                        this.registered=2;
+                        break;
                     default:
                         throw new IllegalStateException("Unexpected value: " + accion);
                 }

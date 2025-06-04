@@ -186,19 +186,32 @@ public class RegisterRoomView extends BorderPane implements Runnable {
     public void run() {
         while (this.isRunning) {
             try {
-                if (this.client.getRegistered() == 1) {
-                    // Todas las actualizaciones de UI deben ir dentro de Platform.runLater
-                    Platform.runLater(() -> { //
-                        alert.setContentText("Room registered successfully!"); //
-                        alert.setAlertType(Alert.AlertType.CONFIRMATION); //
-                        alert.showAndWait(); // Muestra la alerta y espera que el usuario la cierre
+                int estado = this.client.getRegistered();
 
-                        this.tRoomNumber.setText("");
-                        this.cbStyle.getSelectionModel().clearSelection();
-                        this.cbStatus.getSelectionModel().clearSelection();
-                        this.tPrice.setText("");
-                    });
+                if (estado == 1 || estado == 2) {
+                    // Todas las actualizaciones de UI deben ir dentro de Platform.runLater
                     this.client.setRegistered(0);
+
+                    Platform.runLater(() -> { //
+                        if (estado == 1) {
+
+                            alert.setContentText("Room registered successfully!"); //
+                            alert.setAlertType(Alert.AlertType.CONFIRMATION); //
+                            alert.showAndWait(); // Muestra la alerta y espera que el usuario la cierre
+
+                            this.tRoomNumber.setText("");
+                            this.cbStyle.getSelectionModel().clearSelection();
+                            this.cbStatus.getSelectionModel().clearSelection();
+                            this.tPrice.setText("");
+                        }else if (estado == 2) {
+
+                            alert.setContentText("¡Error de registro! Una habitación con ese número ya existe en este hotel. Por favor, intenta de nuevo."); // Mensaje claro para el usuario
+                            alert.setAlertType(Alert.AlertType.ERROR); //
+                            alert.showAndWait(); // Muestra la alerta y espera que el usuario la cierre
+
+                            this.tRoomNumber.setText(""); //quita nada más el numero de cuarto, porque ya existe ese roomNumber
+                        }
+                    });
                 }
                 Thread.sleep(100);
             } catch (InterruptedException e) {
