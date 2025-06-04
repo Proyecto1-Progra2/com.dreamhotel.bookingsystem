@@ -134,7 +134,7 @@ public class ShowBookingView extends BorderPane implements Runnable {
         TableColumn<BookingTableModel, String> column6 = new TableColumn<>("Room Number");
         column6.setCellValueFactory(cellData -> cellData.getValue().roomNumberProperty());
 
-        TableColumn<BookingTableModel, String> column7 = new TableColumn<>("Receptionist Name");
+        TableColumn<BookingTableModel, String> column7 = new TableColumn<>("Hotel Number");
         column7.setCellValueFactory(cellData -> cellData.getValue().hotelNumberProperty());
 
         TableColumn<BookingTableModel, Void> columnActions = new TableColumn<>("Actions");

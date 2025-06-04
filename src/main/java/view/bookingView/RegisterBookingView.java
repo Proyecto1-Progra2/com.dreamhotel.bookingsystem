@@ -23,13 +23,13 @@ public class RegisterBookingView extends BorderPane implements Runnable {
     private Client client;
     private Pane contentPane;
 
-    private TextField tBookingNumber, tPrice, tHotelNumber, tRoomNumber;
+    private TextField tBookingNumber, tPrice, tHotelNumber, tRoomNumber, tHostId;
 
     private volatile boolean isRunning = true;
 
     private Alert alert = FXUtility.alert("Booking", "Register Booking");
 
-    private String hotelNumber, bookingNumber;
+    private String hotelNumber, bookingNumber, roomsNumber;
 
     private LocalDate startDate;
     private LocalDate endDate;
@@ -92,11 +92,13 @@ public class RegisterBookingView extends BorderPane implements Runnable {
 
         tBookingNumber = new TextField();
         tBookingNumber.setEditable(false);
+        tHostId = new TextField();
         tHotelNumber = new TextField();
         tHotelNumber.setText(this.hotelNumber);
         tHotelNumber.setEditable(false);
         tPrice = new TextField();
         tPrice.setEditable(false);
+        Button btnSearchHost = new Button("Search");
         Button btnCalendar = new Button("Open Calendar");
         Button btnAddRoom = new Button("Add Room");
         Button btnHost = new Button("Add Host");
@@ -108,15 +110,23 @@ public class RegisterBookingView extends BorderPane implements Runnable {
         contenido.getChildren().addAll(
                 new Label("Booking Number:"),
                 tBookingNumber,
+                new Label("Enter Host ID for search"),
+                tHostId,
+                btnSearchHost,
+                new Label("If the host doesn´t exist, register it"),
+                btnHost,
                 new Label("Hotel Number:"),
                 tHotelNumber,
                 new Label("Booking Price:"),
                 tPrice,
                 btnCalendar,
                 btnAddRoom,
-                btnHost,
                 btnRegister
         );
+
+        btnSearchHost.setOnAction(e -> {
+            this.searchHost(tHostId.getText());
+        });
 
         btnHost.setOnAction(e -> {
             // Se llama la ventana de registrar el huesped
@@ -124,13 +134,18 @@ public class RegisterBookingView extends BorderPane implements Runnable {
         });
 
         btnAddRoom.setOnAction(e -> {
-            new SelectRoomsView(client, contentPane, hotelNumber, "");
+            SelectRoomsView selectRoomsView = new SelectRoomsView(client, contentPane, hotelNumber, (roomsNumber -> {
+                this.roomsNumber = roomsNumber;
+                System.out.println("Rooms number: "+this.roomsNumber);
+            }));
         });
 
         btnRegister.setOnAction(e -> this.bookingRegister(
-                new Booking(this.tBookingNumber.getText(), new Person("host", "lastname", 123),
-                        this.startDate, this.endDate, new Person(this.client.getReceptionist().getName(),
-                        this.client.getReceptionist().getLastName(), 0), "001", this.hotelNumber)
+                new Booking(this.tBookingNumber.getText(), new Person(this.client.getHost().getName(),
+                        this.client.getHost().getLastName(), this.client.getHost().getPhoneNumber()), this.startDate,
+                        this.endDate, new Person(this.client.getReceptionist().getName(),
+                        this.client.getReceptionist().getLastName(), this.client.getReceptionist().getPhoneNumber()),
+                        this.roomsNumber, this.hotelNumber)
         ));
 
         btnCalendar.setOnAction(e -> {
@@ -168,6 +183,10 @@ public class RegisterBookingView extends BorderPane implements Runnable {
         this.client.getSend().println(Action.REQUEST_BOOKING_NUMBER+"|||"+bookingNumber);
     }
 
+    private void searchHost(String id) {
+        this.client.getSend().println(Action.HOST_REQUEST+"|||"+id);
+    }
+
     private String generateRandomBookingNumber() {
         Random rand = new Random();
         return String.format("%06d", rand.nextInt(1_000_000)); // Números de 6 dígitos
@@ -200,6 +219,21 @@ public class RegisterBookingView extends BorderPane implements Runnable {
                         this.tPrice.setText("");
                     });
                     this.client.setRegistered(0);
+                }
+                if (this.client.getHostExist() == 1) {
+                    Platform.runLater(() -> {
+                        alert.setContentText("Host found!");
+                        alert.setAlertType(Alert.AlertType.CONFIRMATION);
+                        alert.showAndWait();
+                    });
+                    this.client.setHostExist(0);
+                } else if (this.client.getHostExist() == 2) {
+                    Platform.runLater(() -> {
+                        alert.setContentText("Host not found!");
+                        alert.setAlertType(Alert.AlertType.CONFIRMATION);
+                        alert.showAndWait();
+                    });
+                    this.client.setHostExist(0);
                 }
                 Thread.sleep(100);
             } catch (InterruptedException e) {

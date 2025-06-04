@@ -32,15 +32,17 @@ public class SelectRoomsView extends BorderPane implements Runnable {
 
     private TableView<RoomTableModel> tableView;
     private ObservableList<RoomTableModel> data;
+    private RoomsNumberCallback roomsNumberCallback;
 
     private volatile boolean isRunning = true;
 
-    public SelectRoomsView(Client client, Pane contentPane, String hotelNumber, String hotelName) {
+    public SelectRoomsView(Client client, Pane contentPane, String hotelNumber, RoomsNumberCallback roomsNumberCallback) {
         this.setStyle("-fx-border-color: black; -fx-background-color: white;");
         this.setPrefSize(800, 530);
         this.setLayoutX(30);
         this.setLayoutY(100);
         this.contentPane = contentPane;
+        this.roomsNumberCallback = roomsNumberCallback;
         this.hotelNumber = hotelNumber;
         this.hotelName = hotelName;
         this.hotelAdress = hotelAdress;
@@ -50,7 +52,7 @@ public class SelectRoomsView extends BorderPane implements Runnable {
         this.client = client;
 
         this.roomList(Action.HOTEL_ROOMS, hotelNumber);
-        this.hotelInfo(Action.HOTEL_SEARCH, hotelName);
+        //this.hotelInfo(Action.HOTEL_SEARCH, hotelName);
 
         Thread thread = new Thread(this);
         thread.start();
@@ -125,6 +127,7 @@ public class SelectRoomsView extends BorderPane implements Runnable {
             {
                 checkBox.setOnAction(e -> {
                     RoomTableModel room = getTableView().getItems().get(getIndex());
+//                    roomNumbers += room.getRoomNumber() + ", ";
                     if (checkBox.isSelected()) {
                         roomNumbers += room.getRoomNumber() + ", ";
                     } else {
@@ -158,8 +161,18 @@ public class SelectRoomsView extends BorderPane implements Runnable {
 
         Button btnAddRoom = new Button("Add Rooms");
         btnAddRoom.setOnAction(e -> {
-            System.out.println("Selected Rooms: " + this.roomNumbers);
-            this.roomNumbers = "";
+            if (roomNumbers != null) {
+                if (roomsNumberCallback != null) {
+                    roomsNumberCallback.roomsNumberSelect(roomNumbers);
+                }
+                contentPane.getChildren().remove(this); // Cierra la vista al confirmar
+            } else {
+                Alert alert = new Alert(Alert.AlertType.WARNING);
+                alert.setTitle("Selection incomplete");
+                alert.setHeaderText(null);
+                alert.setContentText("Please, select a room valid.");
+                alert.showAndWait();
+            }
         });
 
         VBox contenido = new VBox(10);

@@ -34,7 +34,7 @@ public class Client extends Thread {
     private String hotelRooms;
     private String bookings;
     private Receptionist receptionist;//nuevo
-    private Host hostList;
+    private Host host;
 
     // -> Observer
     private  boolean mostrado;
@@ -43,6 +43,7 @@ public class Client extends Thread {
     private boolean mostrarRoomHotel;
     private boolean mostrarRecepcionistaSolicitado; //nuevo
     private int bookingNumberExiste;
+    private int hostExist;
 
     private boolean bookingMostrado;
 
@@ -86,6 +87,7 @@ public class Client extends Thread {
         this.registered = 0;
         this.updated = 0;
         this.deleted = 0;
+        this.hostExist = 0;
 
         this.infoMostrar ="";
         this.mostrarHoteles = "";
@@ -96,8 +98,8 @@ public class Client extends Thread {
 
         this.hotelSolicitado = null;
         this.roomSolicitado = null;
-        this.receptionist = new Receptionist("123", "name", "lastName", 123, "name.lastName", "123");
-        this.hostList = null;
+        this.receptionist = null;
+        this.host = null;
 
     }
 
@@ -191,7 +193,6 @@ public class Client extends Thread {
                         break;
                     case Action.RECEPTIONIST_NOT_LOGIN:
                         this.loged = 2;
-                        System.out.println(this.lectura);
                         break;
                     case Action.HOST_REGISTERED:
                         this.registered=1;
@@ -212,6 +213,14 @@ public class Client extends Thread {
                         }
                         this.bookingMostrado = true;
                         break;
+                    case Action.HOST_EXIST:
+                        System.out.println(this.lectura);
+                        this.host = new Host(datos[1], datos[2], datos[3], Integer.parseInt(datos[4]), datos[5], datos[6], datos[7]);
+                        this.hostExist = 1;
+                        break;
+                    case Action.HOST_NO_EXIST:
+                        this.hostExist = 2;
+                        break;
                     default:
                         throw new IllegalStateException("Unexpected value: " + accion);
                 }
@@ -221,6 +230,22 @@ public class Client extends Thread {
             throw new RuntimeException(e);
         }
 
+    }
+
+    public Host getHost() {
+        return host;
+    }
+
+    public void setHost(Host host) {
+        this.host = host;
+    }
+
+    public int getHostExist() {
+        return hostExist;
+    }
+
+    public void setHostExist(int hostExist) {
+        this.hostExist = hostExist;
     }
 
     public String getBookings() {
