@@ -15,10 +15,7 @@ import javafx.scene.layout.VBox;
 import javafx.util.Duration;
 import sockets.Client;
 import table.BookingTableModel;
-import table.HotelTableModel;
-import table.RoomTableModel;
 import utils.Action;
-import view.roomView.UpdateRoomView;
 
 public class ShowBookingView extends BorderPane implements Runnable {
 
@@ -139,10 +136,10 @@ public class ShowBookingView extends BorderPane implements Runnable {
 
         TableColumn<BookingTableModel, Void> columnActions = new TableColumn<>("Actions");
         columnActions.setCellFactory(col -> new TableCell<BookingTableModel, Void>() {
-            private final Button btnRooms = new Button("View Rooms");
+            private final Button btnRooms = new Button("Delete");
 
             {
-                btnRooms.setStyle("-fx-background-color: #eff748;");
+                btnRooms.setStyle("-fx-background-color: #FA8072;");
 
                 btnRooms.setOnMouseEntered(ev -> {
                     ScaleTransition st = new ScaleTransition(Duration.millis(150), btnRooms);
@@ -159,7 +156,10 @@ public class ShowBookingView extends BorderPane implements Runnable {
                 });
 
                 btnRooms.setOnAction(e -> {
-
+                    BookingTableModel booking = getTableView().getItems().get(getIndex());
+                    String bookingNumber = booking.getBookingNumber();
+                    deleteBooking(bookingNumber);
+                    refreshTable();
                 });
             }
 
@@ -205,6 +205,15 @@ public class ShowBookingView extends BorderPane implements Runnable {
 
     private void bookingList(String accion, String hotelNumber) {
         this.client.getSend().println(accion + "|||" + hotelNumber);
+    }
+
+    private void refreshTable() {
+        data.clear();
+        this.bookingList(Action.BOOKING_LIST, hotelNumber);
+    }
+
+    private void deleteBooking(String number) {
+        this.client.getSend().println(Action.BOOKING_DELETE+"|||"+number);
     }
 
     @Override
