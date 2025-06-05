@@ -117,8 +117,6 @@ public class RegisterBookingView extends BorderPane implements Runnable {
                 btnHost,
                 new Label("Hotel Number:"),
                 tHotelNumber,
-                new Label("Booking Price:"),
-                tPrice,
                 btnCalendar,
                 btnAddRoom,
                 btnRegister
@@ -215,8 +213,8 @@ public class RegisterBookingView extends BorderPane implements Runnable {
                         alert.setAlertType(Alert.AlertType.CONFIRMATION); //
                         alert.showAndWait(); // Muestra la alerta y espera que el usuario la cierre
 
-                        this.tBookingNumber.setText("");
-                        this.tPrice.setText("");
+                        this.isRunning = false;
+                        contentPane.getChildren().remove(this);
                     });
                     this.client.setRegistered(0);
                 }

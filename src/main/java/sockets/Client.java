@@ -227,6 +227,9 @@ public class Client extends Thread {
                     case Action.HOTEL_NOT_REGISTERED:
                         this.registered=2;
                         break;
+                    case Action.BOOKING_REGISTERED:
+                        this.registered = 1;
+                        break;
                     default:
                         throw new IllegalStateException("Unexpected value: " + accion);
                 }
