@@ -134,7 +134,7 @@ public class RegisterBookingView extends BorderPane implements Runnable {
         });
 
         btnAddRoom.setOnAction(e -> {
-            SelectRoomsView selectRoomsView = new SelectRoomsView(client, contentPane, hotelNumber, (roomsNumber -> {
+            SelectRoomsView selectRoomsView = new SelectRoomsView(client, contentPane, startDate, endDate, hotelNumber, (roomsNumber -> {
                 this.roomsNumber = roomsNumber;
                 System.out.println("Rooms number: "+this.roomsNumber);
             }));

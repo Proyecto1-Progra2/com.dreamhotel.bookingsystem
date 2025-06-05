@@ -17,6 +17,7 @@ import sockets.Client;
 import table.RoomTableModel;
 import utils.Action;
 
+import java.time.LocalDate;
 import java.util.Optional;
 
 public class SelectRoomsView extends BorderPane implements Runnable {
@@ -34,14 +35,19 @@ public class SelectRoomsView extends BorderPane implements Runnable {
     private ObservableList<RoomTableModel> data;
     private RoomsNumberCallback roomsNumberCallback;
 
+    private LocalDate startDate;
+    private LocalDate endDate;
+
     private volatile boolean isRunning = true;
 
-    public SelectRoomsView(Client client, Pane contentPane, String hotelNumber, RoomsNumberCallback roomsNumberCallback) {
+    public SelectRoomsView(Client client, Pane contentPane, LocalDate startDate, LocalDate endDate, String hotelNumber, RoomsNumberCallback roomsNumberCallback) {
         this.setStyle("-fx-border-color: black; -fx-background-color: white;");
         this.setPrefSize(800, 530);
         this.setLayoutX(30);
         this.setLayoutY(100);
         this.contentPane = contentPane;
+        this.startDate = startDate;
+        this.endDate = endDate;
         this.roomsNumberCallback = roomsNumberCallback;
         this.hotelNumber = hotelNumber;
         this.hotelName = hotelName;
@@ -51,7 +57,7 @@ public class SelectRoomsView extends BorderPane implements Runnable {
         this.initComponents();
         this.client = client;
 
-        this.roomList(Action.HOTEL_ROOMS, hotelNumber);
+        this.roomList(Action.HOTEL_ROOMS_BOOKING, String.valueOf(startDate), String.valueOf(endDate), hotelNumber);
         //this.hotelInfo(Action.HOTEL_SEARCH, hotelName);
 
         Thread thread = new Thread(this);
@@ -127,12 +133,7 @@ public class SelectRoomsView extends BorderPane implements Runnable {
             {
                 checkBox.setOnAction(e -> {
                     RoomTableModel room = getTableView().getItems().get(getIndex());
-//                    roomNumbers += room.getRoomNumber() + ", ";
-                    if (checkBox.isSelected()) {
-                        roomNumbers += room.getRoomNumber() + ", ";
-                    } else {
-                        roomNumbers = roomNumbers.replace(room.getRoomNumber() + ", ", "");
-                    }
+                    roomNumbers += room.getRoomNumber() + ",";
                 });
             }
 
@@ -190,8 +191,8 @@ public class SelectRoomsView extends BorderPane implements Runnable {
         contentPane.getChildren().add(this);
     }
 
-    private void roomList(String accion, String hotelNumber) {
-        this.client.getSend().println(accion + "|||" + hotelNumber);
+    private void roomList(String accion, String starDate, String endDate, String hotelNumber) {
+        this.client.getSend().println(accion + "|||" + starDate + "|||" + endDate + "|||" + hotelNumber);
     }
 
     private void hotelInfo(String accion, String hotelName) {
@@ -204,7 +205,7 @@ public class SelectRoomsView extends BorderPane implements Runnable {
 
     private void refreshTable() {
         data.clear();
-        this.roomList(Action.HOTEL_ROOMS, this.hotelNumber);
+        this.roomList(Action.HOTEL_ROOMS, String.valueOf(this.startDate), String.valueOf(this.endDate), this.hotelNumber);
     }
 
     @Override
